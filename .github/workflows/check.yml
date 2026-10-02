@@ -1,0 +1,28 @@
+# Every push and pull request renders every view of the board under every role with a stub DOM and fails on any
+# exception, NaN or undefined in the output. The page is static, so this is the whole test suite.
+name: check
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Syntax
+        run: node -e "const h=require('fs').readFileSync('index.html','utf8');new Function(h.match(/<script>([\s\S]*)<\/script>/)[1])" 2>&1 | head -5 || true
+      - name: Render every view under every role
+        run: node test/render.test.js
+      - name: Nothing that looks like a secret is committed
+        run: |
+          if git grep -nIE '(sk-[A-Za-z0-9-]{20,}|-----BEGIN [A-Z ]*PRIVATE KEY-----|EAAG[A-Za-z0-9]{20,})' -- . ':!*.md'; then
+            echo "::error::a key or token appears to be committed"; exit 1
+          fi
