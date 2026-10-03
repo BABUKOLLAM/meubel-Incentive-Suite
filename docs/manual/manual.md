@@ -124,6 +124,18 @@ Settings and the Admin console sit above the engine: they change the rules, neve
 
 **What to look at.** Group achievement, outlay and its share of SO value, data feeds connected, settings state, every branch with its risk flags, policy compliance, the message schedule with recipient counts, users and roles, and the consultant action list. It is the page to open before a client review.
 
+### 📊 Sales analytics window
+
+&#91;image: Sales analytics: the Meubel sales picture for the scope, from KPI tiles to the salesperson table\]
+
+**What to look at.** A separate window for the sales picture, scoped by the same selector: SO value against the pro-rated target, bills and cancellations, average ticket, conversion, walk-in to attended, average discount, margin, paid share, this week against last, upsell and cross-sell. Below the tiles: SO value by day with a 7-day average and by weekday, the walk-in to paid funnel, the payment pipeline, SO value by branch against pace, the product mix, the policy category mix, the discount bands, and a salesperson table with CSV export. Every role except employees can open it; Branch and Sales Managers see their own branch.
+
+### ⇆ Top bar or side bar
+
+&#91;image: The same menu docked as a side bar, with the scope selectors above the view buttons\]
+
+**What to look at.** The last button on the selector bar flips the whole menu between the top bar and a docked left side bar. The choice is remembered in the browser, and on a phone the side bar folds back to the top.
+
 > 🔍 **Lens tip.** The movement arrows (▲ ▼) on every leaderboard compare with the rank seven days earlier on the board and with yesterday in the daily messages. A branch that is first but falling is a different conversation from a branch that is fourth but climbing.
 
 ## 🔐 3. Roles and sign-in

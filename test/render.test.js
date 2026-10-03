@@ -13,7 +13,7 @@ const __snap=()=>nodes['#view'].innerHTML;let __errs=0,__n=0;
 const __chk=(label)=>{__n++;try{render();const m=__snap().match(/.{40}(NaN|undefined).{20}/);if(m){__errs++;console.log('NaN/undefined',label,m[0])}}catch(e){__errs++;console.log('ERR',label,e.stack.split('\\n').slice(0,3).join(' | '))}};
 nodes['#selUser']=Object.assign(nodes['#selUser']||{},{value:'',onchange:null});
 for(const u of allUsers().slice(0,12)){setUser(u.email);for(const day of [1,18,31]){asOf=day;
-  for(const st of [{level:'group'},{level:'total'},{level:'company',co:'mg'},{level:'branch',co:'mg',br:'klm'},{level:'leaderboard'},{level:'messages'},{level:'settings'},{level:'admin'}]){Object.assign(state,{co:null,br:null,team:null,person:null},st);__chk(u.role+' '+day+' '+st.level)}
+  for(const st of [{level:'group'},{level:'total'},{level:'company',co:'mg'},{level:'branch',co:'mg',br:'klm'},{level:'sales'},{level:'sales',co:'mg',br:'klm'},{level:'leaderboard'},{level:'messages'},{level:'settings'},{level:'admin'}]){Object.assign(state,{co:null,br:null,team:null,person:null},st);__chk(u.role+' '+day+' '+st.level)}
   for(const t of ['Sales','CRE','Logistics','Back office','Management']){Object.assign(state,{level:'team',co:'mg',br:'klm',team:t,person:null});__chk(u.role+' '+day+' team '+t)}
   for(const p of branches[0].people){Object.assign(state,{level:'person',co:'mg',br:'klm',team:p.role,person:p.id});__chk(u.role+' '+day+' person '+p.role)}}}
 setUser('tech@bpropms.com');

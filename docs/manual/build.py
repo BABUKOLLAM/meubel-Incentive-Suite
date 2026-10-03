@@ -11,6 +11,7 @@ MD = open(os.path.join(HERE, 'manual.md'), encoding='utf-8').read()
 
 # ---------- image mapping: placeholder alt text -> file ----------
 IMG = [
+    ('Sales analytics', '33-sales-top.png'), ('docked as a side bar', '34-sales-sidenav.png'),
     ('The header', '18-header.png'), ('Group lens', '01-group.png'), ('Company lens', '02-company.png'),
     ('Branch lens', '03-branch.png'), ('Team lens, Sales', '04-team-sales.png'), ('Team lens, CRE', '21-team-cre.png'),
     ('Individual lens', '05-person-sales.png'), ('Total view', '17-total.png'), ("A Branch Manager's view", '19-bm-view.png'),

@@ -203,6 +203,24 @@ textarea.json{width:100%;min-height:110px;background:var(--bg);border:1px solid 
 .check input{width:18px;height:18px;accent-color:var(--good)}
 .check b{display:block}.check small{color:var(--muted)}
 .mask{font:12px ui-monospace,Menlo,Consolas,monospace;color:var(--muted)}
+/* Chart series (validated categorical set: blue, orange, aqua, yellow) and the single sequential hue */
+:root{--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#eda100;--seq:#0E7C86;--seq-soft:#9FD3D8}
+:root[data-theme="dark"],:root:not([data-theme="light"]){--s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--seq:#3FB4BF;--seq-soft:#1F5F66}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#eda100;--seq:#0E7C86;--seq-soft:#9FD3D8}}
+.legend2{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--muted);margin-top:8px}.legend2 i{width:10px;height:10px;border-radius:3px;display:inline-block;margin-right:5px;vertical-align:-1px}
+.kpi .v small{font-size:13px;color:var(--muted);font-weight:500;margin-left:6px}
+.delta{font-size:12px;font-weight:600}.delta.up{color:var(--good)}.delta.dn{color:var(--bad)}
+.toolbar .navflip{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 12px;cursor:pointer;color:var(--muted);font-weight:600;font-size:12px;margin-left:6px}
+/* Side-bar navigation: the same toolbar, docked to the left */
+body.sidenav .wrap{display:grid;grid-template-columns:232px minmax(0,1fr);gap:0 18px;max-width:1440px;align-items:start}
+body.sidenav header.top{grid-column:1/-1}
+body.sidenav #toolbar{grid-column:1;grid-row:2/span 6;flex-direction:column;align-items:stretch;position:sticky;top:12px;margin-bottom:0}
+body.sidenav #toolbar label{width:100%}body.sidenav #toolbar select{width:100%}
+body.sidenav #toolbar .views{margin-left:0;flex-direction:column;align-items:stretch;width:100%;border-top:1px solid var(--line);padding-top:8px}
+body.sidenav #toolbar .views button{text-align:left;border-radius:10px;padding:8px 12px}
+body.sidenav #toolbar .navflip{margin:8px 0 0;align-self:flex-start}
+body.sidenav #crumbs,body.sidenav #view,body.sidenav #colorkey,body.sidenav details.card,body.sidenav .foot{grid-column:2}
+@media (max-width:860px){body.sidenav .wrap{display:block}body.sidenav #toolbar{position:static}}
 /* Block colour system: every card belongs to a family, shown on its top edge, its heading and its heading dot */
 .card{border-top:3px solid var(--fam,var(--line))}
 .card>h2{color:var(--fam-ink,var(--brown));background:var(--fam-bg,var(--card2))}
@@ -1083,14 +1101,14 @@ function wireWa(){
 
 /* ---------- users, roles, permissions (sample sign-in: no passwords here; production uses the company SSO) ---------- */
 const ROLES={
- superadmin:{name:'Super Admin',cls:'sa',views:['board','total','leaderboard','messages','settings','admin'],settings:'edit',users:true,reset:true,upload:true,scope:'group'},
- admin:{name:'Admin',cls:'ad',views:['board','total','leaderboard','messages','settings','admin'],settings:'edit',users:false,reset:false,upload:true,scope:'group'},
- consultant:{name:'Consultant',cls:'ad',views:['board','total','leaderboard','messages','settings','admin'],settings:'read',users:false,reset:false,upload:false,scope:'group'},
- md:{name:'Managing Director',cls:'cl',views:['board','leaderboard','messages'],settings:'none',users:false,reset:false,upload:false,scope:'group'},
- director:{name:'Director',cls:'cl',views:['board','leaderboard','messages'],settings:'none',users:false,reset:false,upload:false,scope:'group'},
- hr:{name:'HR',cls:'cl',views:['board','leaderboard','messages'],settings:'none',users:false,reset:false,upload:false,scope:'group'},
- bm:{name:'Branch Manager',cls:'cl',views:['board','leaderboard','messages'],settings:'none',users:false,reset:false,upload:false,scope:'branch'},
- sm:{name:'Sales Manager',cls:'cl',views:['board','leaderboard','messages'],settings:'none',users:false,reset:false,upload:false,scope:'team'},
+ superadmin:{name:'Super Admin',cls:'sa',views:['board','sales','total','leaderboard','messages','settings','admin'],settings:'edit',users:true,reset:true,upload:true,scope:'group'},
+ admin:{name:'Admin',cls:'ad',views:['board','sales','total','leaderboard','messages','settings','admin'],settings:'edit',users:false,reset:false,upload:true,scope:'group'},
+ consultant:{name:'Consultant',cls:'ad',views:['board','sales','total','leaderboard','messages','settings','admin'],settings:'read',users:false,reset:false,upload:false,scope:'group'},
+ md:{name:'Managing Director',cls:'cl',views:['board','sales','leaderboard','messages'],settings:'none',users:false,reset:false,upload:false,scope:'group'},
+ director:{name:'Director',cls:'cl',views:['board','sales','leaderboard','messages'],settings:'none',users:false,reset:false,upload:false,scope:'group'},
+ hr:{name:'HR',cls:'cl',views:['board','sales','leaderboard','messages'],settings:'none',users:false,reset:false,upload:false,scope:'group'},
+ bm:{name:'Branch Manager',cls:'cl',views:['board','sales','leaderboard','messages'],settings:'none',users:false,reset:false,upload:false,scope:'branch'},
+ sm:{name:'Sales Manager',cls:'cl',views:['board','sales','leaderboard','messages'],settings:'none',users:false,reset:false,upload:false,scope:'team'},
  employee:{name:'Employee',cls:'cl',views:['board'],settings:'none',users:false,reset:false,upload:false,scope:'person'},
 };
 const USERS=[
@@ -1120,7 +1138,7 @@ function homeState(){const r=role();if(r.scope==='group')return {level:'group'};
   if(r.scope==='branch')return {level:'branch',co:br.company.id,br:br.id};
   if(r.scope==='team')return {level:'team',co:br.company.id,br:br.id,team:'Sales'};
   return {level:'person',co:br.company.id,br:br.id,team:people.find(p=>p.id===ME.person)?.role||'Sales',person:ME.person}}
-const LEVELS=['group','company','branch','team','person','leaderboard','messages','settings','total','admin'],TEAMS=['Sales','CRE','Logistics','Back office','Management'];
+const LEVELS=['group','company','branch','team','person','sales','leaderboard','messages','settings','total','admin'],TEAMS=['Sales','CRE','Logistics','Back office','Management'];
 function sane(st){ // drop whatever a stale saved state or an edited address carries that no longer exists, then fall to the deepest level that still has its ids
   if(st.level==='email')st.level='messages';
   if(!LEVELS.includes(st.level))st.level='group';
@@ -1140,11 +1158,11 @@ function sane(st){ // drop whatever a stale saved state or an edited address car
 function enforce(st){ // clamp a requested state to what the signed-in role may see
   sane(st);
   const r=role();
-  if(!can(st.level==='email'?'messages':['leaderboard','messages','settings','total','admin'].includes(st.level)?st.level:'board')){Object.assign(st,homeState());return st}
+  if(!can(st.level==='email'?'messages':['sales','leaderboard','messages','settings','total','admin'].includes(st.level)?st.level:'board')){Object.assign(st,homeState());return st}
   if(r.scope==='group')return st;
   const br=branches.find(b=>b.id===ME.br);if(!br){Object.assign(st,{level:'group'});return st}
-  if(st.br!==br.id&&!['leaderboard','messages'].includes(st.level)){Object.assign(st,homeState());return st}
-  if(['leaderboard','messages'].includes(st.level)){st.co=br.company.id;st.br=br.id}
+  if(st.br!==br.id&&!['sales','leaderboard','messages'].includes(st.level)){Object.assign(st,homeState());return st}
+  if(['sales','leaderboard','messages'].includes(st.level)){st.co=br.company.id;st.br=br.id}
   if(r.scope==='team'&&st.team&&st.team!=='Sales'&&st.level!=='messages'){Object.assign(st,homeState());return st}
   if(r.scope==='team'&&st.level==='branch'){Object.assign(st,homeState())}
   if(r.scope==='person'&&(st.level!=='person'||st.person!==ME.person)){Object.assign(st,homeState())}
@@ -1441,6 +1459,98 @@ function viewPerson(){
   if(p.role==='Sales')wireTrend(cumSO(m.bills),m.target,{mean:m.soProj});
   wireWa();
   const sb=$('#stmtBtn');if(sb)sb.addEventListener('click',()=>printStatements([{m,b}]));
+}
+/* ---------- Sales analytics dashboard ---------- */
+const WD=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+function colChart(vals,opts){ // vals: [{l,v,t?}] one series, optional moving average line (opts.ma = window) and a highlighted index
+  const W=600,H=190,L=54,R=12,T=14,B=28,n=vals.length,max=Math.max(1,...vals.map(x=>x.v))*1.08;
+  const x=i=>L+(W-L-R)*(i+.5)/n,bw=Math.max(2,(W-L-R)/n-3),y=v=>T+(H-T-B)*(1-v/max);
+  const fmtY=opts.fmt||inrL;
+  const grid=[0,.25,.5,.75,1].map(f=>`<line x1="${L}" x2="${W-R}" y1="${y(max*f)}" y2="${y(max*f)}" stroke="var(--line)"/><text x="${L-6}" y="${y(max*f)+4}" text-anchor="end">${fmtY(max*f)}</text>`).join('');
+  const bars=vals.map((d,i)=>`<rect x="${x(i)-bw/2}" y="${y(d.v)}" width="${bw}" height="${Math.max(0,y(0)-y(d.v))}" rx="3" fill="${d.hi?'var(--s2)':'var(--seq)'}" opacity="${d.future?.35:1}"><title>${d.t||d.l}: ${fmtY(d.v)}</title></rect>`).join('');
+  const labels=vals.map((d,i)=>(n<=12||i%Math.ceil(n/12)===0)?`<text x="${x(i)}" y="${H-B+14}" text-anchor="middle">${d.l}</text>`:'').join('');
+  let ma='';if(opts.ma){const w=opts.ma,past=vals.filter(d=>!d.future),pts=past.map((d,i)=>{const s=past.slice(Math.max(0,i-w+1),i+1);return [x(i),y(s.reduce((a,b)=>a+b.v,0)/s.length)]});ma=`<polyline fill="none" stroke="var(--brown)" stroke-width="2" stroke-linejoin="round" points="${pts.map(p=>p.join(',')).join(' ')}"/>`}
+  return `<div class="chart"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${opts.label||''}">${grid}${bars}${ma}${labels}</svg></div>${opts.ma?`<div class="legend2"><span><i style="background:var(--seq)"></i>${opts.series||'Daily'}</span><span><i style="background:var(--brown);height:3px;vertical-align:3px"></i>${opts.ma}-day average</span>${opts.extra||''}</div>`:''}`;
+}
+function hbars(items,opts){ // items: [{l,v,c?,note?}] horizontal bars, one hue unless c is given; value labels direct
+  const W=600,rowH=26,L=opts.L||150,R=90,top=8,H=top+items.length*rowH+6,max=Math.max(1,...items.map(i=>i.v)),x=v=>L+(W-L-R)*v/max,f=opts.fmt||inrL;
+  return `<div class="chart"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${opts.label||''}">${items.map((it,i)=>{const y=top+i*rowH;return `<text x="${L-8}" y="${y+rowH/2+4}" text-anchor="end" style="fill:var(--text)">${esc(it.l)}</text><rect x="${L}" y="${y+5}" width="${Math.max(0,x(it.v)-L)}" height="${rowH-10}" rx="3" fill="${it.c||'var(--seq)'}"><title>${esc(it.l)}: ${f(it.v)}${it.note?' · '+esc(it.note):''}</title></rect><text x="${x(it.v)+6}" y="${y+rowH/2+4}" style="fill:var(--text);font-weight:600">${f(it.v)}${it.note?`<tspan style="fill:var(--muted);font-weight:400"> ${esc(it.note)}</tspan>`:''}</text>`}).join('')}</svg></div>`;
+}
+function stackBar(parts,opts){ // parts: [{l,v,c}] one 100% bar with a legend; the share of each part is labelled when it has room
+  const total=parts.reduce((s,p)=>s+p.v,0)||1,W=600,H=34;let xx=0;
+  const segs=parts.map(p=>{const w=W*p.v/total;const s=`<rect x="${xx}" y="4" width="${Math.max(0,w-2)}" height="26" rx="3" fill="${p.c}"><title>${esc(p.l)}: ${(opts.fmt||inrL)(p.v)} · ${pct(p.v/total*100)}</title></rect>${w>48?`<text x="${xx+w/2}" y="22" text-anchor="middle" style="fill:#fff;font-weight:600">${pct(p.v/total*100)}</text>`:''}`;xx+=w;return s}).join('');
+  return `<div class="chart"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${opts.label||''}">${segs}</svg></div><div class="legend2">${parts.map(p=>`<span><i style="background:${p.c}"></i>${esc(p.l)} · ${(opts.fmt||inrL)(p.v)}</span>`).join('')}</div>`;
+}
+function salesScope(){ // the bills, people and branches the current selector covers
+  const brs=branches.filter(b=>(!state.co||b.company.id===state.co)&&(!state.br||b.id===state.br));
+  const sellers=brs.flatMap(b=>b.people.filter(p=>p.role==='Sales'));
+  const bills=sellers.flatMap(p=>upTo(p.bills).map(bb=>({...billCalc(bb),seller:p,branch:p.branch})));
+  const name=state.br?brs[0].name:state.co?GROUP.companies.find(c=>c.id===state.co).name:'the group';
+  return {brs,sellers,bills,name};
+}
+function viewSales(){
+  const {brs,sellers,bills,name}=salesScope();
+  $('#h1').textContent=`Meubel sales analytics · ${name}`;
+  const live=bills.filter(b=>b.status!=='cancelled'),canc=bills.filter(b=>b.status==='cancelled');
+  const so=live.reduce((s,b)=>s+b.bill,0),list=live.reduce((s,b)=>s+b.list,0);
+  const cust=sellers.reduce((s,p)=>s+p.cust.slice(0,asOf).reduce((a,b)=>a+b,0),0),walk=brs.reduce((s,b)=>s+b.walkIns.slice(0,asOf).reduce((a,x)=>a+x,0),0);
+  const paid=live.filter(b=>b.status==='paid'),delivered=live.filter(b=>b.status==='delivered'),booked=live.filter(b=>b.status==='booked');
+  const sum=(arr,k)=>arr.reduce((s,b)=>s+(k?b[k]:b.bill),0);
+  const avgDisc=live.length?live.reduce((s,b)=>s+b.disc,0)/live.length:0,margin=so?live.reduce((s,b)=>s+b.margin*b.bill,0)/so:0;
+  const target=brs.reduce((s,b)=>s+b.target,0),tgtPro=target*asOf/DAYS;
+  // windows: this week vs last week (7-day blocks ending today)
+  const inWin=(b,a,z)=>b.day>=a&&b.day<=z,w1=[Math.max(1,asOf-6),asOf],w0=[Math.max(1,asOf-13),Math.max(0,asOf-7)];
+  const soW1=sum(live.filter(b=>inWin(b,...w1))),soW0=sum(live.filter(b=>inWin(b,...w0))),nW1=live.filter(b=>inWin(b,...w1)).length,nW0=live.filter(b=>inWin(b,...w0)).length;
+  const delta=(a,b,f)=>b?`<span class="delta ${a>=b?'up':'dn'}">${a>=b?'▲':'▼'} ${pct(Math.abs(a-b)/b*100)} vs last week</span>`:'';
+  // daily series
+  const byDay=Array.from({length:DAYS},(_,i)=>({l:String(i+1),t:'Oct '+(i+1),v:sum(live.filter(b=>b.day===i+1)),future:i+1>asOf,hi:i+1===asOf}));
+  const wd=WD.map((l,i)=>{const days=Array.from({length:asOf},(_,d)=>d+1).filter(d=>new Date(2026,9,d).getDay()===i);return {l,v:days.length?days.reduce((s,d)=>s+sum(live.filter(b=>b.day===d)),0)/days.length:0,t:l+' average'}});
+  // mixes
+  const byItem=Object.entries(live.reduce((m,b)=>{m[b.item]=(m[b.item]||0)+b.bill;return m},{})).sort((a,b)=>b[1]-a[1]);
+  const topItems=byItem.slice(0,8).map(([l,v])=>({l,v,note:pct(v/so*100)}));
+  const byBranch=brs.map(br=>({l:br.name,v:sum(live.filter(b=>b.branch===br)),c:br.company.color,note:(()=>{const t=br.target*asOf/DAYS;return t?pct(sum(live.filter(b=>b.branch===br))/t*100)+' of pace':''})()})).sort((a,b)=>b.v-a.v);
+  const cats=['A','B','C'].map((k,i)=>({l:'Category '+k+(k==='C'?' (offer / under ₹25,000)':k==='A'?' (₹60,000 and above)':' (₹25,000 to ₹60,000)'),v:sum(live.filter(b=>b.cat===k)),c:['var(--s1)','var(--s3)','var(--s4)'][i]}));
+  const bands=[['Up to 12%',b=>b.disc<=12],['12 to 20%',b=>b.disc>12&&b.disc<=20],['20 to 30%',b=>b.disc>20&&b.disc<=30],['Above 30%',b=>b.disc>30]].map(([l,f])=>({l,v:live.filter(f).length,note:inrL(sum(live.filter(f)))}));
+  const pipeline=[{l:'Paid',v:sum(paid),c:'var(--s3)'},{l:'Delivered, payment due',v:sum(delivered),c:'var(--s1)'},{l:'Booked, to deliver',v:sum(booked),c:'var(--s4)'},{l:'Cancelled',v:sum(canc),c:'var(--s2)'}];
+  const funnel=[{l:'Walk-ins',v:walk},{l:'Customers attended',v:cust},{l:'Bills',v:live.length},{l:'Delivered',v:delivered.length+paid.length},{l:'Paid',v:paid.length}].map((s,i,a)=>({...s,note:i?pct(a[i-1].v?s.v/a[i-1].v*100:0)+' of previous':''}));
+  // sellers table
+  const rows=sellers.map(p=>{const mine=live.filter(b=>b.seller===p),soP=sum(mine),cu=p.cust.slice(0,asOf).reduce((a,b)=>a+b,0);return {p,so:soP,n:mine.length,avg:mine.length?soP/mine.length:0,conv:cu?mine.length/cu*100:0,disc:mine.length?mine.reduce((s,b)=>s+b.disc,0)/mine.length:0,margin:soP?mine.reduce((s,b)=>s+b.margin*b.bill,0)/soP:0,up:rate(mine,b=>b.upsell),cross:rate(mine,b=>b.cross),canc:canc.filter(b=>b.seller===p).length,ach:p.target?soP/(p.target*asOf/DAYS)*100:0}}).sort((a,b)=>b.so-a.so);
+  const upRate=rate(live,b=>b.upsell),crossRate=rate(live,b=>b.cross);
+  $('#view').innerHTML=`
+  <div class="tiles">
+    ${tile('SO value booked',inrL(so),`${pct(tgtPro?so/tgtPro*100:0)} of pro-rated target · ${inrL(target)} for the month`,'hero')}
+    ${tile('Bills',live.length,`${canc.length} cancelled · ${pct(bills.length?canc.length/bills.length*100:0)} cancellation`,'',canc.length/Math.max(1,bills.length)>.08?'warn':'good')}
+    ${tile('Average ticket',inrL(live.length?so/live.length:0),`list ${inrL(live.length?list/live.length:0)} before discount`,'','info')}
+    ${tile('Conversion',pct(cust?live.length/cust*100:0),`${live.length} bills from ${cust} customers attended`,'',cust&&live.length/cust>=.3?'good':'warn')}
+    ${tile('Walk-in to attended',pct(walk?cust/walk*100:0),`${walk} walk-ins · ${cust} attended`,'','info')}
+    ${tile('Average discount',pct(avgDisc),`policy full band up to ${BANDS[0].max}%`,'',avgDisc<=BANDS[0].max?'good':avgDisc<=BANDS[1].max?'warn':'bad')}
+    ${tile('Margin',pct(margin),'value-weighted on bills','',margin>=30?'good':'warn')}
+    ${tile('Paid share',pct(so?sum(paid)/so*100:0),`${inrL(sum(delivered))} delivered awaiting payment`,'',sum(paid)/Math.max(1,so)>=.5?'good':'warn')}
+    ${tile('This week',inrL(soW1),`${nW1} bills · ${delta(soW1,soW0)}`,'',soW1>=soW0?'good':'bad')}
+    ${tile('Upsell · cross-sell',`${pct(upRate)} · ${pct(crossRate)}`,'bills with an upgrade · with an add-on','',upRate>=20&&crossRate>=25?'good':'warn')}
+  </div>
+  <div class="grid">
+    <div class="card"><h2>SO value by day <small>net of discount · today highlighted · 7-day average</small></h2><div class="body">${colChart(byDay,{ma:7,label:'SO value by day of October',series:'Daily SO value'})}</div></div>
+    <div class="card"><h2>SO value by weekday <small>average per day so far · staffing and activity planning</small></h2><div class="body">${colChart(wd,{label:'Average SO value by weekday'})}</div></div>
+  </div>
+  <div class="grid">
+    <div class="card"><h2>Funnel <small>walk-ins to paid · month to date</small></h2><div class="body">${hbars(funnel,{fmt:v=>String(Math.round(v)),label:'Sales funnel',L:140})}</div></div>
+    <div class="card"><h2>Payment pipeline <small>where the booked value stands</small></h2><div class="body">${stackBar(pipeline,{label:'Payment pipeline'})}<p class="note">Per-bill incentive is paid only on the green segment; the yellow segment carries delivery risk and the orange is lost to cancellations.</p></div></div>
+  </div>
+  <div class="grid">
+    <div class="card"><h2>SO value by branch <small>against each branch's pro-rated target</small></h2><div class="body">${hbars(byBranch,{label:'SO value by branch',L:110})}<div class="legend2">${GROUP.companies.filter(c=>!state.co||c.id===state.co).map(c=>`<span><i style="background:${c.color}"></i>${c.name}</span>`).join('')}</div></div></div>
+    <div class="card"><h2>Product mix <small>top 8 items by SO value · share of total</small></h2><div class="body">${hbars(topItems,{label:'Product mix',L:120})}</div></div>
+  </div>
+  <div class="grid">
+    <div class="card"><h2>Category mix <small>policy categories by value</small></h2><div class="body">${stackBar(cats,{label:'Category mix'})}</div></div>
+    <div class="card"><h2>Discount bands <small>bills per band · value in each</small></h2><div class="body">${hbars(bands,{fmt:v=>String(v)+' bills',label:'Discount bands',L:90})}<p class="note">Above 30% nothing is paid under the policy; the 60% and 40% bands forfeit part of the incentive.</p></div></div>
+  </div>
+  <div class="card"><h2>Salespeople <small>${sellers.length} in ${name} · sorted by SO value</small></h2><div class="body"><div class="tw"><table><thead><tr><th>#</th><th>Person</th><th>Branch</th><th class="r">SO value</th><th class="r">Pace</th><th class="r">Bills</th><th class="r">Avg ticket</th><th class="r">Conversion</th><th class="r">Avg discount</th><th class="r">Margin</th><th class="r">Upsell</th><th class="r">Cross-sell</th><th class="r">Cancelled</th></tr></thead><tbody>
+    ${rows.map((r,i)=>`<tr class="link" data-co="${r.p.branch.company.id}" data-br="${r.p.branch.id}" data-team="Sales" data-person="${r.p.id}"><td><span class="rank r${i+1}">${i+1}</span></td><td><span class="who-cell">${av(r.p.name)}<b>${r.p.name}</b></span></td><td><span class="dot" style="background:${r.p.branch.company.color}"></span> ${r.p.branch.name}</td><td class="r"><b>${inrL(r.so)}</b></td><td class="r">${achPill(r.ach)}</td><td class="r">${r.n}</td><td class="r">${inrL(r.avg)}</td><td class="r">${pct(r.conv)}</td><td class="r">${pct(r.disc)}</td><td class="r">${pct(r.margin)}</td><td class="r">${pct(r.up)}</td><td class="r">${pct(r.cross)}</td><td class="r">${r.canc||'—'}</td></tr>`).join('')}
+  </tbody></table></div><div class="wa-bar"><button class="btn" id="salesCsv">⬇ Export this table (CSV)</button><span class="note" style="margin:0">Open a row for the person's own page. Figures are month to date as of ${asOf} October; the board's incentive views use the same bills.</span></div></div></div>`;
+  wireRows();
+  $('#view').querySelectorAll('tr.link').forEach(tr=>tr.addEventListener('click',()=>{const d=tr.dataset;go({level:'person',co:d.co,br:d.br,team:d.team,person:d.person})}));
+  const sc=$('#salesCsv');if(sc)sc.addEventListener('click',()=>{const t=$('#view').querySelector('.tw table');if(t)downloadText(`sales-analytics-${name.replace(/\s/g,'-')}-asof-${asOf}-oct-2026.csv`,tableToCSV(t))});
 }
 function viewLeaderboard(){
   const g=computeGroup(), scopeName=state.br?branches.find(b=>b.id===state.br).name:state.co?GROUP.companies.find(c=>c.id===state.co).name:'the group';
@@ -2096,8 +2206,8 @@ function crumbs(){
   if(state.br){const br=branches.find(x=>x.id===state.br);c.push({l:br.name,s:{level:'branch',co:state.co,br:br.id}})}
   if(state.team)c.push({l:state.team,s:{level:'team',co:state.co,br:state.br,team:state.team}});
   if(state.person){const p=people.find(x=>x.id===state.person);c.push({l:p.name,s:{...state}})}
-  const special=['leaderboard','email','messages','settings','total','admin'].includes(state.level);
-  $('#crumbs').innerHTML=c.map((x,i)=>`${i?'<span class="sep">›</span>':''}<button class="${i===c.length-1&&!special?'on':''}" data-i="${i}">${x.l}</button>`).join('')+(special?`<span class="sep">›</span><button class="on">${{leaderboard:'🏆 Leaderboard',email:'📣 Messages',messages:'📣 Messages',settings:'⚙️ Settings',total:'🧭 Total view',admin:'🛠 Admin'}[state.level]}</button>`:'');
+  const special=['sales','leaderboard','email','messages','settings','total','admin'].includes(state.level);
+  $('#crumbs').innerHTML=c.map((x,i)=>`${i?'<span class="sep">›</span>':''}<button class="${i===c.length-1&&!special?'on':''}" data-i="${i}">${x.l}</button>`).join('')+(special?`<span class="sep">›</span><button class="on">${{sales:'📊 Sales analytics',leaderboard:'🏆 Leaderboard',email:'📣 Messages',messages:'📣 Messages',settings:'⚙️ Settings',total:'🧭 Total view',admin:'🛠 Admin'}[state.level]}</button>`:'');
   $('#crumbs').querySelectorAll('button[data-i]').forEach(b=>b.addEventListener('click',()=>go(c[+b.dataset.i].s)));
   toolbar();
 }
@@ -2105,7 +2215,7 @@ function toolbar(){
   const cos=GROUP.companies, brs=branches.filter(b=>!state.co||b.company.id===state.co), br=branches.find(b=>b.id===state.br);
   const teams=['Sales','CRE','Logistics','Back office','Management'];
   const ppl=br?br.people.filter(p=>!state.team||(state.team==='Management'?(p.role==='BM'||p.role==='SM'):p.role===state.team)):[];
-  const view=['leaderboard','messages','settings','total','admin'].includes(state.level)?state.level:state.level==='email'?'messages':'board';
+  const view=['sales','leaderboard','messages','settings','total','admin'].includes(state.level)?state.level:state.level==='email'?'messages':'board';
   const r=role(), grp=r.scope==='group', brLock=r.scope!=='group', teamLock=r.scope==='team'||r.scope==='person', personLock=r.scope==='person';
   const vb=(v,l)=>can(v)?`<button data-v="${v}" class="${view===v?'on':''}">${l}</button>`:'';
   $('#toolbar').innerHTML=`
@@ -2113,7 +2223,8 @@ function toolbar(){
     <label>Branch<select id="selBr" ${brLock?'disabled':''}><option value="">All branches</option>${brs.map(b=>`<option value="${b.id}" ${state.br===b.id?'selected':''}>${b.name}${state.co?'':' · '+b.company.name}</option>`).join('')}</select></label>
     <label>Team<select id="selTeam" ${br&&!teamLock?'':'disabled'}><option value="">Whole branch</option>${teams.map(t=>`<option value="${t}" ${state.team===t?'selected':''}>${t}</option>`).join('')}</select></label>
     <label>Person<select id="selPerson" ${br&&!personLock?'':'disabled'}><option value="">Everyone</option>${ppl.map(p=>`<option value="${p.id}" ${state.person===p.id?'selected':''}>${p.name} · ${p.role}</option>`).join('')}</select></label>
-    <span class="views">${vb('board','Board')}${vb('total','🧭 Total view')}${vb('leaderboard','🏆 Leaderboard')}${vb('messages','📣 Messages')}${vb('settings','⚙️ Settings')}${vb('admin','🛠 Admin')}</span>`;
+    <span class="views">${vb('board','Board')}${vb('sales','📊 Sales analytics')}${vb('total','🧭 Total view')}${vb('leaderboard','🏆 Leaderboard')}${vb('messages','📣 Messages')}${vb('settings','⚙️ Settings')}${vb('admin','🛠 Admin')}</span>
+    <button class="navflip" id="navFlip" title="Move the menu between the top bar and a side bar">${(document.body&&document.body.classList&&document.body.classList.contains('sidenav'))?'⇆ Top bar':'⇆ Side bar'}</button>`;
   $('#roleLbl').innerHTML=`<span class="role ${r.cls}">${r.name}</span>`;
   const us=allUsers();$('#selUser').innerHTML=us.map(u=>`<option value="${u.email}" ${u.email===ME.email?'selected':''}>${u.name} · ${u.email}</option>`).join('');
   $('#userNote').textContent=r.scope==='group'?`Sees the whole group${r.settings==='edit'?', edits settings':r.settings==='read'?', settings read-only':''}.`:r.scope==='branch'?'Sees own branch, its teams and people.':r.scope==='team'?'Sees own branch sales team and people.':'Sees own page and messages only.';
@@ -2128,7 +2239,10 @@ function toolbar(){
   $('#selTeam').addEventListener('change',()=>jump({team:$('#selTeam').value||null,person:null}));
   $('#selPerson').addEventListener('change',()=>jump({person:$('#selPerson').value||null}));
   $('#toolbar').querySelectorAll('.views button').forEach(b=>b.addEventListener('click',()=>jump({level:b.dataset.v})));
+  const nf=$('#navFlip');if(nf)nf.addEventListener('click',()=>setNav(document.body.classList.contains('sidenav')?'top':'side'));
 }
+function setNav(mode){try{localStorage.setItem('mr-nav',mode)}catch(_){}if(document.body&&document.body.classList)document.body.classList.toggle('sidenav',mode==='side');render()}
+function applyNav(){let m='top';try{m=localStorage.getItem('mr-nav')||'top'}catch(_){}if(document.body&&document.body.classList)document.body.classList.toggle('sidenav',m==='side')}
 function rules(){
   const w=(role)=>`<ul>${Object.entries(W[role]).map(([k,v])=>`<li>${P[k].l}: ${v}</li>`).join('')}</ul>`;
   $('#rules').innerHTML=`<div><h4>Branch (100 pts)</h4>${w('Branch')}</div><div><h4>Sales (100 pts)</h4>${w('Sales')}</div><div><h4>CRE (100 pts)</h4>${w('CRE')}</div><div><h4>Logistics (100 pts)</h4>${w('Logistics')}</div><div><h4>Back office (100 pts)</h4>${w('Back office')}</div>
@@ -2141,7 +2255,7 @@ const FAMILIES=[
  ['c-award',/leaderboard|leaders this month|badge/i,'Recognition: ranks and badges'],
  ['c-msg',/whatsapp|email|message/i,'Messages: WhatsApp and email'],
  ['c-history',/history|last months/i,'History: closed months'],
- ['c-chart',/vs target pace|achievement vs|vs pace/i,'Charts: pace and projection'],
+ ['c-chart',/vs target pace|achievement vs|vs pace|by day|funnel|product mix|pipeline|by weekday|discount bands|category mix|by branch/i,'Charts: pace, mix and pipeline'],
  ['c-policy',/policy|pools and gates|scorecard weights|attribute targets|prediction constants|per-bill/i,'Policy: rules and rates'],
  ['c-people',/attendance|users|walk-ins you logged|everyone in|teams/i,'People: teams, attendance, roles'],
  ['c-admin',/adjustments|audit log|data inputs|data sources|wirings|scheduled jobs|month close|save, export|settings/i,'Admin: data, jobs, close'],
@@ -2161,12 +2275,12 @@ function render(){
   crumbs();
   if(state.level==='email'){state.level='messages'}
   enforce(state);
-  ({group:viewGroup,company:viewCompany,branch:viewBranch,team:viewTeam,person:viewPerson,leaderboard:viewLeaderboard,messages:viewMessages,settings:viewSettings,total:viewTotal,admin:viewAdmin})[state.level]();
+  ({group:viewGroup,company:viewCompany,branch:viewBranch,team:viewTeam,person:viewPerson,sales:viewSales,leaderboard:viewLeaderboard,messages:viewMessages,settings:viewSettings,total:viewTotal,admin:viewAdmin})[state.level]();
   paintBlocks();
 }
 $('#asof').addEventListener('input',e=>{asOf=+e.target.value;render()});
 try{const s=JSON.parse(localStorage.getItem('mr-state')||'null');if(s&&s.level&&(!s.person||people.some(p=>p.id===s.person)))Object.assign(state,s);if(!state.lbTab)state.lbTab='Sales';if(!state.emailMode)state.emailMode='bm';if(!state.msg||!state.msg.aud)state.msg={aud:'Sales',cad:'weekly',ch:'whatsapp'};if(!state.adminTab)state.adminTab='policy'}catch(_){}
-if(state.tv)setTv(true);else{rules();render()}
+applyNav();if(state.tv)setTv(true);else{rules();render()}
 </script>
 </body>
 </html>

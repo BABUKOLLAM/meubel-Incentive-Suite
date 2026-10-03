@@ -105,6 +105,17 @@ reads). Six tabs:
 In this preview the console keeps its state in the browser so the flows can be tried end to end; in production it
 is the server-side admin app over the same tables.
 
+## Sales analytics window
+
+📊 Sales analytics is a separate window for the Meubel sales picture, scoped by the same selector (group, company
+or branch): SO value booked against the pro-rated target, bills and cancellations, average ticket, conversion,
+walk-in to attended, average discount, margin, paid share, this week against last, upsell and cross-sell; SO value
+by day with a 7-day average and by weekday; the walk-in to paid funnel; the payment pipeline (paid, delivered
+awaiting payment, booked, cancelled); SO value by branch against pace; the product mix; the policy category mix;
+the discount bands; and a salesperson table with CSV export. Every role except employees can open it; Branch and
+Sales Managers see their own branch. Charts use one hue for a single series, the validated four-hue set for
+stacked states, and the company colours for branch identity.
+
 ## Selector bar
 
 The bar at the top switches scope and view without drilling: Company, Branch, Team and Person dropdowns, and
