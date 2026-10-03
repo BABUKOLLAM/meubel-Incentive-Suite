@@ -162,6 +162,15 @@ holders of each:
 A 100% record needs at least five events before it counts. Badges change nothing in the payout; the rules live in
 `BADGES` and `badgesFor` beside the scorecard engine.
 
+## Block colours
+
+Every card belongs to a family, shown on its top edge, its heading tint and a heading dot: navy for position
+(targets, achievement, scorecards), teal for charts, green for pushes, red for lags, gold for recognition
+(leaderboards, badges), sea-green for messages, purple for history, blue for people, brown for policy and slate
+for admin. Tiles take their status colour down the left edge; push and lag entries likewise; score and audit
+cells are graded green, amber or red at 85 and 70. A colour key sits under every page. The mapping is
+`FAMILIES` beside `render()` and is applied after each render, so new cards only need a recognisable heading.
+
 ## Figures and formats
 
 Amounts are Indian rupees with Indian digit grouping (₹1,30,680); lakh and crore are written in words

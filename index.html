@@ -203,6 +203,47 @@ textarea.json{width:100%;min-height:110px;background:var(--bg);border:1px solid 
 .check input{width:18px;height:18px;accent-color:var(--good)}
 .check b{display:block}.check small{color:var(--muted)}
 .mask{font:12px ui-monospace,Menlo,Consolas,monospace;color:var(--muted)}
+/* Block colour system: every card belongs to a family, shown on its top edge, its heading and its heading dot */
+.card{border-top:3px solid var(--fam,var(--line))}
+.card>h2{color:var(--fam-ink,var(--brown));background:var(--fam-bg,var(--card2))}
+.card>h2::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--fam,var(--muted));flex:0 0 auto}
+.c-position{--fam:#1F3A5F;--fam-ink:#1F3A5F;--fam-bg:#E9EEF5}
+.c-chart{--fam:#0E7C86;--fam-ink:#0A5E66;--fam-bg:#E0F2F3}
+.c-push{--fam:#1E7D4B;--fam-ink:#176239;--fam-bg:#E6F4EC}
+.c-lag{--fam:#B42318;--fam-ink:#8E1C12;--fam-bg:#FCE8E6}
+.c-award{--fam:#B7791F;--fam-ink:#7A4F0E;--fam-bg:#FFF4DB}
+.c-msg{--fam:#128C7E;--fam-ink:#0D6B61;--fam-bg:#E3F5F1}
+.c-history{--fam:#5B46A8;--fam-ink:#473687;--fam-bg:#ECE8F8}
+.c-people{--fam:#2F5FA8;--fam-ink:#24497F;--fam-bg:#E8EFFA}
+.c-policy{--fam:#8A5A1C;--fam-ink:#6B4514;--fam-bg:#FBF0E0}
+.c-admin{--fam:#55657A;--fam-ink:#3F4C5C;--fam-bg:#EEF1F5}
+:root[data-theme="dark"] .c-position,:root:not([data-theme="light"]) .c-position{--fam:#8FB3E6;--fam-ink:#B9D0F2;--fam-bg:#1A2740}
+:root[data-theme="dark"] .c-chart,:root:not([data-theme="light"]) .c-chart{--fam:#3FB4BF;--fam-ink:#9ADDE3;--fam-bg:#123337}
+:root[data-theme="dark"] .c-push,:root:not([data-theme="light"]) .c-push{--fam:#6FCF97;--fam-ink:#A9E6C2;--fam-bg:#153426}
+:root[data-theme="dark"] .c-lag,:root:not([data-theme="light"]) .c-lag{--fam:#F08A80;--fam-ink:#F6B6AF;--fam-bg:#3E1E1C}
+:root[data-theme="dark"] .c-award,:root:not([data-theme="light"]) .c-award{--fam:#E8B85A;--fam-ink:#F1D394;--fam-bg:#3A2F12}
+:root[data-theme="dark"] .c-msg,:root:not([data-theme="light"]) .c-msg{--fam:#4ED3B9;--fam-ink:#9BE8D8;--fam-bg:#11352F}
+:root[data-theme="dark"] .c-history,:root:not([data-theme="light"]) .c-history{--fam:#B3A4EE;--fam-ink:#D1C8F5;--fam-bg:#251F44}
+:root[data-theme="dark"] .c-people,:root:not([data-theme="light"]) .c-people{--fam:#86B1F0;--fam-ink:#B5CFF6;--fam-bg:#16304A}
+:root[data-theme="dark"] .c-policy,:root:not([data-theme="light"]) .c-policy{--fam:#E0B07A;--fam-ink:#EDCDA6;--fam-bg:#3A2A14}
+:root[data-theme="dark"] .c-admin,:root:not([data-theme="light"]) .c-admin{--fam:#AAB6C6;--fam-ink:#CCD5E0;--fam-bg:#222D3B}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]) .c-position{--fam:#1F3A5F;--fam-ink:#1F3A5F;--fam-bg:#E9EEF5}:root:not([data-theme="dark"]) .c-chart{--fam:#0E7C86;--fam-ink:#0A5E66;--fam-bg:#E0F2F3}:root:not([data-theme="dark"]) .c-push{--fam:#1E7D4B;--fam-ink:#176239;--fam-bg:#E6F4EC}:root:not([data-theme="dark"]) .c-lag{--fam:#B42318;--fam-ink:#8E1C12;--fam-bg:#FCE8E6}:root:not([data-theme="dark"]) .c-award{--fam:#B7791F;--fam-ink:#7A4F0E;--fam-bg:#FFF4DB}:root:not([data-theme="dark"]) .c-msg{--fam:#128C7E;--fam-ink:#0D6B61;--fam-bg:#E3F5F1}:root:not([data-theme="dark"]) .c-history{--fam:#5B46A8;--fam-ink:#473687;--fam-bg:#ECE8F8}:root:not([data-theme="dark"]) .c-people{--fam:#2F5FA8;--fam-ink:#24497F;--fam-bg:#E8EFFA}:root:not([data-theme="dark"]) .c-policy{--fam:#8A5A1C;--fam-ink:#6B4514;--fam-bg:#FBF0E0}:root:not([data-theme="dark"]) .c-admin{--fam:#55657A;--fam-ink:#3F4C5C;--fam-bg:#EEF1F5}}
+/* Graded tiles: the status colour runs down the left edge and tints the tile */
+.tile.good{border-left:4px solid var(--good);background:linear-gradient(90deg,var(--good-bg),var(--card) 55%)}
+.tile.warn{border-left:4px solid var(--warn);background:linear-gradient(90deg,var(--warn-bg),var(--card) 55%)}
+.tile.bad{border-left:4px solid var(--bad);background:linear-gradient(90deg,var(--bad-bg),var(--card) 55%)}
+.tile.info{border-left:4px solid var(--info);background:linear-gradient(90deg,var(--info-bg),var(--card) 55%)}
+.tile.brass{border-left:4px solid var(--brass);background:linear-gradient(90deg,var(--brass-soft),var(--card) 55%)}
+.tile.good .v{color:var(--good)}.tile.bad .v{color:var(--bad)}.tile.warn .v{color:var(--warn)}.tile.info .v{color:var(--info)}.tile.brass .v{color:var(--brass-ink)}
+/* Graded list items: push and lag entries carry their status on the left edge */
+.list li.good{border-left:3px solid var(--good)}.list li.warn{border-left:3px solid var(--warn)}.list li.bad{border-left:3px solid var(--bad)}.list li.info{border-left:3px solid var(--info)}
+/* Score grading in tables */
+td.g-good{color:var(--good)}td.g-warn{color:var(--warn)}td.g-bad{color:var(--bad)}
+td.g-good b,td.g-warn b,td.g-bad b{padding:1px 7px;border-radius:999px}
+td.g-good b{background:var(--good-bg);color:var(--good)}td.g-warn b{background:var(--warn-bg);color:var(--warn)}td.g-bad b{background:var(--bad-bg);color:var(--bad)}
+/* Colour key under the view */
+.colorkey{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font-size:11.5px;color:var(--muted);margin:4px 0 14px}
+.colorkey span{display:inline-flex;align-items:center;gap:6px}.colorkey i{width:10px;height:10px;border-radius:3px;display:inline-block;background:var(--fam)}
 </style>
 </head>
 <body>
@@ -227,6 +268,7 @@ textarea.json{width:100%;min-height:110px;background:var(--bg);border:1px solid 
   <nav class="toolbar" id="toolbar"></nav>
   <nav class="crumbs" id="crumbs"></nav>
   <section id="view"></section>
+  <div class="colorkey" id="colorkey" aria-label="Block colour key"></div>
 
   <details class="card">
     <summary>Scoring rules used on this board (sample weights, for leadership to confirm)</summary>
@@ -2093,6 +2135,26 @@ function rules(){
   <div><h4>Pools and gates</h4><ul><li>Scorecard pay = pool × score ÷ 100 (score to 120 where achievement exceeds). Pools: Sales ${inr(POOL.Sales)}, CRE ${inr(POOL.CRE)}, Logistics ${inr(POOL.Logistics)}, Back office ${inr(POOL['Back office'])}.</li><li>CRE also earn the policy override: ${Math.round(POLICY.creOverride*100)}% of the sales incentive on walk-ins they logged, plus the follow-up discipline bonus of ${inr(POOL.creFollow)} (full at ${POLICY.follow[0].min}%, half at ${POLICY.follow[1].min}%).</li><li>Sales also earn the policy per-bill incentive: category rate × bill, scaled by discount band, paid on delivery and payment, clawed back on cancellation.</li><li>Attendance under ${GATES.attendance}% gates the scorecard pay to zero.</li><li>BM ${inr(POOL.BM)}, SM / BI ${inr(POOL.SM)}: pool × branch achievement × branch score, only above ${GATES.managerAch}%.</li><li>Team pool ${inr(POOL.team)} shared equally at ${GATES.teamAch}% achievement and audit ≥ ${GATES.teamAudit}.</li></ul></div>
   <div><h4>Attainment</h4><ul><li>Higher-is-better: value ÷ target, capped at 100% (achievement 120%).</li><li>Lower-is-better: full points at or under the limit, falling to zero at double the limit.</li><li>Count targets (customers, appreciations) are pro-rated to the day.</li><li>Predictions: pace so far × days in month; chance of target from a normal approximation that narrows as the month runs.</li></ul></div>`;
 }
+const FAMILIES=[
+ ['c-push',/further push|consultant actions/i,'Push: what to do next'],
+ ['c-lag',/what lags|risk flags/i,'Lags: what is costing points'],
+ ['c-award',/leaderboard|leaders this month|badge/i,'Recognition: ranks and badges'],
+ ['c-msg',/whatsapp|email|message/i,'Messages: WhatsApp and email'],
+ ['c-history',/history|last months/i,'History: closed months'],
+ ['c-chart',/vs target pace|achievement vs|vs pace/i,'Charts: pace and projection'],
+ ['c-policy',/policy|pools and gates|scorecard weights|attribute targets|prediction constants|per-bill/i,'Policy: rules and rates'],
+ ['c-people',/attendance|users|walk-ins you logged|everyone in|teams/i,'People: teams, attendance, roles'],
+ ['c-admin',/adjustments|audit log|data inputs|data sources|wirings|scheduled jobs|month close|save, export|settings/i,'Admin: data, jobs, close'],
+ ['c-position',/.*/,'Position: targets, achievement, scorecards'],
+];
+function paintBlocks(){ // colour family per card by its heading; grade score cells; the key under the view
+  if(typeof document.querySelectorAll!=='function')return;
+  document.querySelectorAll('#view .card').forEach(c=>{const hd=c.querySelector(':scope>h2');const t=hd?hd.textContent:'';FAMILIES.forEach(f=>c.classList.remove(f[0]));const f=FAMILIES.find(f=>f[1].test(t));if(f)c.classList.add(f[0])});
+  document.querySelectorAll('#view .tile').forEach(t=>{const d=t.querySelector('.k .dot');['good','warn','bad','info','brass'].forEach(k=>{if(d&&d.classList.contains(k)&&!t.classList.contains('hero'))t.classList.add(k)})});
+  document.querySelectorAll('#view table').forEach(tb=>{const ths=[...tb.querySelectorAll('thead th')];const idx=ths.map((th,i)=>/^(score|branch score|audit)$/i.test(th.textContent.trim())?i:-1).filter(i=>i>=0);if(!idx.length)return;
+    tb.querySelectorAll('tbody tr').forEach(tr=>idx.forEach(i=>{const td=tr.children[i];if(!td)return;const v=parseFloat(td.textContent);if(isNaN(v))return;td.classList.remove('g-good','g-warn','g-bad');td.classList.add(v>=85?'g-good':v>=70?'g-warn':'g-bad')}))});
+  const key=document.getElementById('colorkey');if(key){const used=new Set([...document.querySelectorAll('#view .card')].flatMap(c=>FAMILIES.filter(f=>c.classList.contains(f[0])).map(f=>f[0])));key.innerHTML=used.size?'<b style="color:var(--muted);font-weight:600;letter-spacing:.08em;text-transform:uppercase;font-size:10.5px">Block colours</b>'+FAMILIES.filter(f=>used.has(f[0])).map(f=>`<span class="${f[0]}"><i></i>${f[2]}</span>`).join(''):''}
+}
 function render(){
   _bc.clear();
   $('#asofLbl').textContent=`${asOf} October 2026`;
@@ -2100,6 +2162,7 @@ function render(){
   if(state.level==='email'){state.level='messages'}
   enforce(state);
   ({group:viewGroup,company:viewCompany,branch:viewBranch,team:viewTeam,person:viewPerson,leaderboard:viewLeaderboard,messages:viewMessages,settings:viewSettings,total:viewTotal,admin:viewAdmin})[state.level]();
+  paintBlocks();
 }
 $('#asof').addEventListener('input',e=>{asOf=+e.target.value;render()});
 try{const s=JSON.parse(localStorage.getItem('mr-state')||'null');if(s&&s.level&&(!s.person||people.some(p=>p.id===s.person)))Object.assign(state,s);if(!state.lbTab)state.lbTab='Sales';if(!state.emailMode)state.emailMode='bm';if(!state.msg||!state.msg.aud)state.msg={aud:'Sales',cad:'weekly',ch:'whatsapp'};if(!state.adminTab)state.adminTab='policy'}catch(_){}
