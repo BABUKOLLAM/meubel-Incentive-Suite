@@ -78,7 +78,7 @@ Settings and the Admin console sit above the engine: they change the rules, neve
 
 > 📌 **Sticky note.** Every lens has the same four panels in the same order: *position* (booked, expected, chance), *leaderboard*, *further push* and *what lags*. Learn one lens and you know them all.
 
-**The selector bar.** The strip under the title switches scope without drilling: Company, Branch, Team and Person dropdowns, then four view buttons (Board, 🏆 Leaderboard, 📣 Messages, ⚙️ Settings) and, for Bpro roles, 🧭 Total and 🛠 Admin. The breadcrumb trail below it steps back up one level at a time. The *as of* slider on the right replays the month day by day; in production it is pinned to today.
+**The selector bar.** The strip under the title switches scope without drilling: Company, Branch, Team and Person dropdowns, then four view buttons (Board, 🏆 Leaderboard, 📣 Messages, ⚙️ Settings) and, for Bpro roles, 🧭 Total and 🛠 Admin. The breadcrumb trail below it steps back up one level at a time. The *as of* slider on the right replays the month day by day; hosted, the board scores the live month and the slider starts at today.
 
 &#91;image: The header: signed-in switch, selector bar, as-of slider and theme toggle\]
 

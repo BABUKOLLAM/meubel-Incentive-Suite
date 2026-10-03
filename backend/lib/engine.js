@@ -12,7 +12,7 @@ function stubDom(store) {
   const nodes = {};
   const g = {
     document: { querySelector: s => nodes[s] || (nodes[s] = stub()), getElementById: id => nodes['#' + id] || (nodes['#' + id] = stub()), createElement: () => stub(), body: undefined, documentElement: undefined },
-    window: { scrollTo() {}, getSelection() { return { removeAllRanges() {}, addRange() {} }; } },
+    window: { BPRO_CONFIG: { month: process.env.BOARD_MONTH || null }, scrollTo() {}, getSelection() { return { removeAllRanges() {}, addRange() {} }; } },
     localStorage: { getItem: k => (k in store ? JSON.stringify(store[k]) : null), setItem(k, v) { try { store[k] = JSON.parse(v); } catch (_) { store[k] = v; } }, removeItem(k) { delete store[k]; } },
     navigator: { clipboard: { writeText: () => Promise.resolve() } },
   };
@@ -29,7 +29,7 @@ async function load(opts = {}) {
   const api = {};
   const body = js + `
     ;const __today=new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Kolkata'}));asOf=Math.min(DAYS,Math.max(1,${opts.asOf || '__today.getDate()'}));
-    return {SOURCES,applySource,computeGroup,computeBranch,rankings,buildMessage,branches,people,allUsers,AUDIENCES,CADS,CHANNELS,asOf:()=>asOf,setAsOf:d=>{asOf=d},DAYS,MONTH,inr,inrL,pct};`;
+    return {SOURCES,applySource,computeGroup,computeBranch,rankings,buildMessage,branches,people,allUsers,AUDIENCES,CADS,CHANNELS,asOf:()=>asOf,setAsOf:d=>{asOf=d},DAYS,MONTH,CAL,inr,inrL,pct};`;
   const fn = new Function(...keys, body);
   const engine = fn(...keys.map(k => g[k]));
   // feed the month's data

@@ -357,7 +357,15 @@ td.attr[data-tip]{text-decoration:underline dotted;text-decoration-color:var(--l
 /* =========================================================
    1. Attributes, weights, targets, pools
    ========================================================= */
-const DAYS=31, MONTH='October 2026';
+const CAL=(()=>{ // the month the board scores: the sample's October 2026, or the live month when hosted (BPRO_CONFIG.month 'YYYY-MM', else today in Asia/Kolkata)
+  const NAMES=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  let y=2026,m=9,today=18,sample=true;
+  try{const c=(typeof window!=='undefined'&&window.BPRO_CONFIG)||null;if(c){sample=false;const now=new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Kolkata'}));
+    if(c.month&&/^\d{4}-\d{2}$/.test(c.month)){y=+c.month.slice(0,4);m=+c.month.slice(5,7)-1;today=(now.getFullYear()===y&&now.getMonth()===m)?now.getDate():new Date(y,m+1,0).getDate()}else{y=now.getFullYear();m=now.getMonth();today=now.getDate()}}}catch(_){}
+  const days=new Date(y,m+1,0).getDate();const label=d=>{const dd=new Date(y,m+d,1);return NAMES[dd.getMonth()]+' '+dd.getFullYear()};
+  return {year:y,month:m,days,today:Math.min(today,days),sample,label:label(0),short:NAMES[m].slice(0,3),prev:[label(-3),label(-2),label(-1)],key:y+'-'+String(m+1).padStart(2,'0')};
+})();
+const DAYS=CAL.days, MONTH=CAL.label, MON=CAL.short;
 const P={ // unit: inr | pct | n | pp | r5 | x | score
  ach:{l:'Target vs achievement (SO value)',u:'pct',dir:'up',cap:1.2},
  conv:{l:'Conversion (bills ÷ customers attended)',u:'pct',dir:'up',t:30},
@@ -498,7 +506,7 @@ function genBack(p,r,tilt){
 /* =========================================================
    3. Computation for a given as-of day
    ========================================================= */
-let asOf=18;
+let asOf=CAL.today;
 const inr=n=>(n<0?'−':'')+'₹'+Math.round(Math.abs(n)).toLocaleString('en-IN');
 const inrL=n=>{const a=Math.abs(n),s=n<0?'−':'',f=(x,w)=>s+'₹'+(Math.round(x*100)/100).toFixed(2).replace(/\.?0+$/,'')+' '+w;return a>=1e7?f(a/1e7,'crore'):a>=1e5?f(a/1e5,'lakh'):inr(n)}; // Indian units in words; exact rupees below a lakh
 const pct=n=>(Math.round(n*10)/10)+'%';
@@ -689,7 +697,7 @@ function sampleHistory(){ // three earlier months derived from the current month
   if(_sampleHist)return _sampleHist;
   const r=rng(4242), noise=s=>1+(r()-.5)*2*s;
   const cur=withAsOf(DAYS,()=>snapshotMonth(MONTH));
-  _sampleHist=['July 2026','August 2026','September 2026'].map((label,i)=>{const drift=.9+i*.04;return {month:label,closedOn:'',by:'',sample:true,
+  _sampleHist=CAL.prev.map((label,i)=>{const drift=.9+i*.04;return {month:label,closedOn:'',by:'',sample:true,
     branches:cur.branches.map(b=>{const f=drift*noise(.09);const so=b.so*f;return {...b,so,ach:b.ach*f,score:Math.min(100,b.score*noise(.06)),gp:b.gp*noise(.04),payout:b.payout*f*noise(.08),midProj:so*noise(.18),teamPool:b.ach*f>=GATES.teamAch&&b.audit>=GATES.teamAudit}}),
     people:cur.people.map(p=>{const f=drift*noise(.12);return {...p,score:Math.min(100,p.score*noise(.07)),ach:p.ach*f,total:Math.max(0,p.total*f*noise(.1)),badges:p.badges.filter(()=>r()<.6),rank:null}})}});
   return _sampleHist;
@@ -754,7 +762,7 @@ if(typeof document.addEventListener==='function')document.addEventListener('keyd
 function waText(m,b,rk){
   const p=m.p, br=b.br, co=br.company, first=p.name.split(' ')[0], isMgmt=p.role==='BM'||p.role==='SM';
   const L=[];
-  L.push(`*${co.name} · ${br.name}* — incentive update, ${asOf} Oct`);
+  L.push(`*${co.name} · ${br.name}* — incentive update, ${asOf} ${MON}`);
   L.push(`Hi ${first} 👋`);
   L.push(`*Expected this month: ${inr(m.totalProj)}*${m.total?` (standing today ${inr(m.total)})`:''}`);
   if(p.role==='Sales'){L.push(`📈 Target: ${inrL(m.so)} of ${inrL(m.target)} · ${pct(m.vals.ach)} of pace · ${pct(m.pTarget*100)} chance`);
@@ -774,7 +782,7 @@ function waText(m,b,rk){
   if(isMgmt&&b.achProj<GATES.managerAch)pushes.push(`${inrL(b.target*GATES.managerAch/100-b.soProj)} more branch SO than today's pace opens your pool of ${inr(m.pool)}`);
   if(!b.teamPoolProj)pushes.push(`team pool ${inr(POOL.team/b.members.length)} each unlocks at ${GATES.teamAch}% branch achievement (now heading ${pct(b.achProj)})`);
   if(pushes.length)L.push(`🎯 Push: ${pushes.join('; ')}`);
-  L.push(`_Figures as of ${asOf} Oct, provisional until orders are delivered and paid. Disputes within 7 days of the month-end statement._`);
+  L.push(`_Figures as of ${asOf} ${MON}, provisional until orders are delivered and paid. Disputes within 7 days of the month-end statement._`);
   return L.join('\n');
 }
 /* ---------- daily WhatsApp for the Sales Manager ---------- */
@@ -802,7 +810,7 @@ function dailySM(b){
 }
 function waDailyText(d){
   const {br,sm,rows,todaySO,todayN,ySO,walkToday,attention,push,b}=d, co=br.company, L=[];
-  L.push(`*${co.name} · ${br.name} sales team* — daily update, ${asOf} Oct`);
+  L.push(`*${co.name} · ${br.name} sales team* — daily update, ${asOf} ${MON}`);
   L.push(`Hi ${sm?sm.p.name.split(' ')[0]:'Sales Manager'} 👋`);
   L.push(`📅 Today: *${inrL(todaySO)}* booked (${todayN} bill${todayN===1?'':'s'})${ySO!=null?` · yesterday ${inrL(Math.max(0,ySO))}`:''} · walk-ins ${walkToday}`);
   L.push(`📈 Month: ${inrL(b.so)} of ${inrL(b.target)} · ${pct(b.vals.ach)} of pace · heading ${pct(b.achProj)} (${pct(b.pTarget*100)} chance)`);
@@ -812,7 +820,7 @@ function waDailyText(d){
   if(attention.length)L.push(`⚠️ Attention: ${attention.join('; ')}`);
   if(push.length)L.push(`🎯 Tomorrow: ${push.join('; ')}`);
   if(sm)L.push(`💼 Your pool ${inr(sm.pool)}: ${b.achProj>=GATES.managerAch?`open, ${inr(sm.payProj)} expected`:`opens at ${GATES.managerAch}% branch achievement (heading ${pct(b.achProj)})`}`);
-  L.push(`_Month-to-date figures as of ${asOf} Oct, provisional until delivered and paid._`);
+  L.push(`_Month-to-date figures as of ${asOf} ${MON}, provisional until delivered and paid._`);
   return L.join('\n');
 }
 /* ---------- weekly WhatsApp for the logistics team ---------- */
@@ -841,7 +849,7 @@ function weeklyLogi(b){
 function waLogiText(d){
   const {br,b,rows,thisW,lastW,attention,push,from}=d, co=br.company, L=[];
   const dl=(k,now,prev,f)=>prev==null?f(now):`${f(now)} (last week ${f(prev)})`;
-  L.push(`*${co.name} · ${br.name} logistics team* — weekly update, ${from} to ${asOf} Oct`);
+  L.push(`*${co.name} · ${br.name} logistics team* — weekly update, ${from} to ${asOf} ${MON}`);
   L.push(`Hi team 👋`);
   L.push(`🚚 This week: *${thisW.n} deliveries* ${lastW?`(last week ${lastW.n})`:''}`);
   L.push(`⏱ On time ${dl('ontime',thisW.ontime,lastW?lastW.ontime:null,pct)} · target ${P.ontime.t}%`);
@@ -853,7 +861,7 @@ function waLogiText(d){
   if(attention.length)L.push(`⚠️ This week: ${attention.join('; ')}`);
   if(push.length)L.push(`🎯 Next week: ${push.join('; ')}`);
   L.push(`💼 Pool ${inr(POOL.Logistics)} each × score · team pool ${inr(POOL.team/b.members.length)} each ${b.teamPoolProj?'on course':`when ${br.name} reaches ${GATES.teamAch}% (heading ${pct(b.achProj)})`} · a damaged or late delivery can also cancel the sale for Sales and CRE`);
-  L.push(`_Figures as of ${asOf} Oct, provisional until the month closes._`);
+  L.push(`_Figures as of ${asOf} ${MON}, provisional until the month closes._`);
   return L.join('\n');
 }
 /* ---------- weekly WhatsApp for the sales team ---------- */
@@ -883,7 +891,7 @@ function weeklySales(b){
 function waSalesText(d){
   const {br,b,rows,thisW,lastW,attention,push,from}=d, co=br.company, L=[];
   const dl=(now,prev,f)=>prev==null?f(now):`${f(now)} (last week ${f(prev)})`;
-  L.push(`*${co.name} · ${br.name} sales team* — weekly update, ${from} to ${asOf} Oct`);
+  L.push(`*${co.name} · ${br.name} sales team* — weekly update, ${from} to ${asOf} ${MON}`);
   L.push(`Hi team 👋`);
   L.push(`💰 Booked this week: *${inrL(thisW.so)}* in ${thisW.n} bills${lastW?` (last week ${inrL(lastW.so)}, ${lastW.n})`:''}`);
   L.push(`🚶 Conversion ${dl(thisW.conv,lastW?lastW.conv:null,pct)} of ${thisW.cust} attended · target ${P.conv.t}%`);
@@ -896,7 +904,7 @@ function waSalesText(d){
   if(attention.length)L.push(`⚠️ This week: ${attention.join('; ')}`);
   if(push.length)L.push(`🎯 Next week: ${push.join('; ')}`);
   L.push(`💼 Per-bill incentive by the policy (A ${(rateOf('A')*100).toFixed(1)}%, B ${(rateOf('B')*100).toFixed(1)}%, scaled by discount band, paid on delivery and payment) + scorecard pool ${inr(POOL.Sales)} × score · team pool ${inr(POOL.team/b.members.length)} each ${b.teamPoolProj?'on course':`when ${br.name} reaches ${GATES.teamAch}% (heading ${pct(b.achProj)})`}`);
-  L.push(`_Figures as of ${asOf} Oct, provisional until delivered and paid._`);
+  L.push(`_Figures as of ${asOf} ${MON}, provisional until delivered and paid._`);
   return L.join('\n');
 }
 /* ---------- daily WhatsApp for the Branch Manager ---------- */
@@ -934,7 +942,7 @@ function dailyBM(b){
 }
 function waBmDailyText(d){
   const {br,co,b,bm,todaySO,todayBills,ySO,walk,cust,logged,fu,fuOk,del,delOk,dues,duesOk,collected,top,rankNow,rankPrev,coCount,attention,tomorrow}=d, L=[];
-  L.push(`*${co.name} · ${br.name}* — daily branch update, ${asOf} Oct`);
+  L.push(`*${co.name} · ${br.name}* — daily branch update, ${asOf} ${MON}`);
   L.push(`Hi ${bm?bm.p.name.split(' ')[0]:'Branch Manager'} 👋`);
   L.push(`📅 Today: *${inrL(todaySO)}* booked (${todayBills.length} bill${todayBills.length===1?'':'s'})${ySO!=null?` · yesterday ${inrL(Math.max(0,ySO))}`:''} · collected ${inrL(collected)}`);
   L.push(`📈 Month: ${inrL(b.so)} of ${inrL(b.target)} · ${pct(b.vals.ach)} of pace · heading ${pct(b.achProj)} (${pct(b.pTarget*100)} chance) · GP ${pct(b.vals.gp)}`);
@@ -947,7 +955,7 @@ function waBmDailyText(d){
   if(attention.length)L.push(`⚠️ Attention: ${attention.join('; ')}`);
   if(tomorrow.length)L.push(`🎯 Tomorrow: ${tomorrow.join('; ')}`);
   if(bm)L.push(`💼 Your pool ${inr(bm.pool)}: ${b.achProj>=GATES.managerAch?`open, ${inr(bm.payProj)} expected`:`opens at ${GATES.managerAch}% branch achievement (heading ${pct(b.achProj)})`} · team pool ${inr(POOL.team)} ${b.teamPoolProj?'on course':`at ${GATES.teamAch}% with audit ≥ ${GATES.teamAudit} (audit ${br.auditScore})`}`);
-  L.push(`_Figures as of close ${asOf} Oct, provisional until delivered and paid._`);
+  L.push(`_Figures as of close ${asOf} ${MON}, provisional until delivered and paid._`);
   return L.join('\n');
 }
 /* ---------- weekly WhatsApp for the CRE team ---------- */
@@ -979,7 +987,7 @@ function weeklyCRE(b){
 function waCreText(d){
   const {br,b,rows,thisW,lastW,attention,push,from}=d, co=br.company, L=[];
   const dl=(now,prev,f)=>prev==null?f(now):`${f(now)} (last week ${f(prev)})`;
-  L.push(`*${co.name} · ${br.name} CRE team* — weekly update, ${from} to ${asOf} Oct`);
+  L.push(`*${co.name} · ${br.name} CRE team* — weekly update, ${from} to ${asOf} ${MON}`);
   L.push(`Hi team 👋`);
   L.push(`🚶 Walk-ins logged: *${thisW.walk}* ${lastW?`(last week ${lastW.walk})`:''}`);
   L.push(`📞 Follow-ups: ${thisW.fu} due, ${dl(thisW.ok,lastW?lastW.ok:null,pct)} on time · full bonus at ${POLICY.follow[0].min}%, half at ${POLICY.follow[1].min}%`);
@@ -991,7 +999,7 @@ function waCreText(d){
   if(attention.length)L.push(`⚠️ This week: ${attention.join('; ')}`);
   if(push.length)L.push(`🎯 Next week: ${push.join('; ')}`);
   L.push(`💼 Pool ${inr(POOL.CRE)} each × score + ${Math.round(POLICY.creOverride*100)}% override on every bill from your walk-ins (paid by the company, not the salesperson) + follow-up bonus ${inr(POOL.creFollow)} · team pool ${inr(POOL.team/b.members.length)} each ${b.teamPoolProj?'on course':`when ${br.name} reaches ${GATES.teamAch}% (heading ${pct(b.achProj)})`}`);
-  L.push(`_Figures as of ${asOf} Oct, override provisional until the order is delivered and paid._`);
+  L.push(`_Figures as of ${asOf} ${MON}, override provisional until the order is delivered and paid._`);
   return L.join('\n');
 }
 /* ---------- weekly WhatsApp for the back office team ---------- */
@@ -1022,7 +1030,7 @@ function weeklyBack(b){
 function waBackText(d){
   const {br,b,rows,thisW,lastW,attention,push,from}=d, co=br.company, L=[];
   const dl=(now,prev,f)=>prev==null?f(now):`${f(now)} (last week ${f(prev)})`;
-  L.push(`*${co.name} · ${br.name} back office* — weekly update, ${from} to ${asOf} Oct`);
+  L.push(`*${co.name} · ${br.name} back office* — weekly update, ${from} to ${asOf} ${MON}`);
   L.push(`Hi team 👋`);
   L.push(`💰 Collections: *${thisW.dues} dues*, ${dl(thisW.coll,lastW?lastW.coll:null,pct)} on time · target ${P.coll.t}%`);
   L.push(`📄 Documents: ${thisW.docs} processed, ${dl(thisW.acc,lastW?lastW.acc:null,pct)} error-free · target ${P.docs.t}%`);
@@ -1034,7 +1042,7 @@ function waBackText(d){
   if(attention.length)L.push(`⚠️ This week: ${attention.join('; ')}`);
   if(push.length)L.push(`🎯 Next week: ${push.join('; ')}`);
   L.push(`💼 Pool ${inr(POOL['Back office'])} each × score · team pool ${inr(POOL.team/b.members.length)} each ${b.teamPoolProj?'on course':`when ${br.name} reaches ${GATES.teamAch}% (heading ${pct(b.achProj)})`} · the tracker you keep is what every statement is paid from`);
-  L.push(`_Figures as of ${asOf} Oct, provisional until the month closes._`);
+  L.push(`_Figures as of ${asOf} ${MON}, provisional until the month closes._`);
   return L.join('\n');
 }
 /* ---------- generic digest engine: any team × cadence × channel ---------- */
@@ -1064,7 +1072,7 @@ function teamDigest(b,team,cad,audience){
 }
 function digestText(d){
   const {br,b,team,cad,w,now,prev,rows,attention,pushes,audience}=d, co=br.company, L=[], word=CADENCE[cad].word;
-  const range=cad==='daily'?`${asOf} Oct`:`${w.f} to ${w.t} Oct`;
+  const range=cad==='daily'?`${asOf} ${MON}`:`${w.f} to ${w.t} ${MON}`;
   L.push(`*${co.name} · ${br.name} ${team} team* — ${CADENCE[cad].label} update, ${range}`);
   L.push(audience?`Hi ${audience.split(' ')[0]} 👋`:'Hi team 👋');
   now.forEach((x,i)=>{const pv=prev?prev[i].v:null;const tgt=x.t!=null?` · target ${x.dir==='down'?'≤':'≥'} ${fmt(x.u,x.t)}`:'';L.push(`${i===0?'📊':'•'} ${x.l}: *${fmt(x.u,x.v)}*${pv!=null?` (last ${word} ${fmt(x.u,pv)})`:''}${tgt}`)});
@@ -1075,11 +1083,11 @@ function digestText(d){
   if(pushes.length)L.push(`🎯 Next ${word}: ${pushes.join('; ')}`);
   L.push(`💼 Pool ${inr(POOL[team]||0)} each × score${team==='CRE'?` + ${Math.round(POLICY.creOverride*100)}% override + follow-up bonus ${inr(POOL.creFollow)}`:team==='Sales'?' + policy per-bill incentive':''} · team pool ${inr(POOL.team/b.members.length)} each ${b.teamPoolProj?'on course':`when ${br.name} reaches ${GATES.teamAch}% (heading ${pct(b.achProj)})`}`);
   if(cad==='monthly')L.push(asOf>=DAYS?`📋 Month closed: statements follow by the 1st; raise any dispute within 7 days.`:`📋 ${DAYS-asOf} days left; statements by the 1st, disputes within 7 days.`);
-  L.push(`_Figures as of ${asOf} Oct, provisional until the month closes._`);
+  L.push(`_Figures as of ${asOf} ${MON}, provisional until the month closes._`);
   return L.join('\n');
 }
 function digestHtml(d){
-  const {br,b,team,cad,w,now,prev,rows,attention,pushes}=d, co=br.company, word=CADENCE[cad].word, range=cad==='daily'?`${asOf} October 2026`:`${w.f} to ${w.t} October 2026`;
+  const {br,b,team,cad,w,now,prev,rows,attention,pushes}=d, co=br.company, word=CADENCE[cad].word, range=cad==='daily'?`${asOf} ${MONTH}`:`${w.f} to ${w.t} ${MONTH}`;
   return `<div class="mail"><div style="background:#121A26;color:#D6EEF0;padding:18px 22px"><div style="font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:#3FB4BF">${esc(co.name)} · ${esc(br.name)} · ${team} team</div><div style="font:bold 22px Georgia,serif;color:#FFFFFF;margin-top:4px">${CADENCE[cad].label[0].toUpperCase()+CADENCE[cad].label.slice(1)} update, ${range}</div></div>
   <div style="padding:18px 22px">
     <table cellspacing="0" cellpadding="0" style="width:100%;border-collapse:collapse;font:12.5px Arial"><tr>${eth('Measure')}${eth('This '+word)}${prev?eth('Last '+word):''}${eth('Target')}</tr>
@@ -1102,15 +1110,15 @@ const CADS=['daily','weekly','monthly'], CHANNELS=[['whatsapp','WhatsApp'],['ema
 const BESPOKE={'person|monthly|whatsapp':'personal summary','Sales|daily|whatsapp':'via the Sales Manager message','Sales|weekly|whatsapp':'weekly team message','SM|daily|whatsapp':'daily team message','Logistics|weekly|whatsapp':'weekly team message','Back office|weekly|whatsapp':'weekly team message','CRE|weekly|whatsapp':'weekly CRE message','CRE|monthly|whatsapp':'monthly CRE message','BM|daily|whatsapp':'daily branch message','BM|weekly|email':'weekly branch review','MD|monthly|email':'monthly group review','HR|monthly|email':'monthly HR and payroll review'};
 function buildMessage(aud,cad,ch,ctx){ // ctx: {b (computed branch), person (computed member), rk}
   const {b,rk}=ctx; let text,html,subject,title;
-  if(aud==='person'){const m=ctx.person;text=waText(m,b,rk);title=`${m.p.name}, incentive update ${asOf} Oct`;subject=`Your incentive update, ${asOf} Oct: ${inr(m.totalProj)} expected`;html=wrapPlain(text,title)}
-  else if(aud==='SM'&&cad==='daily'){text=waDailyText(dailySM(b));title=`${b.br.name} sales team, ${asOf} Oct`;subject=title;html=wrapPlain(text,title)}
+  if(aud==='person'){const m=ctx.person;text=waText(m,b,rk);title=`${m.p.name}, incentive update ${asOf} ${MON}`;subject=`Your incentive update, ${asOf} ${MON}: ${inr(m.totalProj)} expected`;html=wrapPlain(text,title)}
+  else if(aud==='SM'&&cad==='daily'){text=waDailyText(dailySM(b));title=`${b.br.name} sales team, ${asOf} ${MON}`;subject=title;html=wrapPlain(text,title)}
   else if(aud==='SM'){const sm=b.members.find(m=>m.p.role==='SM');const d=teamDigest(b,'Sales',cad,sm?sm.p.name:null);text=digestText(d);html=digestHtml(d);title=`${b.br.name} sales team, ${CADENCE[cad].label} update`;subject=title}
-  else if(aud==='Sales'&&cad==='weekly'){text=waSalesText(weeklySales(b));title=`${b.br.name} sales team, week to ${asOf} Oct`;subject=title;html=wrapPlain(text,title)}
-  else if(aud==='CRE'&&cad==='weekly'){text=waCreText(weeklyCRE(b));title=`${b.br.name} CRE team, week to ${asOf} Oct`;subject=title;html=wrapPlain(text,title)}
-  else if(aud==='Logistics'&&cad==='weekly'){text=waLogiText(weeklyLogi(b));title=`${b.br.name} logistics, week to ${asOf} Oct`;subject=title;html=wrapPlain(text,title)}
-  else if(aud==='Back office'&&cad==='weekly'){text=waBackText(weeklyBack(b));title=`${b.br.name} back office, week to ${asOf} Oct`;subject=title;html=wrapPlain(text,title)}
-  else if(aud==='BM'&&cad==='daily'&&ch==='whatsapp'){text=waBmDailyText(dailyBM(b));title=`${b.br.name}, ${asOf} Oct`;subject=title;html=wrapPlain(text,title)}
-  else if(aud==='BM'){const w=weekly(b.br,cad);text=emailText(w);html=emailHtml(w);title=`${b.br.name} ${CADENCE[cad].label} branch review`;subject=`${b.br.name} ${CADENCE[cad].label} review · ${asOf} Oct · ${pct(w.now.vals.ach)} of pace, #${w.rankNow} of ${w.coNow.length} in ${w.co.name}`}
+  else if(aud==='Sales'&&cad==='weekly'){text=waSalesText(weeklySales(b));title=`${b.br.name} sales team, week to ${asOf} ${MON}`;subject=title;html=wrapPlain(text,title)}
+  else if(aud==='CRE'&&cad==='weekly'){text=waCreText(weeklyCRE(b));title=`${b.br.name} CRE team, week to ${asOf} ${MON}`;subject=title;html=wrapPlain(text,title)}
+  else if(aud==='Logistics'&&cad==='weekly'){text=waLogiText(weeklyLogi(b));title=`${b.br.name} logistics, week to ${asOf} ${MON}`;subject=title;html=wrapPlain(text,title)}
+  else if(aud==='Back office'&&cad==='weekly'){text=waBackText(weeklyBack(b));title=`${b.br.name} back office, week to ${asOf} ${MON}`;subject=title;html=wrapPlain(text,title)}
+  else if(aud==='BM'&&cad==='daily'&&ch==='whatsapp'){text=waBmDailyText(dailyBM(b));title=`${b.br.name}, ${asOf} ${MON}`;subject=title;html=wrapPlain(text,title)}
+  else if(aud==='BM'){const w=weekly(b.br,cad);text=emailText(w);html=emailHtml(w);title=`${b.br.name} ${CADENCE[cad].label} branch review`;subject=`${b.br.name} ${CADENCE[cad].label} review · ${asOf} ${MON} · ${pct(w.now.vals.ach)} of pace, #${w.rankNow} of ${w.coNow.length} in ${w.co.name}`}
   else if(aud==='HR'){const w=hrMonthly();text=emailHrText(w,cad);html=emailHrHtml(w,cad);title=`HR ${CADENCE[cad].label} review`;subject=`HR and payroll review · ${MONTH}${w.closed?' (closed)':` to day ${asOf}`} · attendance ${pct(w.att)} · ${w.gated.length} under the gate · payout ${inrL(w.g.payProj)}`}
   else if(aud==='MD'){const w=monthly();text=emailMdText(w);html=emailMdHtml(w);title=`Group ${CADENCE[cad].label} review`;subject=`Group incentive review · ${MONTH}${w.closed?' (closed)':` to day ${asOf}`} · ${pct(w.closed?w.g.achProj:w.g.ach)} of target · outlay ${inrL(w.g.payProj)}`}
   else{const d=teamDigest(b,aud,cad,null);text=digestText(d);html=digestHtml(d);title=`${b.br.name} ${aud} team, ${CADENCE[cad].label} update`;subject=title}
@@ -1131,7 +1139,7 @@ function viewMessages(){
   const bulkLabel=aud.scope==='person'?`Copy all ${b.members.length} people in ${br.name}`:aud.scope==='branch'?`Copy all ${inScope.length} branches`:'';
   $('#view').innerHTML=`
   <div class="card"><h2>All messages <small>audience × cadence × channel</small></h2><div class="body">${matrix}</div></div>
-  <div class="card"><h2>${aud.name} · ${msg.cad} · ${msg.ch==='email'?'email':'WhatsApp'} <small>${BESPOKE[`${aud.id}|${msg.cad}|${msg.ch}`]||'generated digest'} · as of ${asOf} Oct</small></h2><div class="body">
+  <div class="card"><h2>${aud.name} · ${msg.cad} · ${msg.ch==='email'?'email':'WhatsApp'} <small>${BESPOKE[`${aud.id}|${msg.cad}|${msg.ch}`]||'generated digest'} · as of ${asOf} ${MON}</small></h2><div class="body">
     ${chooser}
     ${msg.ch==='email'?`<div class="subject"><span class="note" style="margin:0">Subject</span><code>${esc(built.subject)}</code></div>`:''}
     <div class="wa-bar" style="margin:0 0 12px"><button class="btn primary" id="cpText">${msg.ch==='email'?'Copy as plain text':'Copy message'}</button>${msg.ch==='email'?'<button class="btn" id="cpHtml">Copy as HTML</button><button class="btn" id="cpSubj">Copy subject</button>':`<a class="btn wa-link" href="https://wa.me/?text=${encodeURIComponent(built.text)}" target="_blank" rel="noopener">Open in WhatsApp</a>`}${bulkLabel?`<button class="btn" id="cpAll">${bulkLabel}</button>`:''}<span class="note" id="cpDone" style="margin:0"></span></div>
@@ -1437,14 +1445,14 @@ function viewTeam(){
   </div>
   <div class="card"><h2>${t.name} in ${br.name} <small>click a person</small></h2><div class="body"><div class="tw"><table><thead><tr><th>Person</th>${role?cols+'<th class="r">Score</th>':'<th>Role</th><th class="r">Attendance</th><th class="r">Pool</th><th class="r">Branch ach. exp.</th><th class="r">Branch score exp.</th>'}<th class="r">Expected</th></tr></thead><tbody>${rows}</tbody></table></div></div></div>
   <div class="grid"><div class="card"><h2>Further push</h2><div class="body"><ul class="list">${push.join('')||'<li class="empty">Team is on target everywhere.</li>'}</ul></div></div><div class="card"><h2>What lags</h2><div class="body"><ul class="list">${lag.join('')||'<li class="empty">Nothing lagging.</li>'}</ul></div></div></div>
-  ${t.name==='Management'?`<div class="card"><h2>Daily WhatsApp to the Branch Manager <small>the branch's day in one message, after close on ${asOf} Oct</small></h2><div class="body">${waBlock(waBmDailyText(dailyBM(b)),'dbm-'+br.id)}</div></div>`:''}
+  ${t.name==='Management'?`<div class="card"><h2>Daily WhatsApp to the Branch Manager <small>the branch's day in one message, after close on ${asOf} ${MON}</small></h2><div class="body">${waBlock(waBmDailyText(dailyBM(b)),'dbm-'+br.id)}</div></div>`:''}
   ${t.name==='Sales'?`<div class="card"><h2>Weekly WhatsApp to the sales team <small>sent to the team group every Saturday evening</small></h2><div class="body">${waBlock(waSalesText(weeklySales(b)),'wsales-'+br.id)}</div></div>`:''}
-  ${t.name==='Sales'?`<div class="card"><h2>Daily WhatsApp to the Sales Manager <small>team leaderboard and today's numbers, after close on ${asOf} Oct</small></h2><div class="body">${waBlock(waDailyText(dailySM(b)),'daily-'+br.id)}</div></div>`:''}
+  ${t.name==='Sales'?`<div class="card"><h2>Daily WhatsApp to the Sales Manager <small>team leaderboard and today's numbers, after close on ${asOf} ${MON}</small></h2><div class="body">${waBlock(waDailyText(dailySM(b)),'daily-'+br.id)}</div></div>`:''}
   ${t.name==='Logistics'?`<div class="card"><h2>Weekly WhatsApp to the logistics team <small>sent to the team group every Saturday evening</small></h2><div class="body">${waBlock(waLogiText(weeklyLogi(b)),'wlogi-'+br.id)}</div></div>`:''}
   ${t.name==='CRE'?`<div class="card"><h2>Weekly WhatsApp to the CRE team <small>sent to the team group every Saturday evening</small></h2><div class="body">${waBlock(waCreText(weeklyCRE(b)),'wcre-'+br.id)}</div></div>`:''}
   ${t.name==='CRE'?`<div class="card"><h2>Monthly WhatsApp to the CRE team <small>sent to the team group on the 1st, with a mid-month version on the 16th</small></h2><div class="body">${waBlock(digestText(teamDigest(b,'CRE','monthly',null)),'mcre-'+br.id)}</div></div>`:''}
   ${t.name==='Back office'?`<div class="card"><h2>Weekly WhatsApp to the back office team <small>sent to the team group every Saturday evening</small></h2><div class="body">${waBlock(waBackText(weeklyBack(b)),'wback-'+br.id)}</div></div>`:''}
-  <div class="card"><h2>WhatsApp summaries for the team <small>one per person, as of ${asOf} Oct</small></h2><div class="body">
+  <div class="card"><h2>WhatsApp summaries for the team <small>one per person, as of ${asOf} ${MON}</small></h2><div class="body">
     <div class="wa-bar" style="margin:0 0 10px"><button class="btn primary wa-copy" data-t="wa-team">Copy all ${t.members.length}</button><span class="note wa-done" id="done-wa-team"></span></div>
     <pre class="wa" id="wa-team" hidden>${waAll.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</pre>
     ${t.members.map(m=>`<details class="wa-sum"><summary>${m.p.name} · ${inr(m.totalProj)} expected</summary>${waBlock(waText(m,b,rk),m.p.id)}</details>`).join('')}
@@ -1472,7 +1480,7 @@ function viewPerson(){
       ${tile('Conversion',pct(m.vals.conv),`${m.bills.filter(x=>x.status!=='cancelled').length} bills from ${m.vals.cust} customers`,'',m.vals.conv>=30?'good':'warn')}`;
     extra=`<div class="grid"><div class="card"><h2>Your month vs target pace</h2><div class="body">${trendChart(cumSO(m.bills),m.target,{mean:m.soProj,low:m.so+(m.soProj-m.so)*.5,high:m.soProj*1.15})}</div></div>
       <div class="card"><h2>Policy per-bill incentive <small>§3 to §7 of the structure</small></h2><div class="body"><div class="tw"><table><thead><tr><th>Order</th><th>Item</th><th>Cat</th><th class="r">Bill</th><th class="r">Disc.</th><th class="r">Margin</th><th>Status</th><th class="r">Incentive</th></tr></thead><tbody>
-      ${m.bills.slice().sort((x,y)=>y.day-x.day).map(x=>`<tr class="${x.status==='cancelled'||x.share===0?'off':''}"><td>${x.no}<br><small style="color:var(--muted)">Oct ${x.day}${x.upsell?' · up':''}${x.cross?' · cross':''}</small></td><td style="white-space:normal;min-width:110px">${x.item}</td><td><span class="pill ${x.cat==='A'?'brass':x.cat==='B'?'info':''}">${x.cat}</span></td><td class="r">${inr(x.bill)}</td><td class="r">${x.disc}%</td><td class="r">${pct(x.margin)}</td><td>${x.status==='paid'?'<span class="pill good">Paid</span>':x.status==='cancelled'?'<span class="pill bad">Cancelled</span>':'<span class="pill warn">'+(x.status==='delivered'?'Payment due':'Booked')+'</span>'}</td><td class="r"><b>${x.status==='cancelled'?'₹0':inr(x.full)}</b></td></tr>`).join('')}
+      ${m.bills.slice().sort((x,y)=>y.day-x.day).map(x=>`<tr class="${x.status==='cancelled'||x.share===0?'off':''}"><td>${x.no}<br><small style="color:var(--muted)">${MON} ${x.day}${x.upsell?' · up':''}${x.cross?' · cross':''}</small></td><td style="white-space:normal;min-width:110px">${x.item}</td><td><span class="pill ${x.cat==='A'?'brass':x.cat==='B'?'info':''}">${x.cat}</span></td><td class="r">${inr(x.bill)}</td><td class="r">${x.disc}%</td><td class="r">${pct(x.margin)}</td><td>${x.status==='paid'?'<span class="pill good">Paid</span>':x.status==='cancelled'?'<span class="pill bad">Cancelled</span>':'<span class="pill warn">'+(x.status==='delivered'?'Payment due':'Booked')+'</span>'}</td><td class="r"><b>${x.status==='cancelled'?'₹0':inr(x.full)}</b></td></tr>`).join('')}
       </tbody></table></div></div></div></div>`;
   } else if(isMgmt){
     tiles=`${tile('Expected month end',inr(m.totalProj),`Team achievement ${inr(m.payProj)} + team share ${inr(m.teamShare)}`,'hero')}
@@ -1494,7 +1502,7 @@ function viewPerson(){
       ${key.map(k=>tile(k[0],k[1],'','','info')).join('')}
       ${tile('Attendance',pct(m.vals.att),`${m.vals.late} late · ${m.vals.early} early`,'',m.gate?'bad':m.vals.att>=95?'good':'warn')}`;
   }
-  const strip=`<div class="strip">${p.att.map((s,i)=>`<i class="${i<asOf?s:'f'}" title="Oct ${i+1}: ${{p:'present',l:'late punch',e:'early going',a:'absent',o:'weekly off'}[s]}"></i>`).join('')}</div><div class="legend"><span><i class="sw" style="background:var(--good)"></i>Present</span><span><i class="sw" style="background:var(--warn)"></i>Late punch</span><span><i class="sw" style="background:var(--info)"></i>Early going</span><span><i class="sw" style="background:var(--bad)"></i>Absent</span><span><i class="sw" style="background:var(--line)"></i>Weekly off</span></div>`;
+  const strip=`<div class="strip">${p.att.map((s,i)=>`<i class="${i<asOf?s:'f'}" title="${MON} ${i+1}: ${{p:'present',l:'late punch',e:'early going',a:'absent',o:'weekly off'}[s]}"></i>`).join('')}</div><div class="legend"><span><i class="sw" style="background:var(--good)"></i>Present</span><span><i class="sw" style="background:var(--warn)"></i>Late punch</span><span><i class="sw" style="background:var(--info)"></i>Early going</span><span><i class="sw" style="background:var(--bad)"></i>Absent</span><span><i class="sw" style="background:var(--line)"></i>Weekly off</span></div>`;
   if(m.gate)lag.unshift(li('bad','⛔',`Attendance ${pct(m.vals.att)} is under the ${GATES.attendance}% gate: scorecard payout is zero`,`Every remaining day present moves it; the per-bill policy incentive is not gated.`,'−'+inr(m.pool*Math.min(m.sc.score,120)/100)));
   if(!b.teamPoolProj)push.push(li('info','◎',`Team pool share of ${inr(POOL.team/b.members.length)} unlocks when ${br.name} reaches ${GATES.teamAch}%`,`Branch is heading for ${pct(b.achProj)}. Walk-ins converted and commitments kept are how every role moves it.`,''));
   const rk=rankings(computeGroup()), r=rk[p.id], badges=badgesFor(m,b,rk);
@@ -1503,7 +1511,7 @@ function viewPerson(){
   <div class="card"><h2>Badge ladder <small>recognition only · ${badges.filter(x=>x.earned).length} of ${badges.length} earned so far</small></h2><div class="body">${badgeLadder(badges)}</div></div>
   <div class="card"><h2>Your last months <small>closed months from the archive · this month running</small></h2><div class="body">${personHistory(p,{...m,brc:b})}<div class="wa-bar"><button class="btn" id="stmtBtn">🖨 Statement (print or save as PDF)</button><span class="note" style="margin:0">One page: every component of this month's incentive with the rule behind it, the dispute window and signature lines.</span></div></div></div>
   ${isMgmt?'':`<div class="card"><h2>Your scorecard <small>${p.role} · ${m.sc.rows.length} attributes</small></h2><div class="body">${scoreTable(m.sc)}</div></div>`}
-  <div class="card"><h2>WhatsApp summary <small>ready to send, as of ${asOf} Oct</small></h2><div class="body">${waBlock(wa,p.id)}</div></div>
+  <div class="card"><h2>WhatsApp summary <small>ready to send, as of ${asOf} ${MON}</small></h2><div class="body">${waBlock(wa,p.id)}</div></div>
   ${p.role==='Sales'?`<div class="card"><h2>Weekly team WhatsApp <small>the sales team group, every Saturday evening</small></h2><div class="body">${waBlock(waSalesText(weeklySales(b)),'wsales-'+p.id)}</div></div>`:''}
   ${p.role==='SM'?`<div class="card"><h2>Daily team WhatsApp <small>sent to the Sales Manager every evening after close</small></h2><div class="body">${waBlock(waDailyText(dailySM(b)),'daily-'+p.id)}</div></div>`:''}
   ${p.role==='BM'?`<div class="card"><h2>Daily branch WhatsApp <small>sent to the Branch Manager every evening after close</small></h2><div class="body">${waBlock(waBmDailyText(dailyBM(b)),'dbm-'+p.id)}</div></div>`:''}
@@ -1560,8 +1568,8 @@ function viewSales(){
   const soW1=sum(live.filter(b=>inWin(b,...w1))),soW0=sum(live.filter(b=>inWin(b,...w0))),nW1=live.filter(b=>inWin(b,...w1)).length,nW0=live.filter(b=>inWin(b,...w0)).length;
   const delta=(a,b,f)=>b?`<span class="delta ${a>=b?'up':'dn'}">${a>=b?'▲':'▼'} ${pct(Math.abs(a-b)/b*100)} vs last week</span>`:'';
   // daily series
-  const byDay=Array.from({length:DAYS},(_,i)=>({l:String(i+1),t:'Oct '+(i+1),v:sum(live.filter(b=>b.day===i+1)),future:i+1>asOf,hi:i+1===asOf}));
-  const wd=WD.map((l,i)=>{const days=Array.from({length:asOf},(_,d)=>d+1).filter(d=>new Date(2026,9,d).getDay()===i);return {l,v:days.length?days.reduce((s,d)=>s+sum(live.filter(b=>b.day===d)),0)/days.length:0,t:l+' average'}});
+  const byDay=Array.from({length:DAYS},(_,i)=>({l:String(i+1),t:MON+' '+(i+1),v:sum(live.filter(b=>b.day===i+1)),future:i+1>asOf,hi:i+1===asOf}));
+  const wd=WD.map((l,i)=>{const days=Array.from({length:asOf},(_,d)=>d+1).filter(d=>new Date(CAL.year,CAL.month,d).getDay()===i);return {l,v:days.length?days.reduce((s,d)=>s+sum(live.filter(b=>b.day===d)),0)/days.length:0,t:l+' average'}});
   // mixes
   const byItem=Object.entries(live.reduce((m,b)=>{m[b.item]=(m[b.item]||0)+b.bill;return m},{})).sort((a,b)=>b[1]-a[1]);
   const topItems=byItem.slice(0,8).map(([l,v])=>({l,v,note:pct(v/so*100)}));
@@ -1587,7 +1595,7 @@ function viewSales(){
     ${tile('Upsell · cross-sell',`${pct(upRate)} · ${pct(crossRate)}`,'bills with an upgrade · with an add-on','',upRate>=20&&crossRate>=25?'good':'warn')}
   </div>
   <div class="grid">
-    <div class="card"><h2>SO value by day <small>net of discount · today highlighted · 7-day average</small></h2><div class="body">${colChart(byDay,{ma:7,label:'SO value by day of October',series:'Daily SO value'})}</div></div>
+    <div class="card"><h2>SO value by day <small>net of discount · today highlighted · 7-day average</small></h2><div class="body">${colChart(byDay,{ma:7,label:'SO value by day of '+MONTH,series:'Daily SO value'})}</div></div>
     <div class="card"><h2>SO value by weekday <small>average per day so far · staffing and activity planning</small></h2><div class="body">${colChart(wd,{label:'Average SO value by weekday'})}</div></div>
   </div>
   <div class="grid">
@@ -1690,7 +1698,7 @@ function emailHtml(w){
   const up=movers.filter(m=>m.d>0).slice(0,3), down=movers.filter(m=>m.d<0).slice(-3).reverse();
   const mover=(m,sign)=>`<li style="margin:3px 0">${esc(m.l.split(' (')[0])}: ${fmt(m.u,m.pv)} → <b>${fmt(m.u,m.v)}</b> (${sign}${Math.abs(m.d).toFixed(1)} pts)</li>`;
   return `<div class="mail">
-  <div style="background:#121A26;color:#D6EEF0;padding:18px 22px"><div style="font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:#3FB4BF">${esc(co.name)} · ${w.word==='week'?'weekly':w.word==='day'?'daily':'monthly'} branch review</div><div style="font:bold 22px Georgia,serif;color:#FFFFFF;margin-top:4px">${esc(br.name)}, ${w.word==='month'?MONTH:w.word+' ending '+w.weekEnd+' October 2026'}</div></div>
+  <div style="background:#121A26;color:#D6EEF0;padding:18px 22px"><div style="font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:#3FB4BF">${esc(co.name)} · ${w.word==='week'?'weekly':w.word==='day'?'daily':'monthly'} branch review</div><div style="font:bold 22px Georgia,serif;color:#FFFFFF;margin-top:4px">${esc(br.name)}, ${w.word==='month'?MONTH:w.word+' ending '+w.weekEnd+' '+MONTH}</div></div>
   <div style="padding:18px 22px">
     <p style="margin:0 0 12px">Dear ${esc(first)},</p>
     <p style="margin:0 0 14px;color:#1F2D44">Here is where ${esc(br.name)} stands ${w.word==='month'?'for the month':`after ${w.word} ${Math.ceil(asOf/w.len)}`}, with the leaderboard for ${esc(co.name)} and your team's standings. Figures are the month so far${prev?`, with the change against the ${w.word} before in brackets`:''}.</p>
@@ -1717,7 +1725,7 @@ function emailHtml(w){
 }
 function emailText(w){
   const {now,prev,co,coNow,rankNow,rankPrev,weekSO,lastWeekSO,weekBills,movers,teams,bm,actions}=w, br=now.br, L=[];
-  L.push(`${co.name} · ${w.word==='week'?'weekly':w.word==='day'?'daily':'monthly'} branch review · ${br.name}, ${w.word==='month'?MONTH:w.word+' ending '+w.weekEnd+' October 2026'}`,'',`Dear ${bm?bm.p.name.split(' ')[0]:'Branch Manager'},`,'',
+  L.push(`${co.name} · ${w.word==='week'?'weekly':w.word==='day'?'daily':'monthly'} branch review · ${br.name}, ${w.word==='month'?MONTH:w.word+' ending '+w.weekEnd+' '+MONTH}`,'',`Dear ${bm?bm.p.name.split(' ')[0]:'Branch Manager'},`,'',
     `SO booked this ${w.word}: ${inrL(weekSO)} (${weekBills} bills)${lastWeekSO==null?'':`, last ${w.word} ${inrL(lastWeekSO)}`}`,
     `Month to date: ${pct(now.vals.ach)} of pace, ${inrL(now.so)} of ${inrL(now.target)}, heading for ${pct(now.achProj)} (${pct(now.pTarget*100)} chance)`,
     `Branch score: ${now.sc.score.toFixed(0)}/100${prev?` (last ${w.word} ${prev.sc.score.toFixed(0)})`:''}`,
@@ -1903,7 +1911,7 @@ function viewEmail(){
   const br=branches.find(b=>b.id===state.br)||inScope[0];
   const w=weekly(br), bm=w.bm;
   $('#h1').textContent=`Weekly email, ${br.name}`;
-  const subject=`${br.name} weekly review · week ending ${asOf} Oct · ${pct(w.now.vals.ach)} of pace, #${w.rankNow} of ${w.coNow.length} in ${w.co.name}`;
+  const subject=`${br.name} weekly review · week ending ${asOf} ${MON} · ${pct(w.now.vals.ach)} of pace, #${w.rankNow} of ${w.coNow.length} in ${w.co.name}`;
   const html=emailHtml(w), text=emailText(w);
   $('#view').innerHTML=`
   <div class="card"><h2>Weekly email to the Branch Manager <small>sent every Monday morning in production · choose a branch</small></h2><div class="body">
@@ -2480,7 +2488,7 @@ function paintBlocks(){ // colour family per card by its heading; grade score ce
 }
 function render(){
   _bc.clear();
-  $('#asofLbl').textContent=`${asOf} October 2026`;
+  $('#asofLbl').textContent=`${asOf} ${MONTH}`;
   crumbs();
   if(state.level==='email'){state.level='messages'}
   enforce(state);
@@ -2492,6 +2500,7 @@ function render(){
 }
 $('#asof').addEventListener('input',e=>{asOf=+e.target.value;render()});
 try{const s=JSON.parse(localStorage.getItem('mr-state')||'null');if(s&&s.level&&(!s.person||people.some(p=>p.id===s.person)))Object.assign(state,s);if(!state.lbTab)state.lbTab='Sales';if(!state.emailMode)state.emailMode='bm';if(!state.msg||!state.msg.aud)state.msg={aud:'Sales',cad:'weekly',ch:'whatsapp'};if(!state.adminTab)state.adminTab='policy'}catch(_){}
+{const sl=$('#asof');if(sl){sl.max=DAYS;sl.value=asOf;sl.setAttribute('aria-label','As of: day of '+MONTH)}const sn=document.querySelector('.asof>small');if(sn)sn.textContent=CAL.sample?`Sample month: ${MONTH}. Slide to replay the month and watch the predictions tighten.`:`Live month: ${MONTH}. Today is day ${CAL.today}; slide back to replay the month so far.`}
 applyNav();applyTheme();wireTips();if(window.BPRO_REMOTE&&BPRO_REMOTE.afterBoot)BPRO_REMOTE.afterBoot({SOURCES,applySource,SRC_STATE,render,setUser,allUsers,toast,saveSrc:typeof saveSrc==='function'?saveSrc:null});
 const _tb=$('#themeBtn');if(_tb)_tb.addEventListener('click',cycleTheme);
 const _tt=$('#totop');if(_tt)_tt.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));

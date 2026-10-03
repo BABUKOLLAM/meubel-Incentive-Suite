@@ -49,3 +49,11 @@ console.log(__n+' renders, '+__errs+' failures');
 if(__errs)process.exit(1);
 `;
 new Function(js+checks)();
+// a 30-day live month: the calendar object must drive every day count and label
+global.window.BPRO_CONFIG={month:'2026-11'};
+const checks2=`let __e=0;if(DAYS!==30||MONTH!=='November 2026'||MON!=='Nov'||CAL.prev[2]!=='October 2026'){__e++;console.log('calendar wrong',DAYS,MONTH,MON,CAL.prev)}
+setUser('tech@bpropms.com');for(const st of [{level:'group'},{level:'sales'},{level:'leaderboard'},{level:'messages'},{level:'person',co:'mg',br:'klm',team:'Sales',person:branches[0].people.find(p=>p.role==='Sales').id}]){Object.assign(state,{co:null,br:null,team:null,person:null},st);try{render();const m=nodes['#view'].innerHTML.match(/.{30}(NaN|undefined|Oct\\b).{20}/);if(m){__e++;console.log('november render',st.level,m[0])}}catch(ex){__e++;console.log('november ERR',st.level,ex.message)}}
+const __b=computeBranch(branches[0]);const __t=buildMessage('SM','daily','whatsapp',{b:__b,rk:rankings(computeGroup()),person:null}).text;if(/\\bOct\\b/.test(__t)||!/Nov/.test(__t)){__e++;console.log('november message still says Oct')}
+console.log('november month: DAYS '+DAYS+', '+MONTH+', '+(__e?__e+' problems':'ok'));if(__e)process.exit(1);`;
+new Function(js+checks2)();
+delete global.window.BPRO_CONFIG;

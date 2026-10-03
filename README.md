@@ -5,8 +5,9 @@ from **Group → Company (Meubel Grande, Royal Group) → Branch → Team (Sales
 → Individual**, with a month-end prediction, the chance of hitting target, what to push and what lags at each level.
 
 Open `index.html` in any browser, or host the folder on any static web server. No build step, no dependencies beyond
-Google Fonts. Every people, branch and number is a deterministic generated sample; the "as of" slider replays
-October 2026 day by day.
+Google Fonts. Every person, branch and number is a deterministic generated sample; the "as of" slider replays
+October 2026 day by day. Hosted with the back end, the board scores the live month (or `BPRO_CONFIG.month`), with
+the day count, labels, weekday pattern and archive labels following the calendar.
 
 ## Attributes scored
 

@@ -105,6 +105,6 @@ records every scheduled run and failure.
 ## What is still sample until the feeds arrive
 
 The engine keeps the sample universe for anything no source has supplied yet, so the board is never empty. As
-each feed lands, its rows replace the sample for the people and branches they name. The month the engine scores
-is October 2026 in this release; generalising the calendar to any month is the next engineering item before the
-first live month.
+each feed lands, its rows replace the sample for the people and branches they name. When hosted, the engine scores the live month in India (day count, labels and the as-of day follow the calendar);
+`BOARD_MONTH=YYYY-MM` on the server, or `BPRO_CONFIG.month` in `config.js`, pins a different month, for example to
+re-run a close.
