@@ -262,16 +262,49 @@ td.g-good b{background:var(--good-bg);color:var(--good)}td.g-warn b{background:v
 /* Colour key under the view */
 .colorkey{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font-size:11.5px;color:var(--muted);margin:4px 0 14px}
 .colorkey span{display:inline-flex;align-items:center;gap:6px}.colorkey i{width:10px;height:10px;border-radius:3px;display:inline-block;background:var(--fam)}
+/* UX refresh: app bar, controls, motion, focus, phone navigation */
+.skip{position:absolute;left:-999px;top:8px;background:var(--brown);color:#fff;padding:8px 12px;border-radius:8px;z-index:50;text-decoration:none;font-weight:600}.skip:focus{left:8px}
+:focus-visible{outline:2px solid var(--brass);outline-offset:2px;border-radius:6px}
+.top{align-items:center;gap:10px 18px;margin-bottom:12px;padding:8px 0 12px;border-bottom:1px solid var(--line)}
+.brandline{display:flex;align-items:center;gap:10px;margin-bottom:6px}.brandline .eyebrow{margin:0;letter-spacing:.14em}
+.mark{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--brown),var(--brass));color:#fff;font:700 12.5px/1 var(--ui);letter-spacing:.06em;flex:none;box-shadow:var(--shadow)}
+h1{font-size:28px;margin:0}
+.hcontrols{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch;margin-left:auto}
+.who-box,.asof{flex:1 1 230px;padding:10px 12px}
+.asof>small{display:none}
+.hbtns{display:flex;flex-direction:column;gap:6px;justify-content:center}
+.hbtn{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:7px 11px;font:600 12px var(--ui);color:var(--text);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;box-shadow:var(--shadow)}
+.hbtn:hover{border-color:var(--brass);color:var(--brass-ink)}
+.intro[hidden]{display:none}.intro{padding:14px 16px;display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;border-top:3px solid var(--brass)}
+.intro h3{margin:0 0 4px;font:600 15px var(--ui);color:var(--brown)}.intro p{margin:0;color:var(--muted);max-width:72ch}.intro .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.intro .x{margin-left:auto;border:none;background:none;font-size:20px;line-height:1;cursor:pointer;color:var(--muted)}
+.toolbar input[list]{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 9px;font:13px var(--ui);color:var(--text);min-width:190px}
+tr.link:hover td{background:var(--fam-bg,var(--row))}
+.tile{transition:transform .15s ease,box-shadow .15s ease}.tile:hover{transform:translateY(-1px);box-shadow:0 2px 4px rgba(16,24,40,.06),0 14px 28px -14px rgba(16,24,40,.28)}
+#view>*{animation:rise .28s ease-out both}@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.toolbar .views button[aria-current="page"]{box-shadow:inset 0 0 0 1px var(--brown)}
+.totop{position:fixed;right:18px;bottom:18px;z-index:40;border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:999px;padding:9px 13px;font:600 12px var(--ui);box-shadow:var(--shadow);cursor:pointer;opacity:0;pointer-events:none;transition:opacity .2s}.totop.show{opacity:1;pointer-events:auto}
+.toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,10px);background:var(--brown);color:#fff;padding:9px 14px;border-radius:999px;font:600 12.5px var(--ui);box-shadow:var(--shadow);opacity:0;transition:opacity .2s,transform .2s;z-index:60;pointer-events:none;max-width:90vw}.toast.show{opacity:1;transform:translate(-50%,0)}
+@media (prefers-reduced-motion:reduce){#view>*{animation:none}.tile,.toast,.totop{transition:none}}
+@media (max-width:860px){
+  .hcontrols{margin-left:0;width:100%}h1{font-size:23px}.hbtns{flex-direction:row}
+  body:not(.tv) .toolbar .views{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--card);border-top:1px solid var(--line);padding:6px 6px calc(6px + env(safe-area-inset-bottom));display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:2px;margin:0;box-shadow:0 -6px 20px -12px rgba(16,24,40,.35)}
+  body:not(.tv) .toolbar .views button{border:none;background:none;border-radius:8px;padding:6px 2px;font-size:10.5px;line-height:1.2;white-space:normal;text-align:center;color:var(--muted)}
+  body:not(.tv) .toolbar .views button.on{background:var(--brass-soft);color:var(--brass-ink)}
+  body:not(.tv) .wrap{padding-bottom:88px}.totop{bottom:80px}
+  body.sidenav #toolbar .views{position:fixed}
+}
 </style>
 </head>
 <body>
 <div class="wrap">
+  <a class="skip" href="#view">Skip to content</a>
   <header class="top">
     <div class="who">
-      <div class="eyebrow">Meubel Grande · Royal Group · incentive board · sample</div>
+      <div class="brandline"><span class="mark" aria-hidden="true">MR</span><span class="eyebrow">Meubel Grande · Royal Group · incentive board · sample</span></div>
       <h1 id="h1">Group incentive, live</h1>
-      <p class="lede" id="lede">Drill from the group to a company, a branch, a team and a person. Every level is scored on the same attributes, every rupee is traceable to a value against a target, and the month-end figure is predicted from the pace so far.</p>
+      <p class="lede" id="lede" hidden>Drill from the group to a company, a branch, a team and a person. Every level is scored on the same attributes, every rupee is traceable to a value against a target, and the month-end figure is predicted from the pace so far.</p>
     </div>
+    <div class="hcontrols">
     <div class="who-box">
       <label><span>Signed in as</span><span id="roleLbl"></span></label>
       <select id="selUser" aria-label="Signed in as"></select>
@@ -282,9 +315,15 @@ td.g-good b{background:var(--good-bg);color:var(--good)}td.g-warn b{background:v
       <input type="range" id="asof" min="1" max="31" value="18" aria-label="As of: day of October 2026">
       <small>Sample month: October 2026. Slide to replay the month and watch the predictions tighten.</small>
     </div>
+    <div class="hbtns">
+      <button class="hbtn" id="themeBtn" title="Theme: follows the device, or light, or dark">◐ Auto</button>
+      <a class="hbtn" id="manualLink" href="https://github.com/BABUKOLLAM/meubel-Incentive-Suite/blob/main/docs/manual/Incentive-Board-Manual-v1.2.pdf" target="_blank" rel="noopener" title="Open the manual (PDF)">📘 Manual</a>
+    </div>
+    </div>
   </header>
   <nav class="toolbar" id="toolbar"></nav>
   <nav class="crumbs" id="crumbs"></nav>
+  <div class="card intro" id="intro" hidden></div>
   <section id="view"></section>
   <div class="colorkey" id="colorkey" aria-label="Block colour key"></div>
 
@@ -295,6 +334,8 @@ td.g-good b{background:var(--good-bg);color:var(--good)}td.g-warn b{background:v
   <p class="foot">All people, branches and figures are generated samples. Pools, weights, targets and gates are placeholders awaiting leadership confirmation. <b>Prepared by Bpro</b> for Meubel Grande.</p>
 </div>
 
+<button class="totop" id="totop" aria-label="Back to top">↑ Top</button>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div id="print" aria-hidden="true"></div>
 <script>
 /* =========================================================
@@ -680,7 +721,7 @@ function printStatements(items){const box=$('#print');if(!box)return;box.innerHT
 /* ---------- CSV exports ---------- */
 const csvCell=v=>{const s=v==null?'':String(v);return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s};
 function csvText(header,rows){return [header,...rows].map(r=>r.map(csvCell).join(',')).join('\n')}
-function downloadText(name,text,type){try{const blob=new Blob(['\ufeff'+text],{type:type||'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}catch(e){alertNote('Download failed: '+e.message)}}
+function downloadText(name,text,type){try{const blob=new Blob(['\ufeff'+text],{type:type||'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();toast('Downloading '+name);setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}catch(e){alertNote('Download failed: '+e.message)}}
 function payoutRows(g){const rk=rankings(g);return allMembers(g).map(m=>[m.p.id,m.p.name,m.p.role,m.brc.br.name,m.co.name,m.vals.att.toFixed(1),m.gate?'yes':'no',m.sc.rows.length?m.sc.score.toFixed(1):'',Math.round(m.pay||0),m.perBill?Math.round(m.perBill.confirmed):0,m.perBill?Math.round(m.perBill.provF):0,m.cre?Math.round(m.cre.overrideEarned):0,m.cre?Math.round(m.cre.followBonus):0,Math.round(m.teamShareNow||0),Math.round(m.adj||0),Math.round(m.total),Math.round(m.totalProj),rk[m.p.id]?rk[m.p.id].group.rank:'',badgesFor(m,m.brc,rk).filter(x=>x.earned).map(x=>x.name).join('; ')])}
 const PAYOUT_HEADER=['employee_id','name','role','branch','company','attendance_pct','gated','score','scorecard_pay','per_bill_confirmed','per_bill_provisional','cre_override','follow_up_bonus','team_pool_share','adjustments','total_confirmed','total_expected','group_rank','badges'];
 function tableToCSV(tbl){return [...tbl.querySelectorAll('tr')].map(tr=>[...tr.children].map(td=>csvCell(td.textContent.replace(/\s+/g,' ').trim())).join(',')).join('\n')}
@@ -1881,7 +1922,7 @@ function viewEmailMd(){
 }
 function wireCopy(text,html,subject){
   const done=m=>{$('#cpDone').textContent=m};
-  const copyText=(t)=>{try{navigator.clipboard.writeText(t).then(()=>done('Copied'),()=>done('Clipboard refused; select the preview and copy'))}catch(_){done('Clipboard refused; select the preview and copy')}};
+  const copyText=(t)=>{try{navigator.clipboard.writeText(t).then(()=>{done('Copied');toast('Copied to clipboard')},()=>done('Clipboard refused; select the preview and copy'))}catch(_){done('Clipboard refused; select the preview and copy')}};
   const bT=$('#cpText'),bS=$('#cpSubj'),bH=$('#cpHtml');
   if(bT)bT.addEventListener('click',()=>copyText(text));
   if(bS)bS.addEventListener('click',()=>copyText(subject));
@@ -2217,12 +2258,14 @@ function toolbar(){
   const ppl=br?br.people.filter(p=>!state.team||(state.team==='Management'?(p.role==='BM'||p.role==='SM'):p.role===state.team)):[];
   const view=['sales','leaderboard','messages','settings','total','admin'].includes(state.level)?state.level:state.level==='email'?'messages':'board';
   const r=role(), grp=r.scope==='group', brLock=r.scope!=='group', teamLock=r.scope==='team'||r.scope==='person', personLock=r.scope==='person';
-  const vb=(v,l)=>can(v)?`<button data-v="${v}" class="${view===v?'on':''}">${l}</button>`:'';
+  const vb=(v,l)=>can(v)?`<button data-v="${v}" class="${view===v?'on':''}" aria-current="${view===v?'page':'false'}">${l}</button>`:'';
+  const findOpts=findIndex();
   $('#toolbar').innerHTML=`
     <label>Company<select id="selCo" ${grp?'':'disabled'}><option value="">Whole group</option>${cos.map(c=>`<option value="${c.id}" ${state.co===c.id?'selected':''}>${c.name}</option>`).join('')}</select></label>
     <label>Branch<select id="selBr" ${brLock?'disabled':''}><option value="">All branches</option>${brs.map(b=>`<option value="${b.id}" ${state.br===b.id?'selected':''}>${b.name}${state.co?'':' · '+b.company.name}</option>`).join('')}</select></label>
     <label>Team<select id="selTeam" ${br&&!teamLock?'':'disabled'}><option value="">Whole branch</option>${teams.map(t=>`<option value="${t}" ${state.team===t?'selected':''}>${t}</option>`).join('')}</select></label>
     <label>Person<select id="selPerson" ${br&&!personLock?'':'disabled'}><option value="">Everyone</option>${ppl.map(p=>`<option value="${p.id}" ${state.person===p.id?'selected':''}>${p.name} · ${p.role}</option>`).join('')}</select></label>
+    ${findOpts.length?`<label>Find<input list="findList" id="find" placeholder="Branch or person…" autocomplete="off" aria-label="Find a branch or person"><datalist id="findList">${findOpts.map(o=>`<option value="${esc(o.l)}"></option>`).join('')}</datalist></label>`:''}
     <span class="views">${vb('board','Board')}${vb('sales','📊 Sales analytics')}${vb('total','🧭 Total view')}${vb('leaderboard','🏆 Leaderboard')}${vb('messages','📣 Messages')}${vb('settings','⚙️ Settings')}${vb('admin','🛠 Admin')}</span>
     <button class="navflip" id="navFlip" title="Move the menu between the top bar and a side bar">${(document.body&&document.body.classList&&document.body.classList.contains('sidenav'))?'⇆ Top bar':'⇆ Side bar'}</button>`;
   $('#roleLbl').innerHTML=`<span class="role ${r.cls}">${r.name}</span>`;
@@ -2240,6 +2283,24 @@ function toolbar(){
   $('#selPerson').addEventListener('change',()=>jump({person:$('#selPerson').value||null}));
   $('#toolbar').querySelectorAll('.views button').forEach(b=>b.addEventListener('click',()=>jump({level:b.dataset.v})));
   const nf=$('#navFlip');if(nf)nf.addEventListener('click',()=>setNav(document.body.classList.contains('sidenav')?'top':'side'));
+  const fi=$('#find');if(fi)fi.addEventListener('change',()=>{const o=findIndex().find(x=>x.l===fi.value);if(o){fi.value='';go(o.s)}});
+}
+function findIndex(){ // what the signed-in role may jump to from the find box
+  const r=role();if(r.scope==='person')return [];
+  const brs=r.scope==='group'?branches:branches.filter(b=>b.id===ME.br);const out=[];
+  if(r.scope==='group')brs.forEach(br=>out.push({l:`${br.name} · branch · ${br.company.name}`,s:{level:'branch',co:br.company.id,br:br.id}}));
+  brs.forEach(br=>br.people.filter(p=>r.scope!=='team'||p.role==='Sales'||p.role==='SM').forEach(p=>out.push({l:`${p.name} · ${p.role} · ${br.name}`,s:{level:'person',co:br.company.id,br:br.id,team:p.role==='BM'||p.role==='SM'?'Management':p.role,person:p.id}})));
+  return out;
+}
+const THEME_LABEL={auto:'◐ Auto',light:'☀ Light',dark:'☾ Dark'};
+function applyTheme(){let t='auto';try{t=localStorage.getItem('mr-theme')||'auto'}catch(_){}const de=document.documentElement;if(de&&de.setAttribute){if(t==='auto')de.removeAttribute('data-theme');else de.setAttribute('data-theme',t)}const b=$('#themeBtn');if(b)b.textContent=THEME_LABEL[t]||THEME_LABEL.auto;return t}
+function cycleTheme(){const order=['auto','light','dark'],t=applyTheme(),next=order[(order.indexOf(t)+1)%order.length];try{localStorage.setItem('mr-theme',next)}catch(_){}applyTheme();toast(`Theme: ${next==='auto'?'follows the device':next}`)}
+function toast(msg){const t=$('#toast');if(!t||!t.classList)return;t.textContent=msg;t.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove('show'),1800)}
+function introCard(){const el=$('#intro');if(!el)return;let seen=false;try{seen=localStorage.getItem('mr-intro')==='1'}catch(_){}
+  if(seen||state.tv){el.hidden=true;return}el.hidden=false;const r=role();
+  el.innerHTML=`<div><h3>Welcome, ${esc(ME.name.split(' (')[0])}</h3><p>${$('#lede').textContent||'Drill from the group to a company, a branch, a team and a person. Every level is scored on the same attributes, every rupee is traceable to a value against a target, and the month-end figure is predicted from the pace so far.'} Every card is coloured by what it does: green for what to push, red for what lags, gold for recognition.</p>
+    <div class="acts"><button class="btn primary" data-act="home">${r.scope==='person'?'Open my page':r.scope==='group'?'Open the group board':'Open my branch'}</button>${can('sales')?'<button class="btn" data-act="sales">📊 Sales analytics</button>':''}${can('leaderboard')?'<button class="btn" data-act="lb">🏆 Leaderboard</button>':''}<a class="btn" href="https://github.com/BABUKOLLAM/meubel-Incentive-Suite/blob/main/docs/manual/Incentive-Board-Manual-v1.2.pdf" target="_blank" rel="noopener">📘 Manual</a></div></div><button class="x" aria-label="Dismiss" data-act="x">×</button>`;
+  el.querySelectorAll('[data-act]').forEach(b=>b.addEventListener('click',()=>{const a=b.dataset.act;if(a==='x'){try{localStorage.setItem('mr-intro','1')}catch(_){}el.hidden=true;return}if(a==='home')go(homeState());if(a==='sales')go({...homeState(),level:'sales'});if(a==='lb')go({...homeState(),level:'leaderboard'})}));
 }
 function setNav(mode){try{localStorage.setItem('mr-nav',mode)}catch(_){}if(document.body&&document.body.classList)document.body.classList.toggle('sidenav',mode==='side');render()}
 function applyNav(){let m='top';try{m=localStorage.getItem('mr-nav')||'top'}catch(_){}if(document.body&&document.body.classList)document.body.classList.toggle('sidenav',m==='side')}
@@ -2277,10 +2338,15 @@ function render(){
   enforce(state);
   ({group:viewGroup,company:viewCompany,branch:viewBranch,team:viewTeam,person:viewPerson,sales:viewSales,leaderboard:viewLeaderboard,messages:viewMessages,settings:viewSettings,total:viewTotal,admin:viewAdmin})[state.level]();
   paintBlocks();
+  introCard();
 }
 $('#asof').addEventListener('input',e=>{asOf=+e.target.value;render()});
 try{const s=JSON.parse(localStorage.getItem('mr-state')||'null');if(s&&s.level&&(!s.person||people.some(p=>p.id===s.person)))Object.assign(state,s);if(!state.lbTab)state.lbTab='Sales';if(!state.emailMode)state.emailMode='bm';if(!state.msg||!state.msg.aud)state.msg={aud:'Sales',cad:'weekly',ch:'whatsapp'};if(!state.adminTab)state.adminTab='policy'}catch(_){}
-applyNav();if(state.tv)setTv(true);else{rules();render()}
+applyNav();applyTheme();
+const _tb=$('#themeBtn');if(_tb)_tb.addEventListener('click',cycleTheme);
+const _tt=$('#totop');if(_tt)_tt.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+if(typeof window.addEventListener==='function')window.addEventListener('scroll',()=>{const b=$('#totop');if(b&&b.classList)b.classList.toggle('show',window.scrollY>600)},{passive:true});
+if(state.tv)setTv(true);else{rules();render()}
 </script>
 </body>
 </html>

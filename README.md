@@ -116,6 +116,15 @@ the discount bands; and a salesperson table with CSV export. Every role except e
 Sales Managers see their own branch. Charts use one hue for a single series, the validated four-hue set for
 stacked states, and the company colours for branch identity.
 
+## Everyday controls
+
+The app bar carries the brand mark, the page title, the signed-in switch, the as-of slider, a theme button
+(follows the device, or light, or dark; remembered) and a Manual button. The selector bar has a **Find** box:
+type a branch or a person and the board jumps there, within the role's scope. A dismissible welcome card
+explains the board on first use and offers the three places to start. Copies and downloads confirm with a toast,
+a back-to-top button appears on long pages, views fade in (off under reduced motion), the current view is marked
+for assistive tech, and a skip link leads to the content. On a phone the view buttons become a fixed bottom bar.
+
 ## Selector bar
 
 The bar at the top switches scope and view without drilling: Company, Branch, Team and Person dropdowns, and
