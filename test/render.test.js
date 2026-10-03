@@ -31,6 +31,12 @@ const __b1=computeBranch(branches[0]).members.find(m=>m.p===__sp).totalProj;if(M
 const __cfg=JSON.stringify(currentCfg());POOL.Sales=7000;applyCfg(DEFAULTS);if(JSON.stringify(currentCfg())!==__cfg){__errs++;console.log('settings round trip failed')}
 // CSV import
 const __m=applySource(SOURCES.find(s=>s.id==='attendance'),'employee,day,status\\n'+__sp.name+',2,a');if(!/1 punches/.test(__m)){__errs++;console.log('csv import failed',__m)}
+// badges: every member gets a ladder; earned entries are well formed
+const __g=computeGroup(),__rk=rankings(__g);let __bn=0;allMembers(__g).forEach(m=>{const l=badgesFor(m,m.brc,__rk);if(!l.length||l.some(x=>!x.name||!x.icon||typeof x.earned!=='boolean'))__errs++;__bn+=l.filter(x=>x.earned).length});console.log('badges earned across the group: '+__bn);
+// stale or edited state is sanitised instead of throwing
+const __stale=[[{level:'person',co:'mg',br:'klm',team:'Sales',person:'nobody'},'team'],[{level:'branch',co:'mg',br:'gone'},'company'],[{level:'team',co:'mg',br:'klm',team:'Nope'},'branch'],[{level:'nope'},'group'],[{level:'messages',msg:{aud:'Sales',cad:'yearly',ch:'whatsapp'}},'messages'],[{level:'admin',adminTab:'nope'},'admin']];
+for(const [st,want] of __stale){Object.assign(state,{co:null,br:null,team:null,person:null},st);try{enforce(state);render();if(state.level!==want){__errs++;console.log('stale state landed on',state.level,'wanted',want,JSON.stringify(st))}}catch(e){__errs++;console.log('stale state threw',JSON.stringify(st),e.message.slice(0,80))}}
+if(state.msg.cad!=='weekly'){__errs++;console.log('bad cadence not reset')}
 console.log(__n+' renders, '+__errs+' failures');
 if(__errs)process.exit(1);
 `;

@@ -1,3 +1,8 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Meubel & Royal Incentive Board</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap">
 <style>
@@ -65,6 +70,11 @@ h1{font:600 34px/1.05 var(--display);margin:0 0 6px;color:var(--brown);text-wrap
 .card>h2 small{font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted);font-size:12.5px}
 .card .body{padding:14px 16px}
 .pill{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:2px 9px;font-size:11.5px;font-weight:600;white-space:nowrap}
+.badge{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:2px 8px;font-size:12px;font-weight:600;background:var(--brass-soft);color:var(--brass-ink);margin:0 4px 4px 0;white-space:nowrap}
+.badge.off{background:var(--row);color:var(--muted);opacity:.75}
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.badge-row{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card2)}
+.badge-row.off{opacity:.55}.badge-row .bi{font-size:22px;line-height:1}.badge-row small{color:var(--muted)}
 .pill.good{background:var(--good-bg);color:var(--good)}.pill.warn{background:var(--warn-bg);color:var(--warn)}.pill.bad{background:var(--bad-bg);color:var(--bad)}.pill.info{background:var(--info-bg);color:var(--info)}.pill.brass{background:var(--brass-soft);color:var(--brass-ink)}
 
 .tw{overflow-x:auto;margin:0 -16px;padding:0 16px}
@@ -188,7 +198,8 @@ textarea.json{width:100%;min-height:110px;background:var(--bg);border:1px solid 
 .check b{display:block}.check small{color:var(--muted)}
 .mask{font:12px ui-monospace,Menlo,Consolas,monospace;color:var(--muted)}
 </style>
-
+</head>
+<body>
 <div class="wrap">
   <header class="top">
     <div class="who">
@@ -198,12 +209,12 @@ textarea.json{width:100%;min-height:110px;background:var(--bg);border:1px solid 
     </div>
     <div class="who-box">
       <label><span>Signed in as</span><span id="roleLbl"></span></label>
-      <select id="selUser"></select>
+      <select id="selUser" aria-label="Signed in as"></select>
       <small id="userNote"></small>
     </div>
     <div class="asof">
       <label><span>As of</span><span id="asofLbl" class="num">18 October 2026</span></label>
-      <input type="range" id="asof" min="1" max="31" value="18">
+      <input type="range" id="asof" min="1" max="31" value="18" aria-label="As of: day of October 2026">
       <small>Sample month: October 2026. Slide to replay the month and watch the predictions tighten.</small>
     </div>
   </header>
@@ -496,6 +507,50 @@ function rankings(g){ // returns {pid:{role, group:{rank,of}, company:{rank,of,n
 }
 function withAsOf(day,f){const keep=asOf;asOf=Math.max(1,day);try{return f()}finally{asOf=keep}}
 
+/* ---------- Badges: recognition only, never a rupee ---------- */
+const BADGES=[
+ {id:'champion',icon:'🥇',name:'Monthly champion',rule:'first in role across the group at month close'},
+ {id:'streak',icon:'🔥',name:'Streak',rule:'on pace today, 7 and 14 days ago'},
+ {id:'sharp',icon:'🎯',name:'Sharpshooter',rule:'conversion at or above 30% for the month'},
+ {id:'guardian',icon:'🛡️',name:'Discount guardian',rule:'no bill above the full-incentive discount band all month'},
+ {id:'clean',icon:'📦',name:'Clean sheet',rule:'100% damage-free deliveries in the month'},
+ {id:'never',icon:'📞',name:'Never missed',rule:'100% follow-ups on time'},
+ {id:'zero',icon:'📑',name:'Zero error',rule:'100% documentation accuracy'},
+ {id:'spotless',icon:'✨',name:'Spotless',rule:'no absence, late punch or early going this month'},
+ {id:'stars',icon:'🌟',name:'Five stars',rule:'branch Google rating 4.5 or more with 2 or more reviews per 10 bills'},
+ {id:'house',icon:'🤝',name:'Full house',rule:'the branch is earning the team pool'},
+];
+const BADGE_MIN=5; // a 100% record needs at least this many events before it counts
+const badgeDef=id=>BADGES.find(b=>b.id===id);
+const _bc=new Map(); // per-render cache of a branch computed as of an earlier day (for streaks)
+function branchAt(br,day){const k=day+'|'+br.id;if(!_bc.has(k))_bc.set(k,withAsOf(day,()=>computeBranch(br)));return _bc.get(k)}
+function branchBadges(b){return [{...badgeDef('stars'),earned:b.vals.grating>=4.5&&b.vals.rev>=2,why:`Google ${b.vals.grating}/5 · ${b.vals.rev.toFixed(1)} reviews per 10 bills`},{...badgeDef('house'),earned:!!b.teamPoolProj,why:b.teamPoolProj?`${b.br.name} is heading for the team pool`:`${b.br.name} is heading for ${pct(b.achProj)} of target`}]}
+function badgesFor(m,b,rk){ // the person's ladder: every badge their role can earn, with earned flag and the reason; rk (rankings) optional
+  const p=m.p, role=p.role, out=[], add=(id,earned,why)=>out.push({...badgeDef(id),earned:!!earned,why});
+  const days=p.att.slice(0,asOf).filter(x=>x!=='o'), misses=days.filter(x=>x!=='p').length;
+  add('spotless',days.length>=BADGE_MIN&&misses===0,misses?`${misses} miss${misses>1?'es':''} so far`:`${days.length} working days clean`);
+  if(role==='Sales'){const live=m.bills.filter(x=>x.status!=='cancelled'), maxDisc=live.reduce((s,x)=>Math.max(s,x.disc),0);
+    add('sharp',live.length>=BADGE_MIN&&m.vals.conv>=30,`conversion ${pct(m.vals.conv)} against 30%`);
+    add('guardian',live.length>=3&&maxDisc<=BANDS[0].max,live.length?`highest discount ${maxDisc}% against ${BANDS[0].max}%`:'no bills yet')}
+  if(role==='CRE'){add('sharp',m.logged>=10&&m.vals.convLog>=30,`${pct(m.vals.convLog)} of logged walk-ins converted, against 30%`);
+    add('never',m.follows.length>=BADGE_MIN&&m.vals.follow>=100,`${pct(m.vals.follow)} follow-ups on time`)}
+  if(role==='Logistics')add('clean',m.deliv.length>=BADGE_MIN&&m.vals.dmg>=100,`${pct(m.vals.dmg)} damage-free over ${m.deliv.length} deliveries`);
+  if(role==='Back office')add('zero',m.docs.length>=BADGE_MIN&&m.vals.docs>=100,`${pct(m.vals.docs)} of ${m.docs.length} documents accurate`);
+  if(W[role]){const onPace=x=>x?(role==='Sales'?x.soProj>=x.target:x.sc.score>=85):false;
+    if(asOf>=15){const weeks=[m,7,14].map(d=>typeof d==='number'?branchAt(b.br,asOf-d).members.find(x=>x.p.id===p.id):d).map(onPace);add('streak',weeks.every(Boolean),`${weeks.filter(Boolean).length} of the last 3 weekly checks on pace`)}
+    else add('streak',false,'decided from the 15th')}
+  branchBadges(b).forEach(x=>{if(x.id==='house'||role==='BM'||role==='SM')out.push(x)});
+  const r=rk&&rk[p.id];if(r)add('champion',asOf>=DAYS&&r.group.rank===1,`#${r.group.rank} of ${r.group.of} ${r.role} in the group${asOf>=DAYS?'':', decided on the 31st'}`);
+  return out;
+}
+const badgeChip=x=>`<span class="badge ${x.earned?'on':'off'}" title="${esc(x.name)}: ${esc(x.rule)}${x.why?' · '+esc(x.why):''}">${x.icon}</span>`;
+function badgeLadder(list){return `<div class="badges">${list.map(x=>`<div class="badge-row ${x.earned?'on':'off'}"><span class="bi">${x.icon}</span><div><b>${esc(x.name)}</b>${x.earned?' <span class="pill good">earned</span>':''}<br><small>${esc(x.rule)}${x.why?' · '+esc(x.why):''}</small></div></div>`).join('')}</div>`}
+function badgeWall(g){const rk=rankings(g),ms=allMembers(g),bs=g.companies.flatMap(c=>c.branches),earned=new Map();
+  ms.forEach(m=>badgesFor(m,m.brc,rk).filter(x=>x.earned).forEach(x=>{if(!earned.has(x.id))earned.set(x.id,[]);earned.get(x.id).push(m)}));
+  const rows=BADGES.map(d=>{const names=(d.id==='stars'||d.id==='house')?bs.filter(b=>branchBadges(b).some(x=>x.id===d.id&&x.earned)).map(b=>b.br.name):(earned.get(d.id)||[]).map(m=>`${m.p.name} (${m.brc.br.name})`);
+    return `<tr class="${names.length?'':'off'}"><td><span class="badge ${names.length?'on':'off'}">${d.icon} ${esc(d.name)}</span><br><small style="color:var(--muted)">${esc(d.rule)}</small></td><td class="r"><b>${names.length}</b></td><td style="white-space:normal">${names.length?names.slice(0,8).join(', ')+(names.length>8?` and ${names.length-8} more`:''):'<span style="color:var(--muted)">nobody yet</span>'}</td></tr>`}).join('');
+  return `<div class="tw"><table><thead><tr><th>Badge</th><th class="r">Holders</th><th>Who</th></tr></thead><tbody>${rows}</tbody></table></div><p class="note">Badges carry no rupee value: payouts come only from the scorecard, the per-bill rules, the pools and approved adjustments.</p>`}
+
 /* ---------- WhatsApp summary ---------- */
 function waText(m,b,rk){
   const p=m.p, br=b.br, co=br.company, first=p.name.split(' ')[0], isMgmt=p.role==='BM'||p.role==='SM';
@@ -512,6 +567,7 @@ function waText(m,b,rk){
     if(good.length)L.push(`✅ Doing well: ${good.map(x=>`${x.l.split(' (')[0].toLowerCase()} ${fmt(x.u,x.v)}`).join(', ')}`);
     if(bad.length)L.push(`⚠️ Lagging: ${bad.map(x=>`${x.l.split(' (')[0].toLowerCase()} ${fmt(x.u,x.v)} (${P[x.k].dir==='down'?'limit':'target'} ${fmt(x.u,x.t)}) −${inr(m.pool*x.lost/100)}`).join('; ')}`);
     if(m.gate)L.push(`⛔ Attendance ${pct(m.vals.att)} is under ${GATES.attendance}%: scorecard pay is zero until it recovers`)}
+  const bd=badgesFor(m,b,rk).filter(x=>x.earned);if(bd.length)L.push(`🏅 Badges: ${bd.map(x=>x.icon+' '+x.name).join(', ')}`);
   const pushes=[];
   if(p.role==='Sales'&&m.soProj<m.target)pushes.push(`${inrL(m.target-m.so)} more SO value = ${inrL((m.target-m.so)/Math.max(1,DAYS-asOf))} a day for ${DAYS-asOf} days`);
   if(p.role==='Sales'){const prov=m.bills.filter(x=>x.status!=='paid'&&x.status!=='cancelled').sort((x,y)=>y.full-x.full)[0];if(prov)pushes.push(`get ${prov.no} ${prov.status==='booked'?'delivered & paid':'paid'} (+${inr(prov.full)})`)}
@@ -940,7 +996,25 @@ function homeState(){const r=role();if(r.scope==='group')return {level:'group'};
   if(r.scope==='branch')return {level:'branch',co:br.company.id,br:br.id};
   if(r.scope==='team')return {level:'team',co:br.company.id,br:br.id,team:'Sales'};
   return {level:'person',co:br.company.id,br:br.id,team:people.find(p=>p.id===ME.person)?.role||'Sales',person:ME.person}}
+const LEVELS=['group','company','branch','team','person','leaderboard','messages','settings','total','admin'],TEAMS=['Sales','CRE','Logistics','Back office','Management'];
+function sane(st){ // drop whatever a stale saved state or an edited address carries that no longer exists, then fall to the deepest level that still has its ids
+  if(st.level==='email')st.level='messages';
+  if(!LEVELS.includes(st.level))st.level='group';
+  if(st.co&&!GROUP.companies.some(c=>c.id===st.co))st.co=null;
+  let br=st.br?branches.find(b=>b.id===st.br):null;if(st.br&&!br)st.br=null;
+  if(br&&br.company.id!==st.co)st.co=br.company.id;
+  if(st.team&&!TEAMS.includes(st.team))st.team=null;
+  if(st.person){const p=people.find(x=>x.id===st.person);if(!p||(br&&p.branch!==br))st.person=null;else{br=p.branch;st.br=br.id;st.co=br.company.id;if(!st.team)st.team=p.role==='BM'||p.role==='SM'?'Management':p.role}}
+  const need={person:['co','br','team','person'],team:['co','br','team'],branch:['co','br'],company:['co']},up={person:'team',team:'branch',branch:'company',company:'group'};
+  while(need[st.level]&&need[st.level].some(k=>!st[k]))st.level=up[st.level];
+  if(!st.msg||!AUDIENCES.some(a=>a.id===st.msg.aud)||!CADS.includes(st.msg.cad)||!CHANNELS.some(c=>c[0]===st.msg.ch))st.msg={aud:'Sales',cad:'weekly',ch:'whatsapp'};
+  if(!['Branches',...TEAMS].includes(st.lbTab))st.lbTab='Sales';
+  if(!['policy','adjust','wiring','jobs','close','audit'].includes(st.adminTab))st.adminTab='policy';
+  if(!['bm','md'].includes(st.emailMode))st.emailMode='bm';
+  return st;
+}
 function enforce(st){ // clamp a requested state to what the signed-in role may see
+  sane(st);
   const r=role();
   if(!can(st.level==='email'?'messages':['leaderboard','messages','settings','total','admin'].includes(st.level)?st.level:'board')){Object.assign(st,homeState());return st}
   if(r.scope==='group')return st;
@@ -1063,7 +1137,8 @@ function viewGroup(){
   <div class="grid"><div class="card"><h2>Further push</h2><div class="body"><ul class="list">${push.join('')}</ul></div></div><div class="card"><h2>What lags</h2><div class="body"><ul class="list">${lag.join('')||'<li class="empty">Every branch is on pace.</li>'}</ul></div></div></div>
   <div class="card"><h2>Leaders this month <small>top three per role across the group</small></h2><div class="body"><div class="tw"><table><thead><tr><th>Role</th><th>1st</th><th>2nd</th><th>3rd</th></tr></thead><tbody>
     ${['Sales','CRE','Logistics','Back office'].map(r=>{const l=allMembers(g).filter(m=>roleKey(m)===r).sort((a,b)=>rankValue(b)-rankValue(a)).slice(0,3);return `<tr><td><b>${r}</b></td>${l.map((m,i)=>`<td class="link" data-co="${m.co.id}" data-br="${m.brc.br.id}" data-team="${r}" data-person="${m.p.id}" style="cursor:pointer"><span class="who-cell"><span class="rank r${i+1}">${i+1}</span><span><b>${m.p.name}</b><br><small style="color:var(--muted)">${m.brc.br.name} · ${m.sc.score.toFixed(0)} · ${inr(m.totalProj)}</small></span></span></td>`).join('')}</tr>`}).join('')}
-  </tbody></table></div><p class="note">Full monthly leaderboard, by branch and by role, under the 🏆 button above.</p></div></div>`;
+  </tbody></table></div><p class="note">Full monthly leaderboard, by branch and by role, under the 🏆 button above.</p></div></div>
+  <div class="card"><h2>Badge wall <small>recognition only · earned so far this month</small></h2><div class="body">${badgeWall(g)}</div></div>`;
   wireRows();
   $('#view').querySelectorAll('td.link').forEach(td=>td.addEventListener('click',()=>{const d=td.dataset;go({level:'person',co:d.co,br:d.br,team:d.team,person:d.person})}));
 }
@@ -1221,9 +1296,10 @@ function viewPerson(){
   const strip=`<div class="strip">${p.att.map((s,i)=>`<i class="${i<asOf?s:'f'}" title="Oct ${i+1}: ${{p:'present',l:'late punch',e:'early going',a:'absent',o:'weekly off'}[s]}"></i>`).join('')}</div><div class="legend"><span><i class="sw" style="background:var(--good)"></i>Present</span><span><i class="sw" style="background:var(--warn)"></i>Late punch</span><span><i class="sw" style="background:var(--info)"></i>Early going</span><span><i class="sw" style="background:var(--bad)"></i>Absent</span><span><i class="sw" style="background:var(--line)"></i>Weekly off</span></div>`;
   if(m.gate)lag.unshift(li('bad','⛔',`Attendance ${pct(m.vals.att)} is under the ${GATES.attendance}% gate: scorecard payout is zero`,`Every remaining day present moves it; the per-bill policy incentive is not gated.`,'−'+inr(m.pool*Math.min(m.sc.score,120)/100)));
   if(!b.teamPoolProj)push.push(li('info','◎',`Team pool share of ${inr(POOL.team/b.members.length)} unlocks when ${br.name} reaches ${GATES.teamAch}%`,`Branch is heading for ${pct(b.achProj)}. Walk-ins converted and commitments kept are how every role moves it.`,''));
-  const rk=rankings(computeGroup()), r=rk[p.id];
+  const rk=rankings(computeGroup()), r=rk[p.id], badges=badgesFor(m,b,rk);
   const wa=waText(m,b,rk);
   $('#view').innerHTML=`<div class="tiles">${tiles}${tile('Rank',`#${r.company.rank}`,`of ${r.company.of} ${roleKey(m)} in ${co.name} · #${r.group.rank} of ${r.group.of} in the group`,'','brass')}</div>${extra}
+  <div class="card"><h2>Badge ladder <small>recognition only · ${badges.filter(x=>x.earned).length} of ${badges.length} earned so far</small></h2><div class="body">${badgeLadder(badges)}</div></div>
   ${isMgmt?'':`<div class="card"><h2>Your scorecard <small>${p.role} · ${m.sc.rows.length} attributes</small></h2><div class="body">${scoreTable(m.sc)}</div></div>`}
   <div class="card"><h2>WhatsApp summary <small>ready to send, as of ${asOf} Oct</small></h2><div class="body">${waBlock(wa,p.id)}</div></div>
   ${p.role==='Sales'?`<div class="card"><h2>Weekly team WhatsApp <small>the sales team group, every Saturday evening</small></h2><div class="body">${waBlock(waSalesText(weeklySales(b)),'wsales-'+p.id)}</div></div>`:''}
@@ -1242,7 +1318,7 @@ function viewLeaderboard(){
   const g=computeGroup(), scopeName=state.br?branches.find(b=>b.id===state.br).name:state.co?GROUP.companies.find(c=>c.id===state.co).name:'the group';
   $('#h1').textContent=`Leaderboard, ${MONTH}`;
   const inScope=m=>state.br?m.brc.br.id===state.br:state.co?m.co.id===state.co:true;
-  const ms=allMembers(g).filter(inScope);
+  const ms=allMembers(g).filter(inScope), rk=rankings(g);
   const prevDay=asOf-7, prevG=prevDay>=1?withAsOf(prevDay,computeGroup):null;
   const prevRank={};
   const tabs=['Branches','Sales','CRE','Logistics','Back office','Management'];
@@ -1252,8 +1328,8 @@ function viewLeaderboard(){
   if(tab==='Branches'){
     const bs=g.companies.flatMap(c=>c.branches.filter(b=>!state.co||c.co.id===state.co).map(b=>({...b,co:c.co}))).sort((a,b)=>(b.sc.score*1000+b.achProj)-(a.sc.score*1000+a.achProj));
     if(prevG){g.companies.flatMap(c=>c.branches).forEach(()=>{});const pb=prevG.companies.flatMap(c=>c.branches.filter(b=>!state.co||c.co.id===state.co)).sort((a,b)=>(b.sc.score*1000+b.achProj)-(a.sc.score*1000+a.achProj));pb.forEach((b,i)=>prevRank[b.br.id]=i+1)}
-    table=`<table><thead><tr><th>#</th><th>Branch</th><th>Company</th><th class="r">Score</th><th class="r">Achievement</th><th class="r">Expected</th><th class="r">GP</th><th class="r">Conv.</th><th class="r">Google</th><th class="r">Audit</th><th class="r">Team pool</th></tr></thead><tbody>
-      ${bs.map((b,i)=>`<tr class="link" data-co="${b.co.id}" data-br="${b.br.id}"><td><span class="rank r${i+1}">${i+1}</span>${mv(i+1,prevRank[b.br.id])}</td><td><b>${b.br.name}</b></td><td><span class="dot" style="background:${b.co.color}"></span> ${b.co.name}</td><td class="r"><b>${b.sc.score.toFixed(0)}</b></td><td class="r">${achPill(b.vals.ach)}</td><td class="r">${pct(b.achProj)}</td><td class="r">${pct(b.vals.gp)}</td><td class="r">${pct(b.vals.conv)}</td><td class="r">${b.vals.grating}</td><td class="r">${b.vals.audit}</td><td class="r">${b.teamPoolProj?'<span class="pill good">Unlocked</span>':'<span class="pill warn">Locked</span>'}</td></tr>`).join('')}</tbody></table>`;
+    table=`<table><thead><tr><th>#</th><th>Branch</th><th>Company</th><th class="r">Score</th><th class="r">Achievement</th><th class="r">Expected</th><th class="r">GP</th><th class="r">Conv.</th><th class="r">Google</th><th class="r">Audit</th><th class="r">Team pool</th><th>Badges</th></tr></thead><tbody>
+      ${bs.map((b,i)=>`<tr class="link" data-co="${b.co.id}" data-br="${b.br.id}"><td><span class="rank r${i+1}">${i+1}</span>${mv(i+1,prevRank[b.br.id])}</td><td><b>${b.br.name}</b></td><td><span class="dot" style="background:${b.co.color}"></span> ${b.co.name}</td><td class="r"><b>${b.sc.score.toFixed(0)}</b></td><td class="r">${achPill(b.vals.ach)}</td><td class="r">${pct(b.achProj)}</td><td class="r">${pct(b.vals.gp)}</td><td class="r">${pct(b.vals.conv)}</td><td class="r">${b.vals.grating}</td><td class="r">${b.vals.audit}</td><td class="r">${b.teamPoolProj?'<span class="pill good">Unlocked</span>':'<span class="pill warn">Locked</span>'}</td><td>${branchBadges(b).filter(x=>x.earned).map(badgeChip).join('')||'<span style="color:var(--muted)">—</span>'}</td></tr>`).join('')}</tbody></table>`;
   } else {
     const list=ms.filter(m=>roleKey(m)===tab).sort((a,b)=>rankValue(b)-rankValue(a));
     if(prevG){allMembers(prevG).filter(inScope).filter(m=>roleKey(m)===tab).sort((a,b)=>rankValue(b)-rankValue(a)).forEach((m,i)=>prevRank[m.p.id]=i+1)}
@@ -1262,8 +1338,8 @@ function viewLeaderboard(){
       :tab==='Logistics'?[['On time',m=>pct(m.vals.ontime)],['Damage-free',m=>pct(m.vals.dmg)],['Commitments',m=>pct(m.vals.commit)],['Deliveries',m=>m.deliv.length]]
       :tab==='Back office'?[['Collection',m=>pct(m.vals.coll)],['Documents',m=>pct(m.vals.docs)],['Calls on time',m=>pct(m.vals.calls)],['Neatness',m=>fmt('r5',m.vals.neat)]]
       :[['Role',m=>m.p.role==='BM'?'Branch Manager':'Sales Manager'],['Branch ach. exp.',m=>pct(m.brc.achProj)],['Branch score',m=>m.brc.sc.score.toFixed(0)],['Gate',m=>m.brc.achProj>=GATES.managerAch?'<span class="pill good">Open</span>':'<span class="pill bad">Closed</span>']];
-    table=`<table><thead><tr><th>#</th><th>Person</th><th>Branch</th>${key.map(k=>`<th class="r">${k[0]}</th>`).join('')}<th class="r">Attendance</th>${tab==='Management'?'':'<th class="r">Score</th>'}<th class="r">Expected incentive</th></tr></thead><tbody>
-      ${list.map((m,i)=>`<tr class="link ${m.gate?'off':''}" data-co="${m.co.id}" data-br="${m.brc.br.id}" data-team="${roleKey(m)}" data-person="${m.p.id}"><td><span class="rank r${i+1}">${i+1}</span>${mv(i+1,prevRank[m.p.id])}</td><td><span class="who-cell">${av(m.p.name)}<b>${m.p.name}</b></span></td><td><span class="dot" style="background:${m.co.color}"></span> ${m.brc.br.name}</td>${key.map(k=>`<td class="r">${k[1](m)}</td>`).join('')}<td class="r">${pct(m.vals.att)}${m.gate?' <span class="pill bad">gated</span>':''}</td>${tab==='Management'?'':`<td class="r"><b>${m.sc.score.toFixed(0)}</b></td>`}<td class="r"><b>${inr(m.totalProj)}</b></td></tr>`).join('')}</tbody></table>`;
+    table=`<table><thead><tr><th>#</th><th>Person</th><th>Branch</th><th>Badges</th>${key.map(k=>`<th class="r">${k[0]}</th>`).join('')}<th class="r">Attendance</th>${tab==='Management'?'':'<th class="r">Score</th>'}<th class="r">Expected incentive</th></tr></thead><tbody>
+      ${list.map((m,i)=>`<tr class="link ${m.gate?'off':''}" data-co="${m.co.id}" data-br="${m.brc.br.id}" data-team="${roleKey(m)}" data-person="${m.p.id}"><td><span class="rank r${i+1}">${i+1}</span>${mv(i+1,prevRank[m.p.id])}</td><td><span class="who-cell">${av(m.p.name)}<b>${m.p.name}</b></span></td><td><span class="dot" style="background:${m.co.color}"></span> ${m.brc.br.name}</td><td>${badgesFor(m,m.brc,rk).filter(x=>x.earned).map(badgeChip).join('')||'<span style="color:var(--muted)">—</span>'}</td>${key.map(k=>`<td class="r">${k[1](m)}</td>`).join('')}<td class="r">${pct(m.vals.att)}${m.gate?' <span class="pill bad">gated</span>':''}</td>${tab==='Management'?'':`<td class="r"><b>${m.sc.score.toFixed(0)}</b></td>`}<td class="r"><b>${inr(m.totalProj)}</b></td></tr>`).join('')}</tbody></table>`;
   }
   const top=['Sales','CRE','Logistics','Back office'].map(r=>{const l=ms.filter(m=>roleKey(m)===r).sort((a,b)=>rankValue(b)-rankValue(a))[0];return l?tile(`Top ${r}`,l.p.name,`${l.brc.br.name} · score ${l.sc.score.toFixed(0)} · ${inr(l.totalProj)}`,'','brass'):''}).join('');
   const topBr=g.companies.flatMap(c=>c.branches.filter(b=>!state.co||c.co.id===state.co)).sort((a,b)=>b.sc.score-a.sc.score)[0];
@@ -1922,6 +1998,7 @@ function rules(){
   <div><h4>Attainment</h4><ul><li>Higher-is-better: value ÷ target, capped at 100% (achievement 120%).</li><li>Lower-is-better: full points at or under the limit, falling to zero at double the limit.</li><li>Count targets (customers, appreciations) are pro-rated to the day.</li><li>Predictions: pace so far × days in month; chance of target from a normal approximation that narrows as the month runs.</li></ul></div>`;
 }
 function render(){
+  _bc.clear();
   $('#asofLbl').textContent=`${asOf} October 2026`;
   crumbs();
   if(state.level==='email'){state.level='messages'}
@@ -1932,3 +2009,5 @@ $('#asof').addEventListener('input',e=>{asOf=+e.target.value;render()});
 try{const s=JSON.parse(localStorage.getItem('mr-state')||'null');if(s&&s.level&&(!s.person||people.some(p=>p.id===s.person)))Object.assign(state,s);if(!state.lbTab)state.lbTab='Sales';if(!state.emailMode)state.emailMode='bm';if(!state.msg||!state.msg.aud)state.msg={aud:'Sales',cad:'weekly',ch:'whatsapp'};if(!state.adminTab)state.adminTab='policy'}catch(_){}
 rules();render();
 </script>
+</body>
+</html>

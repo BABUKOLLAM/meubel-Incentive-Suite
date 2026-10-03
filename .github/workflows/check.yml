@@ -18,7 +18,9 @@ jobs:
         with:
           node-version: "22"
       - name: Syntax
-        run: node -e "const h=require('fs').readFileSync('index.html','utf8');new Function(h.match(/<script>([\s\S]*)<\/script>/)[1])" 2>&1 | head -5 || true
+        run: |
+          node -e "const fs=require('fs');const h=fs.readFileSync('index.html','utf8');fs.writeFileSync('board.js',h.match(/<script>([\s\S]*)<\/script>/)[1])"
+          node --check board.js
       - name: Render every view under every role
         run: node test/render.test.js
       - name: Nothing that looks like a secret is committed

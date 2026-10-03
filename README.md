@@ -39,7 +39,7 @@ placeholders for leadership to confirm.
 ## How a rupee is computed
 
 - **Scorecard pay** = role pool × score ÷ 100 (score may reach 120 where achievement exceeds target).
-  Pools: Sales ₹6,000, Logistics ₹4,000, Back office ₹4,000. Attendance under 85% gates it to zero.
+  Pools: Sales ₹6,000, CRE ₹4,000, Logistics ₹4,000, Back office ₹4,000. Attendance under 85% gates it to zero.
 - **CRE also earn the policy override**: 10% of the sales incentive on walk-ins they logged (paid by the company,
   not from the salesperson), plus the follow-up discipline bonus of ₹2,000: full at 95% on time, half at 85%.
 - **Sales also earn the policy per-bill incentive** from the Corporate Incentive Structure draft:
@@ -139,6 +139,28 @@ The 🏆 button opens the leaderboard for the current scope (group, company or b
 Sales, Logistics, Back office and Management. Rank is by scorecard, then expected incentive (management by
 expected incentive). Each row shows movement against the rank seven days earlier. The group page also lists the
 top three per role.
+
+## Badge ladder
+
+Recognition without a rupee attached. Every person's page carries a badge ladder, every leaderboard row shows
+the badges earned, the personal WhatsApp summary lists them, and the group page carries a badge wall with the
+holders of each:
+
+| Badge | Earned when | Who |
+|---|---|---|
+| 🥇 Monthly champion | first in role across the group at month close | every role |
+| 🔥 Streak | on pace today, 7 and 14 days ago (Sales: projection meets target; others: scorecard 85+) | scored roles, from the 15th |
+| 🎯 Sharpshooter | conversion at or above 30% for the month | Sales, CRE |
+| 🛡️ Discount guardian | no bill above the full-incentive discount band all month | Sales |
+| 📦 Clean sheet | 100% damage-free deliveries | Logistics |
+| 📞 Never missed | 100% follow-ups on time | CRE |
+| 📑 Zero error | 100% documentation accuracy | Back office |
+| ✨ Spotless | no absence, late punch or early going | everyone |
+| 🌟 Five stars | branch Google rating 4.5+ with 2+ reviews per 10 bills | branch, BM and SM |
+| 🤝 Full house | the branch is earning the team pool | every member |
+
+A 100% record needs at least five events before it counts. Badges change nothing in the payout; the rules live in
+`BADGES` and `badgesFor` beside the scorecard engine.
 
 ## WhatsApp summary
 
