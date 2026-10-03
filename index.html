@@ -1565,9 +1565,10 @@ function viewEmailMd(){
 function wireCopy(text,html,subject){
   const done=m=>{$('#cpDone').textContent=m};
   const copyText=(t)=>{try{navigator.clipboard.writeText(t).then(()=>done('Copied'),()=>done('Clipboard refused; select the preview and copy'))}catch(_){done('Clipboard refused; select the preview and copy')}};
-  $('#cpText').addEventListener('click',()=>copyText(text));
-  $('#cpSubj').addEventListener('click',()=>copyText(subject));
-  $('#cpHtml').addEventListener('click',()=>{const full=`<!doctype html><html><body style="margin:0;background:#E9E4DB;padding:18px">${html}</body></html>`;
+  const bT=$('#cpText'),bS=$('#cpSubj'),bH=$('#cpHtml');
+  if(bT)bT.addEventListener('click',()=>copyText(text));
+  if(bS)bS.addEventListener('click',()=>copyText(subject));
+  if(bH)bH.addEventListener('click',()=>{const full=`<!doctype html><html><body style="margin:0;background:#E9E4DB;padding:18px">${html}</body></html>`;
     try{if(typeof ClipboardItem!=='undefined'&&navigator.clipboard.write){navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([full],{type:'text/html'}),'text/plain':new Blob([text],{type:'text/plain'})})]).then(()=>done('Copied as rich HTML; paste into a new mail'),()=>copyText(full))}else copyText(full)}catch(_){copyText(full)}});
 }
 /* ---------- settings: policy values, weights, targets, prediction, data inputs ---------- */
