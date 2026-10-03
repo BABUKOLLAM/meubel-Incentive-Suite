@@ -1,7 +1,7 @@
 # Incentive Board Manual
 
 `Incentive-Board-Manual-v1.2.pdf` is the settings manual cum user manual for administrators and top management:
-63 pages, A4, with a contents page carrying page numbers, a "How to read this document" page, one section per
+62 pages, A4, with a contents page carrying page numbers, a "How to read this document" page, one section per
 page start, sticky notes, lenses, policy rules and gamification call-outs, numbered figures and running headers.
 
 ## Rebuild

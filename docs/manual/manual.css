@@ -113,8 +113,8 @@ figcaption b { color: var(--brass-ink); }
 .tocg li { margin: 0; line-height: 1.35; text-align: left; }
 
 /* ---------- how to read ---------- */
-.howto .lede { font-size: 11pt; line-height: 1.55; color: var(--espresso); }
-.legend { display: grid; grid-template-columns: 1fr 1fr; gap: 6pt 10pt; }
+.howto .lede { font-size: 10.6pt; line-height: 1.5; color: var(--espresso); }
+.legend { display: grid; grid-template-columns: 1fr 1fr; gap: 4pt 10pt; }
 .legend .call { margin: 4pt 0; transform: none; }
 .legend .call.sticky { margin: 6pt 2pt 4pt; }
 ul.conv li { margin-bottom: 5pt; }

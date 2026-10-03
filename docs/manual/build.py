@@ -271,12 +271,10 @@ def build_body(toc_pages):
         parts.append('<aside class="call %s"><div class="tag"><span class="ic">%s</span>%s</div><p>%s</p></aside>' % (k, ic, l, d))
     parts.append('</div>')
     parts.append('<h3 class="plain">Conventions</h3><ul class="conv">'
-                 '<li><mark>Highlighted figures</mark> inside sticky notes and policy rules are the values that decide a payout; every one of them is editable in ⚙️ Settings unless marked as a policy rule.</li>'
-                 '<li><b>Figure n.</b> captions number every screenshot; all are from the sample build, so names, branches and rupee amounts are generated and will differ from the live board.</li>'
-                 '<li><span class="chip-inline">▶ Procedure</span> headings mark step-by-step instructions for administrators; the numbered steps are meant to be followed in order.</li>'
-                 '<li><span class="chip-inline">Q</span> marks a question in the FAQ and RAQ sections.</li>'
-                 '<li>Each numbered section starts on a new page, so a section can be printed and handed out on its own. Page numbers in the contents refer to the footer numbering.</li>'
-                 '<li>Board, Lens, Settings, Admin in the contents name the screen a section is about; the selector bar at the top of the board opens each.</li>'
+                 '<li><mark>Highlighted figures</mark> inside sticky notes and policy rules are the values that decide a payout; each is editable in ⚙️ Settings unless marked as a policy rule.</li>'
+                 '<li><b>Figure n.</b> numbers every screenshot; all are from the sample build, so names, branches and rupee amounts are generated.</li>'
+                 '<li><span class="chip-inline">▶ Procedure</span> marks step-by-step instructions for administrators, to be followed in order; <span class="chip-inline">Q</span> marks a question in the FAQ and RAQ.</li>'
+                 '<li>Each numbered section starts on a new page and can be handed out alone; the contents page numbers match the footer. Board, Lens, Settings and Admin in the contents name the screen a section is about.</li>'
                  '</ul></section>')
     # ---- sections
     fig_no[0] = 0

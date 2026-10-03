@@ -17,7 +17,7 @@ One board pays every role from the same written policy, shows each person their 
 | Administrators (tech@bpropms.com, process@bpropms.com) | Settings manual, Data inputs, Admin console | Operating rhythm, RAQ, Sticky notes |
 | Consultant team | Total view, Admin console, Operating rhythm | Everything else |
 
-Designed and developed by **Dr. Babu B., Team Bpro Consulting & Technologies** · [www.drbabu.in](https://www.drbabu.in) · [www.bpropms.com](https://www.bpropms.com). Prepared for Meubel Grande and Royal Group. The live board is at https://claude.ai/artifact/8ErnPugKAfWWWcia8jhCKB and the source at https://github.com/BABUKOLLAM/meubel-Incentive-Suite.
+Designed and developed by **Dr. Babu B., Team Bpro Consulting & Technologies** · [www.drbabu.in](https://www.drbabu.in) · [www.bpropms.com](https://www.bpropms.com). Prepared for Meubel Grande and Royal Group. The live board is at https://claude.ai/artifact/HHjKj4Kdhd256YJDCWPTdJ and the source at https://github.com/BABUKOLLAM/meubel-Incentive-Suite.
 
 ## 📑 Contents
 
