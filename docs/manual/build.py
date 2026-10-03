@@ -274,6 +274,7 @@ def build_body(toc_pages):
                  '<li><mark>Highlighted figures</mark> inside sticky notes and policy rules are the values that decide a payout; each is editable in ⚙️ Settings unless marked as a policy rule.</li>'
                  '<li><b>Figure n.</b> numbers every screenshot; all are from the sample build, so names, branches and rupee amounts are generated.</li>'
                  '<li><span class="chip-inline">▶ Procedure</span> marks step-by-step instructions for administrators, to be followed in order; <span class="chip-inline">Q</span> marks a question in the FAQ and RAQ.</li>'
+                 '<li>Amounts are Indian rupees with Indian digit grouping (₹1,30,680); lakh and crore are written in words (₹20.62 lakh, ₹1.07 crore); percentages carry one decimal; all numerals are lining figures.</li>'
                  '<li>Each numbered section starts on a new page and can be handed out alone; the contents page numbers match the footer. Board, Lens, Settings and Admin in the contents name the screen a section is about.</li>'
                  '</ul></section>')
     # ---- sections

@@ -13,7 +13,7 @@
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
-body { font: 10.4pt/1.5 var(--sans); color: var(--ink); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { font-variant-numeric: lining-nums; font: 10.4pt/1.5 var(--sans); color: var(--ink); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 main { padding: 0 2mm; }
 p, li, td, th, figcaption, .call p { text-align: justify; hyphens: auto; -webkit-hyphens: auto; }
 th, .num, .tn, .tp, .tag, h1, h2, h3, .toc-list li, .qa .q, .band { text-align: left; hyphens: none; }
@@ -61,7 +61,7 @@ section.toc { break-before: auto; page-break-before: auto; }
 .call.note { background: var(--ivory); border-left: 4pt solid var(--brass); }
 
 /* ---------- tables ---------- */
-table { width: 100%; border-collapse: collapse; margin: 6pt 0 10pt; font-size: 9.3pt; line-height: 1.35; break-inside: auto; }
+table { font-variant-numeric: lining-nums tabular-nums; width: 100%; border-collapse: collapse; margin: 6pt 0 10pt; font-size: 9.3pt; line-height: 1.35; break-inside: auto; }
 thead { display: table-header-group; }
 tr { break-inside: avoid; page-break-inside: avoid; }
 th { background: var(--espresso); color: #fff; font-weight: 700; padding: 5pt 6pt; font-size: 8.4pt; letter-spacing: .05em; text-transform: uppercase; vertical-align: bottom; }

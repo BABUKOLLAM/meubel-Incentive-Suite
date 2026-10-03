@@ -162,6 +162,12 @@ holders of each:
 A 100% record needs at least five events before it counts. Badges change nothing in the payout; the rules live in
 `BADGES` and `badgesFor` beside the scorecard engine.
 
+## Figures and formats
+
+Amounts are Indian rupees with Indian digit grouping (₹1,30,680); lakh and crore are written in words
+(₹20.62 lakh, ₹1.07 crore); percentages carry one decimal. Every numeral is a lining figure (the display font's
+old-style numerals are switched off), tabular in tiles and table columns so amounts align.
+
 ## Month history, statements and exports
 
 - **History**: the group, every branch and every person carry a history card (achievement, score, GP, payout;
