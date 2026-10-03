@@ -75,6 +75,10 @@ h1{font:600 34px/1.05 var(--display);margin:0 0 6px;color:var(--brown);text-wrap
 .badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
 .badge-row{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card2)}
 .badge-row.off{opacity:.55}.badge-row .bi{font-size:22px;line-height:1}.badge-row small{color:var(--muted)}
+#print{display:none}
+@media print{body>.wrap{display:none!important}#print{display:block}body{background:#fff;color:#111}.stmt{page-break-after:always;padding:24px 28px;font:12.5px/1.45 Arial,Helvetica,sans-serif;color:#111}.stmt:last-child{page-break-after:auto}.stmt h1{font:700 20px/1.2 Georgia,serif;margin:0 0 2px}.stmt .sub{color:#555;margin:0 0 14px}.stmt table{width:100%;border-collapse:collapse;margin:10px 0 14px}.stmt th,.stmt td{border-bottom:1px solid #ddd;padding:6px 8px;text-align:left;vertical-align:top}.stmt th{background:#f3eee6;font-size:11px;letter-spacing:.06em;text-transform:uppercase}.stmt td.r,.stmt th.r{text-align:right}.stmt tr.total td{font-weight:700;border-top:2px solid #333;border-bottom:none}.stmt .sig{display:flex;gap:40px;margin-top:36px}.stmt .sig div{flex:1;border-top:1px solid #333;padding-top:6px;font-size:11px;color:#555}.stmt .note{font-size:11px;color:#555}}
+body.tv header.top,body.tv #toolbar,body.tv #crumbs,body.tv details,body.tv .foot{display:none}body.tv .wrap{max-width:none;padding-top:10px}body.tv table{font-size:17px}body.tv .card h2{font-size:17px}body.tv .tiles .v{font-size:30px}
+.hbar{display:inline-block;height:9px;border-radius:4px;background:var(--brass);vertical-align:middle;margin-right:6px;min-width:2px}.hbar.cur{background:var(--info)}
 .pill.good{background:var(--good-bg);color:var(--good)}.pill.warn{background:var(--warn-bg);color:var(--warn)}.pill.bad{background:var(--bad-bg);color:var(--bad)}.pill.info{background:var(--info-bg);color:var(--info)}.pill.brass{background:var(--brass-soft);color:var(--brass-ink)}
 
 .tw{overflow-x:auto;margin:0 -16px;padding:0 16px}
@@ -229,6 +233,7 @@ textarea.json{width:100%;min-height:110px;background:var(--bg);border:1px solid 
   <p class="foot">All people, branches and figures are generated samples. Pools, weights, targets and gates are placeholders awaiting leadership confirmation. <b>Prepared by Bpro</b> for Meubel Grande.</p>
 </div>
 
+<div id="print" aria-hidden="true"></div>
 <script>
 /* =========================================================
    1. Attributes, weights, targets, pools
@@ -550,6 +555,81 @@ function badgeWall(g){const rk=rankings(g),ms=allMembers(g),bs=g.companies.flatM
   const rows=BADGES.map(d=>{const names=(d.id==='stars'||d.id==='house')?bs.filter(b=>branchBadges(b).some(x=>x.id===d.id&&x.earned)).map(b=>b.br.name):(earned.get(d.id)||[]).map(m=>`${m.p.name} (${m.brc.br.name})`);
     return `<tr class="${names.length?'':'off'}"><td><span class="badge ${names.length?'on':'off'}">${d.icon} ${esc(d.name)}</span><br><small style="color:var(--muted)">${esc(d.rule)}</small></td><td class="r"><b>${names.length}</b></td><td style="white-space:normal">${names.length?names.slice(0,8).join(', ')+(names.length>8?` and ${names.length-8} more`:''):'<span style="color:var(--muted)">nobody yet</span>'}</td></tr>`}).join('');
   return `<div class="tw"><table><thead><tr><th>Badge</th><th class="r">Holders</th><th>Who</th></tr></thead><tbody>${rows}</tbody></table></div><p class="note">Badges carry no rupee value: payouts come only from the scorecard, the per-bill rules, the pools and approved adjustments.</p>`}
+
+/* ---------- Month history: closed months archived from the Admin console, plus a generated sample past ---------- */
+const HIST=(()=>{try{return JSON.parse(localStorage.getItem('mr-hist')||'[]')}catch(_){return []}})(); // archived real closes, newest last
+function snapshotMonth(label){ // the whole group as of the last day, with the mid-month projection kept for calibrating the spread
+  const g=withAsOf(DAYS,computeGroup), mid=withAsOf(15,computeGroup), rk=rankings(g);
+  const midBr={};mid.companies.forEach(c=>c.branches.forEach(b=>midBr[b.br.id]=b.soProj));
+  const brs=g.companies.flatMap(c=>c.branches.map(b=>({id:b.br.id,name:b.br.name,co:c.co.name,target:b.target,so:b.so,ach:b.vals.ach,score:b.sc.score,gp:b.vals.gp,audit:b.vals.audit,grating:b.vals.grating,payout:b.members.reduce((s,m)=>s+m.total,0),midProj:midBr[b.br.id]||b.so,teamPool:!!b.teamPoolNow})));
+  const ppl=allMembers(g).map(m=>({id:m.p.id,name:m.p.name,role:m.p.role,branch:m.brc.br.name,co:m.co.name,score:m.sc.score,ach:m.vals.ach,att:m.vals.att,gate:m.gate,pay:m.pay||0,perBill:m.perBill?m.perBill.confirmed:0,cre:m.cre?m.cre.confirmed:0,teamShare:m.teamShareNow||0,adj:m.adj||0,total:m.total,rank:rk[m.p.id]?rk[m.p.id].group.rank:null,badges:badgesFor(m,m.brc,rk).filter(x=>x.earned).map(x=>x.id)}));
+  return {month:label,closedOn:nowStr(),by:ME.email,sample:false,branches:brs,people:ppl};
+}
+let _sampleHist=null;
+function sampleHistory(){ // three earlier months derived from the current month with seeded noise, so trends can be seen before any real close exists
+  if(_sampleHist)return _sampleHist;
+  const r=rng(4242), noise=s=>1+(r()-.5)*2*s;
+  const cur=withAsOf(DAYS,()=>snapshotMonth(MONTH));
+  _sampleHist=['July 2026','August 2026','September 2026'].map((label,i)=>{const drift=.9+i*.04;return {month:label,closedOn:'',by:'',sample:true,
+    branches:cur.branches.map(b=>{const f=drift*noise(.09);const so=b.so*f;return {...b,so,ach:b.ach*f,score:Math.min(100,b.score*noise(.06)),gp:b.gp*noise(.04),payout:b.payout*f*noise(.08),midProj:so*noise(.18),teamPool:b.ach*f>=GATES.teamAch&&b.audit>=GATES.teamAudit}}),
+    people:cur.people.map(p=>{const f=drift*noise(.12);return {...p,score:Math.min(100,p.score*noise(.07)),ach:p.ach*f,total:Math.max(0,p.total*f*noise(.1)),badges:p.badges.filter(()=>r()<.6),rank:null}})}});
+  return _sampleHist;
+}
+function history(){return [...sampleHistory(),...HIST]} // oldest first; sample months are flagged
+function observedSpread(months){ // coefficient of variation of the mid-month projection against the closed figure, across branches and months
+  const xs=months.flatMap(h=>h.branches.filter(b=>b.so>0&&b.midProj>0).map(b=>b.midProj/b.so-1));if(xs.length<3)return null;
+  const mean=xs.reduce((a,b)=>a+b,0)/xs.length;return Math.sqrt(xs.reduce((s,x)=>s+(x-mean)*(x-mean),0)/(xs.length-1));
+}
+function historyTable(rows,cols,cur){ // rows oldest first; cur = the running month's row, drawn last and marked
+  const all=[...rows,...(cur?[{...cur,running:true}]:[])], max=Math.max(1,...all.map(x=>+x.bar||0));
+  return `<div class="tw"><table><thead><tr><th>Month</th>${cols.map(c=>`<th class="${c.r?'r':''}">${c.h}</th>`).join('')}</tr></thead><tbody>${all.map(x=>`<tr class="${x.running?'':''}"><td><b>${x.month}</b>${x.running?' <span class="pill info">running</span>':x.sample?' <span class="pill" style="background:var(--row);color:var(--muted)">sample</span>':''}</td>${cols.map(c=>`<td class="${c.r?'r':''}">${c.bar?`<span class="hbar ${x.running?'cur':''}" style="width:${Math.round(60*(+x.bar||0)/max)}px"></span>`:''}${c.f(x)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+}
+function personHistory(p,m){const rows=history().map(h=>{const x=h.people.find(y=>y.id===p.id);return x?{month:h.month,sample:h.sample,score:x.score,ach:x.ach,total:x.total,badges:x.badges,bar:x.total}:null}).filter(Boolean);
+  const cur={month:MONTH,score:m.sc.score,ach:m.vals.ach,total:m.totalProj,badges:badgesFor(m,m.brc||computeBranch(p.branch)).filter(x=>x.earned).map(x=>x.id),bar:m.totalProj};
+  const cols=[{h:'Score',r:true,f:x=>x.score.toFixed(0)},...(p.role==='Sales'?[{h:'Achievement',r:true,f:x=>pct(x.ach)}]:[]),{h:'Incentive',r:true,bar:true,f:x=>inr(x.total)},{h:'Badges',f:x=>x.badges.map(id=>badgeDef(id)).filter(Boolean).map(d=>`<span title="${esc(d.name)}">${d.icon}</span>`).join(' ')||'<span style="color:var(--muted)">—</span>'}];
+  return historyTable(rows,cols,cur)}
+function branchHistory(br,b){const rows=history().map(h=>{const x=h.branches.find(y=>y.id===br.id);return x?{month:h.month,sample:h.sample,ach:x.ach,score:x.score,gp:x.gp,payout:x.payout,teamPool:x.teamPool,bar:x.ach}:null}).filter(Boolean);
+  const cur={month:MONTH,ach:b.achProj,score:b.sc.score,gp:b.vals.gp,payout:b.members.reduce((s,m)=>s+m.totalProj,0),teamPool:!!b.teamPoolProj,bar:b.achProj};
+  return historyTable(rows,[{h:'Achievement',r:true,bar:true,f:x=>pct(x.ach)},{h:'Score',r:true,f:x=>x.score.toFixed(0)},{h:'GP',r:true,f:x=>pct(x.gp)},{h:'Payout',r:true,f:x=>inrL(x.payout)},{h:'Team pool',f:x=>x.teamPool?'<span class="pill good">earned</span>':'<span class="pill warn">no</span>'}],cur)}
+function groupHistory(g){const rows=history().map(h=>{const so=h.branches.reduce((s,b)=>s+b.so,0),t=h.branches.reduce((s,b)=>s+b.target,0),pay=h.branches.reduce((s,b)=>s+b.payout,0);return {month:h.month,sample:h.sample,ach:t?so/t*100:0,so,pay,share:so?pay/so*100:0,under:h.branches.filter(b=>b.ach<85).length,bar:so}});
+  const so=g.so,pay=allMembers(g).reduce((s,m)=>s+m.totalProj,0);const cur={month:MONTH,ach:g.achProj,so:g.soProj,pay,share:g.soProj?pay/g.soProj*100:0,under:g.companies.flatMap(c=>c.branches).filter(b=>b.achProj<85).length,bar:g.soProj};
+  return historyTable(rows,[{h:'Achievement',r:true,f:x=>pct(x.ach)},{h:'SO value',r:true,bar:true,f:x=>inrL(x.so)},{h:'Incentive outlay',r:true,f:x=>inrL(x.pay)},{h:'Outlay ÷ SO',r:true,f:x=>pct(x.share)},{h:'Branches under 85%',r:true,f:x=>x.under}],cur)}
+
+/* ---------- Statements: one printable page per employee (print to PDF, no library) ---------- */
+function statementHtml(m,b){const p=m.p,br=b.br,co=br.company,isMgmt=p.role==='BM'||p.role==='SM',closed=asOf>=DAYS;
+  const line=(k,v,note)=>`<tr><td>${k}${note?`<br><small style="color:#666">${note}</small>`:''}</td><td class="r">${inr(v)}</td></tr>`;
+  const rows=[];
+  if(isMgmt)rows.push(line('Team achievement',m.pay||0,`pool ${inr(m.pool)} × branch achievement ${pct(b.vals.ach)} × branch score ${b.sc.score.toFixed(0)} ÷ 100${b.vals.ach<GATES.managerAch?' · gate '+GATES.managerAch+'% not reached':''}`));
+  else rows.push(line('Scorecard pay',m.pay||0,`pool ${inr(m.pool)} × score ${m.sc.score.toFixed(0)} ÷ 100${m.gate?' · attendance '+pct(m.vals.att)+' under the '+GATES.attendance+'% gate':''}`));
+  if(m.perBill)rows.push(line('Per-bill incentive, confirmed',m.perBill.confirmed,`${m.bills.filter(x=>x.status==='paid').length} paid bills${m.perBill.bonus?' · +'+Math.round(m.perBill.bonus*100)+'% closing bonus':''} · ${inr(m.perBill.provF)} still provisional`));
+  if(m.cre){rows.push(line('CRE override, earned',m.cre.overrideEarned,`${Math.round(POLICY.creOverride*100)}% of the sales incentive on walk-ins you logged`));rows.push(line('Follow-up discipline bonus',m.cre.followBonus,`${pct(m.vals.follow)} follow-ups on time`))}
+  rows.push(line('Team pool share',m.teamShareNow||0,m.teamShareNow?`${br.name} reached ${GATES.teamAch}% with audit ${b.vals.audit}`:`not earned: branch at ${pct(b.vals.ach)}, audit ${b.vals.audit}`));
+  if(m.adj)rows.push(line('Approved adjustments',m.adj,'from the adjustments ledger'));
+  const earned=badgesFor(m,b).filter(x=>x.earned);
+  return `<div class="stmt"><h1>${co.name} · incentive statement</h1><p class="sub">${MONTH} · ${br.name} branch · ${closed?'closed month':'provisional, as of '+asOf+' October'}</p>
+  <table><tr><th>Employee</th><th>Role</th><th>Employee id</th><th>Attendance</th><th>Scorecard</th></tr><tr><td><b>${esc(p.name)}</b></td><td>${p.role==='BM'?'Branch Manager':p.role==='SM'?'Sales Manager':p.role}</td><td>${p.id}</td><td>${pct(m.vals.att)} · ${m.vals.late} late · ${m.vals.early} early</td><td>${isMgmt?b.sc.score.toFixed(0)+' (branch)':m.sc.score.toFixed(0)+' / 100'}</td></tr></table>
+  <table><thead><tr><th>Component</th><th class="r">Amount</th></tr></thead><tbody>${rows.join('')}<tr class="total"><td>Total ${closed?'payable':'standing today'}</td><td class="r">${inr(m.total)}</td></tr></tbody></table>
+  ${closed?'':`<p class="note">Expected at month end if the current pace holds: <b>${inr(m.totalProj)}</b>. Per-bill amounts are paid only when the order is delivered and paid; a cancellation after advance pays nothing.</p>`}
+  ${earned.length?`<p class="note">Recognition this month: ${earned.map(x=>x.icon+' '+x.name).join(', ')} (no rupee value).</p>`:''}
+  <p class="note">Please check this statement and confirm it. Disputes within 7 days of issue through your Branch Manager or HR, quoting the order number or day concerned. Rules: Corporate Incentive Structure in force for ${MONTH}.</p>
+  <div class="sig"><div>Employee</div><div>Branch Manager</div><div>HR / Accounts</div></div></div>`}
+function printStatements(items){const box=$('#print');if(!box)return;box.innerHTML=items.map(x=>statementHtml(x.m,x.b)).join('');if(typeof window.print==='function')window.print()}
+
+/* ---------- CSV exports ---------- */
+const csvCell=v=>{const s=v==null?'':String(v);return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s};
+function csvText(header,rows){return [header,...rows].map(r=>r.map(csvCell).join(',')).join('\n')}
+function downloadText(name,text,type){try{const blob=new Blob(['\ufeff'+text],{type:type||'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}catch(e){alertNote('Download failed: '+e.message)}}
+function payoutRows(g){const rk=rankings(g);return allMembers(g).map(m=>[m.p.id,m.p.name,m.p.role,m.brc.br.name,m.co.name,m.vals.att.toFixed(1),m.gate?'yes':'no',m.sc.rows.length?m.sc.score.toFixed(1):'',Math.round(m.pay||0),m.perBill?Math.round(m.perBill.confirmed):0,m.perBill?Math.round(m.perBill.provF):0,m.cre?Math.round(m.cre.overrideEarned):0,m.cre?Math.round(m.cre.followBonus):0,Math.round(m.teamShareNow||0),Math.round(m.adj||0),Math.round(m.total),Math.round(m.totalProj),rk[m.p.id]?rk[m.p.id].group.rank:'',badgesFor(m,m.brc,rk).filter(x=>x.earned).map(x=>x.name).join('; ')])}
+const PAYOUT_HEADER=['employee_id','name','role','branch','company','attendance_pct','gated','score','scorecard_pay','per_bill_confirmed','per_bill_provisional','cre_override','follow_up_bonus','team_pool_share','adjustments','total_confirmed','total_expected','group_rank','badges'];
+function tableToCSV(tbl){return [...tbl.querySelectorAll('tr')].map(tr=>[...tr.children].map(td=>csvCell(td.textContent.replace(/\s+/g,' ').trim())).join(',')).join('\n')}
+
+/* ---------- TV mode: the leaderboard full screen, cycling its tabs ---------- */
+let tvTimer=null;
+function setTv(on){state.tv=!!on;document.body.classList.toggle('tv',state.tv);if(tvTimer){clearInterval(tvTimer);tvTimer=null}
+  if(state.tv){const tabs=['Branches','Sales','CRE','Logistics','Back office','Management'];tvTimer=setInterval(()=>{if(state.level!=='leaderboard'){setTv(false);return}state.lbTab=tabs[(tabs.indexOf(state.lbTab)+1)%tabs.length];render()},20000)}
+  saveState();render()}
+if(typeof document.addEventListener==='function')document.addEventListener('keydown',e=>{if(e.key==='Escape'&&state.tv)setTv(false)});
+
 
 /* ---------- WhatsApp summary ---------- */
 function waText(m,b,rk){
@@ -1138,7 +1218,8 @@ function viewGroup(){
   <div class="card"><h2>Leaders this month <small>top three per role across the group</small></h2><div class="body"><div class="tw"><table><thead><tr><th>Role</th><th>1st</th><th>2nd</th><th>3rd</th></tr></thead><tbody>
     ${['Sales','CRE','Logistics','Back office'].map(r=>{const l=allMembers(g).filter(m=>roleKey(m)===r).sort((a,b)=>rankValue(b)-rankValue(a)).slice(0,3);return `<tr><td><b>${r}</b></td>${l.map((m,i)=>`<td class="link" data-co="${m.co.id}" data-br="${m.brc.br.id}" data-team="${r}" data-person="${m.p.id}" style="cursor:pointer"><span class="who-cell"><span class="rank r${i+1}">${i+1}</span><span><b>${m.p.name}</b><br><small style="color:var(--muted)">${m.brc.br.name} · ${m.sc.score.toFixed(0)} · ${inr(m.totalProj)}</small></span></span></td>`).join('')}</tr>`}).join('')}
   </tbody></table></div><p class="note">Full monthly leaderboard, by branch and by role, under the 🏆 button above.</p></div></div>
-  <div class="card"><h2>Badge wall <small>recognition only · earned so far this month</small></h2><div class="body">${badgeWall(g)}</div></div>`;
+  <div class="card"><h2>Badge wall <small>recognition only · earned so far this month</small></h2><div class="body">${badgeWall(g)}</div></div>
+  <div class="card"><h2>Group history <small>closed months from the archive · this month running</small></h2><div class="body">${groupHistory(g)}</div></div>`;
   wireRows();
   $('#view').querySelectorAll('td.link').forEach(td=>td.addEventListener('click',()=>{const d=td.dataset;go({level:'person',co:d.co,br:d.br,team:d.team,person:d.person})}));
 }
@@ -1200,6 +1281,7 @@ function viewBranch(){
   <div class="card"><h2>Everyone in ${br.name}</h2><div class="body"><div class="tw"><table><thead><tr><th>Person</th><th>Role</th><th class="r">Key measure</th><th class="r">Attendance</th><th class="r">Score</th><th class="r">Scorecard pay</th><th class="r">Per-bill (policy)</th><th class="r">Team share</th><th class="r">Expected total</th></tr></thead><tbody>
     ${b.members.map(m=>personRow(m,co,br)).join('')}
   </tbody></table></div></div></div>
+  <div class="card"><h2>Branch history <small>closed months from the archive · this month running</small></h2><div class="body">${branchHistory(br,b)}</div></div>
   <div class="grid"><div class="card"><h2>Further push</h2><div class="body"><ul class="list">${push.join('')}</ul></div></div><div class="card"><h2>What lags</h2><div class="body"><ul class="list">${lag.join('')||'<li class="empty">Nothing lagging.</li>'}</ul></div></div></div>`;
   wireTrend(cumSO(allBills),b.target,{mean:b.soProj});
   wireRows();
@@ -1300,6 +1382,7 @@ function viewPerson(){
   const wa=waText(m,b,rk);
   $('#view').innerHTML=`<div class="tiles">${tiles}${tile('Rank',`#${r.company.rank}`,`of ${r.company.of} ${roleKey(m)} in ${co.name} · #${r.group.rank} of ${r.group.of} in the group`,'','brass')}</div>${extra}
   <div class="card"><h2>Badge ladder <small>recognition only · ${badges.filter(x=>x.earned).length} of ${badges.length} earned so far</small></h2><div class="body">${badgeLadder(badges)}</div></div>
+  <div class="card"><h2>Your last months <small>closed months from the archive · this month running</small></h2><div class="body">${personHistory(p,{...m,brc:b})}<div class="wa-bar"><button class="btn" id="stmtBtn">🖨 Statement (print or save as PDF)</button><span class="note" style="margin:0">One page: every component of this month's incentive with the rule behind it, the dispute window and signature lines.</span></div></div></div>
   ${isMgmt?'':`<div class="card"><h2>Your scorecard <small>${p.role} · ${m.sc.rows.length} attributes</small></h2><div class="body">${scoreTable(m.sc)}</div></div>`}
   <div class="card"><h2>WhatsApp summary <small>ready to send, as of ${asOf} Oct</small></h2><div class="body">${waBlock(wa,p.id)}</div></div>
   ${p.role==='Sales'?`<div class="card"><h2>Weekly team WhatsApp <small>the sales team group, every Saturday evening</small></h2><div class="body">${waBlock(waSalesText(weeklySales(b)),'wsales-'+p.id)}</div></div>`:''}
@@ -1313,6 +1396,7 @@ function viewPerson(){
   <div class="grid"><div class="card"><h2>Further push</h2><div class="body"><ul class="list">${push.join('')||'<li class="empty">Everything is on target.</li>'}</ul></div></div><div class="card"><h2>What lags</h2><div class="body"><ul class="list">${lag.join('')||'<li class="empty">Nothing lagging.</li>'}</ul></div></div></div>`;
   if(p.role==='Sales')wireTrend(cumSO(m.bills),m.target,{mean:m.soProj});
   wireWa();
+  const sb=$('#stmtBtn');if(sb)sb.addEventListener('click',()=>printStatements([{m,b}]));
 }
 function viewLeaderboard(){
   const g=computeGroup(), scopeName=state.br?branches.find(b=>b.id===state.br).name:state.co?GROUP.companies.find(c=>c.id===state.co).name:'the group';
@@ -1348,8 +1432,11 @@ function viewLeaderboard(){
   <div class="card"><h2>Monthly leaderboard <small>across ${scopeName} · ranked by scorecard, then expected incentive · movement vs 7 days ago</small></h2><div class="body">
     <div class="tabs">${tabs.map(t=>`<button class="${t===tab?'on':''}" data-tab="${t}">${t}</button>`).join('')}</div>
     <div class="tw">${table}</div>
+    <div class="wa-bar"><button class="btn" id="lbCsv">⬇ Export this table (CSV)</button><button class="btn" id="lbTv">${state.tv?'✕ Exit TV mode (Esc)':'📺 TV mode'}</button><span class="note" style="margin:0">${state.tv?'Tabs rotate every 20 seconds; figures refresh with every render.':'TV mode hides the header and controls, enlarges the table and rotates the tabs, for a screen in the branch.'}</span></div>
     <p class="note">Rank uses the month so far. Open any row for the person’s own page and WhatsApp summary. Drill into a company or branch first to see its own leaderboard.</p>
   </div></div>`;
+  const lc=$('#lbCsv');if(lc)lc.addEventListener('click',()=>{const t=$('#view').querySelector('.tw table');if(t)downloadText(`leaderboard-${tab.toLowerCase().replace(/\s/g,'-')}-${scopeName.replace(/\s/g,'-')}-asof-${asOf}-oct-2026.csv`,tableToCSV(t))});
+  const lt=$('#lbTv');if(lt)lt.addEventListener('click',()=>setTv(!state.tv));
   $('#view').querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',()=>{state.lbTab=b.dataset.tab;try{localStorage.setItem('mr-state',JSON.stringify(state))}catch(_){}render()}));
   wireRows();
 }
@@ -1706,6 +1793,7 @@ function viewSettings(){
   <div class="card"><h2>Attribute targets and limits</h2><div class="body set">${targets}</div></div>
   <div class="card"><h2>Prediction constants</h2><div class="body set">
     ${num('PRED.pDelivered','Delivered, payment pending → paid this month',0.05)}${num('PRED.pBooked','Booked, due in month → paid this month',0.05)}${num('PRED.pNew','New sale lands before statement',0.05)}${num('PRED.cv','Pace uncertainty (coefficient of variation)',0.01)}
+    ${(()=>{const real=HIST,obs=observedSpread(real),smp=observedSpread(sampleHistory());return `<p class="note" style="grid-column:1/-1">Observed spread of the mid-month projection against the closed month: ${obs!=null?`<b>${obs.toFixed(2)}</b> from ${real.length} closed month${real.length>1?'s':''}`:'no closed month archived yet'}${smp!=null?` · ${smp.toFixed(2)} across the sample months`:''}. Set the constant from the observed figure once three real months are archived (🛠 Admin → Month close).</p>`})()}
   </div></div>
   <div class="card"><h2>Save, export, import</h2><div class="body">
     <div class="wa-bar" style="margin:0 0 10px"><button class="btn primary" id="cfgSave">Save to this browser</button><button class="btn" id="cfgCopy">Copy settings JSON</button><button class="btn" id="cfgReset">Reset to policy defaults</button><input type="file" id="cfgFile" accept=".json" aria-label="Upload settings JSON"><span class="note" id="cfgDone" style="margin:0"></span></div>
@@ -1865,6 +1953,7 @@ function viewAdmin(){
     const g=computeGroup();
     body=`<div class="card"><h2>Adjustments ledger <small>everything that changes a payout outside the formula</small></h2><div class="body">
       ${edit?`<div class="form"><label>Type<select id="adType">${ADJ_TYPES.map(t=>`<option>${t}</option>`).join('')}</select></label><label>Employee<select id="adPerson">${people.map(p=>`<option value="${p.id}">${p.name} · ${p.role} · ${p.branch.name}</option>`).join('')}</select></label><label>Amount ₹ (additions, deductions)<input id="adAmt" type="number" step="100" value="0"></label><label>Order no / day<input id="adRef" placeholder="KLM-1041 or day 12"></label><label class="wide">Reason (goes in the tracker)<textarea id="adReason"></textarea></label><label>Requested by<input id="adBy" value="${esc(ME.email)}"></label><button class="btn primary" id="adAdd">Add to ledger (Pending)</button></div>`:''}
+      <div class="wa-bar" style="margin-top:12px"><button class="btn" id="ledgerCsv">⬇ Export ledger (CSV)</button><span class="note" style="margin:0">${ADJ.length} entr${ADJ.length===1?'y':'ies'} · ${ADJ.filter(a=>a.status==='Pending').length} pending</span></div>
       <div class="tw" style="margin-top:12px"><table><thead><tr><th>Date</th><th>Type</th><th>Employee</th><th class="r">Amount</th><th>Ref</th><th>Reason</th><th>Requested by</th><th>Status</th><th>Approver</th><th></th></tr></thead><tbody>
       ${ADJ.length?ADJ.slice().reverse().map(a=>{const p=people.find(x=>x.id===a.person);return `<tr><td>${a.date}</td><td>${a.type}</td><td>${p?p.name+' · '+p.branch.name:a.person}</td><td class="r">${a.amount?inr(a.type==='Manual deduction'?-a.amount:a.amount):'—'}</td><td>${esc(a.ref||'')}</td><td style="white-space:normal;min-width:160px">${esc(a.reason||'')}</td><td>${esc(a.by||'')}</td><td><span class="st ${stcls(a.status)}">${a.status}</span></td><td>${esc(a.approver||'')}</td><td>${edit&&a.status==='Pending'?`<button class="btn small" data-adj="Approved" data-id="${a.id}">Approve</button> <button class="btn small" data-adj="Rejected" data-id="${a.id}">Reject</button>`:''}</td></tr>`}).join(''):'<tr><td colspan="10" class="empty">No adjustments yet. Clawback exemptions, written discount approvals, disputes and manual corrections all belong here so the statement is auditable.</td></tr>'}
       </tbody></table></div>
@@ -1903,6 +1992,7 @@ function viewAdmin(){
     const pending=ADJ.filter(a=>a.status==='Pending').length;
     body=`<div class="card"><h2>Month close checklist <small>${MONTH} · ${asOf>=DAYS?'month ended':`${DAYS-asOf} days to go`}</small></h2><div class="body">
       ${CLOSE_STEPS.map(([k,l],i)=>{const st=CLOSE[k]||{};const blocked=k==='adjust'&&pending;return `<div class="check"><input type="checkbox" data-close="${k}" ${st.done?'checked':''} ${edit&&!blocked?'':'disabled'}><div><b>${i+1}. ${l}</b><small>${st.done?`Done ${st.on} by ${esc(st.by||'')}`:blocked?`${pending} pending adjustment${pending>1?'s':''} in the ledger`:'Open'}</small></div><span>${st.done?'<span class="st live">done</span>':blocked?'<span class="st pending">blocked</span>':'<span class="st draft">open</span>'}</span></div>`}).join('')}
+      <div class="wa-bar"><button class="btn primary" id="stmtAll" ${edit?'':'disabled'}>🖨 Statements for every employee (print or save as PDF)</button><button class="btn" id="payoutCsv" ${edit?'':'disabled'}>⬇ Payout file (CSV)</button><button class="btn" id="archiveMonth" ${edit&&asOf>=DAYS?'':'disabled'}>📚 Archive ${MONTH} into history</button><span class="note" style="margin:0">${asOf>=DAYS?'':'Archiving opens on the last day of the month. '}${HIST.length?`Archived: ${HIST.map(x=>x.month).join(', ')}.`:'Nothing archived yet; the history cards show three generated sample months until the first real close.'}</span></div>
       <div class="wa-bar"><button class="btn" id="closeReset" ${edit?'':'disabled'}>Reset checklist for a new month</button><span class="note" style="margin:0">Each tick is logged with who and when. The MD approval step is the monthly email in 📣 Messages; the payout step hands the per-employee totals from the board to payroll.</span></div>
     </div></div>`;
   }
@@ -1942,6 +2032,10 @@ function viewAdmin(){
   // month close
   $('#view').querySelectorAll('[data-close]').forEach(c=>c.addEventListener('change',()=>{const k=c.dataset.close;CLOSE[k]=c.checked?{done:true,on:nowStr(),by:ME.email}:{done:false};saveLS('mr-close',CLOSE);audit('Month close step '+(c.checked?'done':'reopened'),k);render()}));
   const cr=$('#closeReset');if(cr)cr.addEventListener('click',()=>{Object.keys(CLOSE).forEach(k=>delete CLOSE[k]);saveLS('mr-close',CLOSE);audit('Month close checklist reset');render()});
+  const sa=$('#stmtAll');if(sa)sa.addEventListener('click',()=>{const g=computeGroup();printStatements(allMembers(g).map(m=>({m,b:m.brc})));audit('Statements generated',allMembers(g).length+' employees')});
+  const pc=$('#payoutCsv');if(pc)pc.addEventListener('click',()=>{const g=computeGroup();downloadText(`payout-october-2026-asof-${asOf}.csv`,csvText(PAYOUT_HEADER,payoutRows(g)));audit('Payout file exported','as of '+asOf)});
+  const am=$('#archiveMonth');if(am)am.addEventListener('click',()=>{const snap=snapshotMonth(MONTH);const i=HIST.findIndex(x=>x.month===MONTH);if(i>=0)HIST[i]=snap;else HIST.push(snap);saveLS('mr-hist',HIST);audit('Month archived',MONTH+' · '+snap.people.length+' people, '+snap.branches.length+' branches');render()});
+  const le=$('#ledgerCsv');if(le)le.addEventListener('click',()=>downloadText('adjustments-ledger.csv',csvText(['date','type','employee_id','employee','branch','amount','ref','reason','requested_by','status','approver'],ADJ.map(a=>{const p=people.find(x=>x.id===a.person);return [a.date,a.type,a.person,p?p.name:'',p?p.branch.name:'',a.amount||'',a.ref||'',a.reason||'',a.by||'',a.status,a.approver||'']}))));
   // audit
   const ac=$('#auditCopy');if(ac)ac.addEventListener('click',()=>{try{navigator.clipboard.writeText(AUDIT.map(a=>`${a.t}\t${a.who}\t${a.action}\t${a.detail}`).join('\n'))}catch(_){}});
   const acl=$('#auditClear');if(acl)acl.addEventListener('click',()=>{AUDIT.length=0;saveLS('mr-audit',AUDIT);render()});
@@ -2007,7 +2101,7 @@ function render(){
 }
 $('#asof').addEventListener('input',e=>{asOf=+e.target.value;render()});
 try{const s=JSON.parse(localStorage.getItem('mr-state')||'null');if(s&&s.level&&(!s.person||people.some(p=>p.id===s.person)))Object.assign(state,s);if(!state.lbTab)state.lbTab='Sales';if(!state.emailMode)state.emailMode='bm';if(!state.msg||!state.msg.aud)state.msg={aud:'Sales',cad:'weekly',ch:'whatsapp'};if(!state.adminTab)state.adminTab='policy'}catch(_){}
-rules();render();
+if(state.tv)setTv(true);else{rules();render()}
 </script>
 </body>
 </html>

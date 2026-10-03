@@ -162,6 +162,23 @@ holders of each:
 A 100% record needs at least five events before it counts. Badges change nothing in the payout; the rules live in
 `BADGES` and `badgesFor` beside the scorecard engine.
 
+## Month history, statements and exports
+
+- **History**: the group, every branch and every person carry a history card (achievement, score, GP, payout;
+  score, achievement, incentive, badges) with the running month marked. Until the first real close the cards
+  show three generated sample months, flagged as such. **Archive October 2026 into history** in 🛠 Admin → Month
+  close (open on the last day) snapshots the closed month, including each branch's mid-month projection, so the
+  prediction spread can be calibrated: Settings → Prediction constants shows the observed spread from the archive.
+- **Statements**: one printable page per employee with every component of the month's incentive and the rule
+  behind it, the dispute window and signature lines. **Statement** on a person's page prints their own;
+  **Statements for every employee** in Month close prints all of them. Use the browser's print dialog to save as
+  PDF; no library is involved.
+- **Exports**: the payout file for payroll (one row per employee, every component, total confirmed and expected,
+  rank and badges) and the adjustments ledger from the Admin console, and any leaderboard table from the
+  🏆 view, all as UTF-8 CSV.
+- **TV mode** on the leaderboard hides the header and controls, enlarges the table and rotates the tabs every 20
+  seconds, for a screen in the branch. Esc leaves it.
+
 ## WhatsApp summary
 
 Every person's page ends with a WhatsApp-ready message (bold and italic in WhatsApp markup): expected incentive,
@@ -292,7 +309,8 @@ own node; managers open at their branch.
 ## Repository layout
 
 ```
-index.html                 the whole board: styles, sample universe, computation, views, messages, settings, admin
+index.html                 the whole board: styles, sample universe, computation, views, messages, settings, admin, history, statements, exports
+CLAUDE.md                  conventions for anyone (or any agent) working on the repo
 test/render.test.js        renders every view under every role with a stub DOM; fails on any exception, NaN or undefined
 .github/workflows/check.yml  runs the render test and a secret scan on every push and pull request
 ```
