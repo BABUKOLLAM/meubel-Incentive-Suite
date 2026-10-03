@@ -8,24 +8,24 @@
 <style>
 /* Layout: breadcrumb drill-down (Group → Company → Branch → Team → Person). Each level: summary tiles, one comparison chart, the scorecard that makes the number, then "further push" and "what lags" side by side. */
 :root{
-  --bg:#F4EFE7;--card:#FFFFFF;--card2:#FBF6EE;--line:#E4DACA;--row:#F6F0E5;
-  --text:#241A10;--muted:#7D6E5C;--brown:#3E2C1A;--brass:#B8860B;--brass-soft:#E8D5A3;--brass-ink:#7A5607;
-  --good:#1B5E20;--good-bg:#E6F1E7;--warn:#8A5A00;--warn-bg:#FBF0DA;--bad:#A61B1B;--bad-bg:#F8E4E4;--info:#12507A;--info-bg:#E3EEF6;
-  --c-mg:#B8860B;--c-rg:#12507A;
+  --bg:#F3F5F8;--card:#FFFFFF;--card2:#F8FAFC;--line:#DCE2EA;--row:#F5F7FA;
+  --text:#1B2430;--muted:#5B6776;--brown:#1F2D44;--brass:#0E7C86;--brass-soft:#D6EEF0;--brass-ink:#0A5E66;
+  --good:#1E7D4B;--good-bg:#E6F4EC;--warn:#9A6400;--warn-bg:#FFF4DB;--bad:#B42318;--bad-bg:#FCE8E6;--info:#2F5FA8;--info-bg:#E8EFFA;
+  --c-mg:#1F3A5F;--c-rg:#0E7C86;
   --display:"Cormorant Garamond",Georgia,"Times New Roman",serif;--ui:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-  --shadow:0 1px 2px rgba(31,21,12,.05),0 8px 24px -12px rgba(31,21,12,.18);--r:14px;
+  --shadow:0 1px 2px rgba(16,24,40,.05),0 8px 24px -12px rgba(16,24,40,.18);--r:14px;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#17110B;--card:#221910;--card2:#2A1F14;--line:#3C2E20;--row:#2A2015;
-  --text:#EFE6D6;--muted:#A89880;--brown:#E6D7BD;--brass:#C9A24B;--brass-soft:#4A3A1C;--brass-ink:#E3C77A;
-  --good:#7CC98A;--good-bg:#1D3322;--warn:#E6B45A;--warn-bg:#3A2D12;--bad:#E8857A;--bad-bg:#3E1E1C;--info:#7FB6E0;--info-bg:#16304A;
-  --c-mg:#D9B35A;--c-rg:#7FB6E0;
+  --bg:#0F1621;--card:#161F2C;--card2:#1C2635;--line:#2B3747;--row:#1A2432;
+  --text:#E6EBF2;--muted:#9AA7B8;--brown:#DCE4EF;--brass:#3FB4BF;--brass-soft:#143E44;--brass-ink:#7FD3DA;
+  --good:#6FCF97;--good-bg:#153426;--warn:#E8B85A;--warn-bg:#3A2F12;--bad:#F08A80;--bad-bg:#3E1E1C;--info:#86B1F0;--info-bg:#16304A;
+  --c-mg:#8FB3E6;--c-rg:#3FB4BF;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px -12px rgba(0,0,0,.6);color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#17110B;--card:#221910;--card2:#2A1F14;--line:#3C2E20;--row:#2A2015;
-  --text:#EFE6D6;--muted:#A89880;--brown:#E6D7BD;--brass:#C9A24B;--brass-soft:#4A3A1C;--brass-ink:#E3C77A;
-  --good:#7CC98A;--good-bg:#1D3322;--warn:#E6B45A;--warn-bg:#3A2D12;--bad:#E8857A;--bad-bg:#3E1E1C;--info:#7FB6E0;--info-bg:#16304A;
-  --c-mg:#D9B35A;--c-rg:#7FB6E0;
+  --bg:#0F1621;--card:#161F2C;--card2:#1C2635;--line:#2B3747;--row:#1A2432;
+  --text:#E6EBF2;--muted:#9AA7B8;--brown:#DCE4EF;--brass:#3FB4BF;--brass-soft:#143E44;--brass-ink:#7FD3DA;
+  --good:#6FCF97;--good-bg:#153426;--warn:#E8B85A;--warn-bg:#3A2F12;--bad:#F08A80;--bad-bg:#3E1E1C;--info:#86B1F0;--info-bg:#16304A;
+  --c-mg:#8FB3E6;--c-rg:#3FB4BF;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px -12px rgba(0,0,0,.6);color-scheme:dark}
 
 *{box-sizing:border-box}
@@ -76,7 +76,7 @@ h1{font:600 34px/1.05 var(--display);margin:0 0 6px;color:var(--brown);text-wrap
 .badge-row{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card2)}
 .badge-row.off{opacity:.55}.badge-row .bi{font-size:22px;line-height:1}.badge-row small{color:var(--muted)}
 #print{display:none}
-@media print{body>.wrap{display:none!important}#print{display:block}body{background:#fff;color:#111}.stmt{page-break-after:always;padding:24px 28px;font:12.5px/1.45 Arial,Helvetica,sans-serif;color:#111}.stmt:last-child{page-break-after:auto}.stmt h1{font:700 20px/1.2 Georgia,serif;margin:0 0 2px}.stmt .sub{color:#555;margin:0 0 14px}.stmt table{width:100%;border-collapse:collapse;margin:10px 0 14px}.stmt th,.stmt td{border-bottom:1px solid #ddd;padding:6px 8px;text-align:left;vertical-align:top}.stmt th{background:#f3eee6;font-size:11px;letter-spacing:.06em;text-transform:uppercase}.stmt td.r,.stmt th.r{text-align:right}.stmt tr.total td{font-weight:700;border-top:2px solid #333;border-bottom:none}.stmt .sig{display:flex;gap:40px;margin-top:36px}.stmt .sig div{flex:1;border-top:1px solid #333;padding-top:6px;font-size:11px;color:#555}.stmt .note{font-size:11px;color:#555}}
+@media print{body>.wrap{display:none!important}#print{display:block}body{background:#fff;color:#111}.stmt{page-break-after:always;padding:24px 28px;font:12.5px/1.45 Arial,Helvetica,sans-serif;color:#111}.stmt:last-child{page-break-after:auto}.stmt h1{font:700 20px/1.2 Georgia,serif;margin:0 0 2px}.stmt .sub{color:#555;margin:0 0 14px}.stmt table{width:100%;border-collapse:collapse;margin:10px 0 14px}.stmt th,.stmt td{border-bottom:1px solid #ddd;padding:6px 8px;text-align:left;vertical-align:top}.stmt th{background:#EEF2F6;font-size:11px;letter-spacing:.06em;text-transform:uppercase}.stmt td.r,.stmt th.r{text-align:right}.stmt tr.total td{font-weight:700;border-top:2px solid #333;border-bottom:none}.stmt .sig{display:flex;gap:40px;margin-top:36px}.stmt .sig div{flex:1;border-top:1px solid #333;padding-top:6px;font-size:11px;color:#555}.stmt .note{font-size:11px;color:#555}}
 body.tv header.top,body.tv #toolbar,body.tv #crumbs,body.tv details,body.tv .foot{display:none}body.tv .wrap{max-width:none;padding-top:10px}body.tv table{font-size:17px}body.tv .card h2{font-size:17px}body.tv .tiles .v{font-size:30px}
 .hbar{display:inline-block;height:9px;border-radius:4px;background:var(--brass);vertical-align:middle;margin-right:6px;min-width:2px}.hbar.cur{background:var(--info)}
 .pill.good{background:var(--good-bg);color:var(--good)}.pill.warn{background:var(--warn-bg);color:var(--warn)}.pill.bad{background:var(--bad-bg);color:var(--bad)}.pill.info{background:var(--info-bg);color:var(--info)}.pill.brass{background:var(--brass-soft);color:var(--brass-ink)}
@@ -95,7 +95,7 @@ tfoot td{font-weight:600;background:var(--row)}
 .bar.good i{background:var(--good)}.bar.warn i{background:var(--warn)}.bar.bad i{background:var(--bad)}
 .bar b{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--text);opacity:.5}
 .who-cell{display:flex;align-items:center;gap:8px}
-.av{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-weight:600;font-size:11px;color:#241A10;background:linear-gradient(135deg,#F1DB9C,#C9A24B);flex:0 0 auto}
+.av{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-weight:600;font-size:11px;color:#1B2430;background:linear-gradient(135deg,#F1DB9C,#3FB4BF);flex:0 0 auto}
 
 .list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
 .list li{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:start;padding:10px 12px;border-radius:10px;background:var(--row);min-width:0}
@@ -144,11 +144,11 @@ details summary{cursor:pointer;font-weight:600;color:var(--brown);padding:12px 1
 .wa-sum summary{padding:4px 0;font-weight:600;color:var(--brown)}
 .crumbs .em{background:var(--info-bg);border-color:var(--info-bg);color:var(--info);font-weight:600}
 .crumbs .em.on{background:var(--brown);border-color:var(--brown);color:var(--bg)}
-.email-frame{background:#E9E4DB;padding:18px;border-radius:10px;overflow-x:auto}
-.email-frame .mail{max-width:640px;margin:0 auto;background:#FFFFFF;color:#241A10;font:14px/1.5 Arial,Helvetica,sans-serif;border:1px solid #DDD4C6}
-.email-frame table{font-size:13px;color:#241A10}
-.email-frame th{color:#7D6E5C;border-bottom:1px solid #E4DACA}
-.email-frame td{border-bottom:1px solid #EFE7DA;color:#241A10}
+.email-frame{background:#EEF1F5;padding:18px;border-radius:10px;overflow-x:auto}
+.email-frame .mail{max-width:640px;margin:0 auto;background:#FFFFFF;color:#1B2430;font:14px/1.5 Arial,Helvetica,sans-serif;border:1px solid #DDD4C6}
+.email-frame table{font-size:13px;color:#1B2430}
+.email-frame th{color:#5B6776;border-bottom:1px solid #DCE2EA}
+.email-frame td{border-bottom:1px solid #E9EEF4;color:#1B2430}
 .subject{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
 .subject code{background:var(--row);border:1px solid var(--line);border-radius:6px;padding:4px 8px;font:12.5px var(--ui)}
 .toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px;padding:10px 12px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
@@ -961,21 +961,21 @@ function digestText(d){
 }
 function digestHtml(d){
   const {br,b,team,cad,w,now,prev,rows,attention,pushes}=d, co=br.company, word=CADENCE[cad].word, range=cad==='daily'?`${asOf} October 2026`:`${w.f} to ${w.t} October 2026`;
-  return `<div class="mail"><div style="background:#1F150C;color:#E8D5A3;padding:18px 22px"><div style="font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:#C9A24B">${esc(co.name)} · ${esc(br.name)} · ${team} team</div><div style="font:bold 22px Georgia,serif;color:#FFFFFF;margin-top:4px">${CADENCE[cad].label[0].toUpperCase()+CADENCE[cad].label.slice(1)} update, ${range}</div></div>
+  return `<div class="mail"><div style="background:#121A26;color:#D6EEF0;padding:18px 22px"><div style="font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:#3FB4BF">${esc(co.name)} · ${esc(br.name)} · ${team} team</div><div style="font:bold 22px Georgia,serif;color:#FFFFFF;margin-top:4px">${CADENCE[cad].label[0].toUpperCase()+CADENCE[cad].label.slice(1)} update, ${range}</div></div>
   <div style="padding:18px 22px">
     <table cellspacing="0" cellpadding="0" style="width:100%;border-collapse:collapse;font:12.5px Arial"><tr>${eth('Measure')}${eth('This '+word)}${prev?eth('Last '+word):''}${eth('Target')}</tr>
     ${now.map((x,i)=>`<tr>${etd(esc(x.l))}${etd(fmt(x.u,x.v),1,1)}${prev?etd(fmt(x.u,prev[i].v),1):''}${etd(x.t!=null?(x.dir==='down'?'≤ ':'≥ ')+fmt(x.u,x.t):'',1)}</tr>`).join('')}</table>
     ${eh2('Team leaderboard, month to date')}
     <table cellspacing="0" cellpadding="0" style="width:100%;border-collapse:collapse;font:12.5px Arial"><tr>${eth('#')}${eth('Name')}${eth('Key measure')}${eth('Score')}${eth('Attend.')}${eth('Expected')}${eth('Move')}</tr>
-    ${rows.map(r=>`<tr>${etd(r.rank)}${etd(esc(r.m.p.name),0,1)}${etd(keyMeasure(r.m))}${etd(r.m.sc.score.toFixed(0),1)}${etd(pct(r.m.vals.att),1)}${etd(inr(r.m.totalProj),1)}${etd(r.prev==null||r.prev===0?'·':r.prev>r.rank?`<span style="color:#1B5E20;font-weight:bold">▲${r.prev-r.rank}</span>`:r.prev<r.rank?`<span style="color:#A61B1B;font-weight:bold">▼${r.rank-r.prev}</span>`:'▬')}</tr>`).join('')}</table>
+    ${rows.map(r=>`<tr>${etd(r.rank)}${etd(esc(r.m.p.name),0,1)}${etd(keyMeasure(r.m))}${etd(r.m.sc.score.toFixed(0),1)}${etd(pct(r.m.vals.att),1)}${etd(inr(r.m.totalProj),1)}${etd(r.prev==null||r.prev===0?'·':r.prev>r.rank?`<span style="color:#1E7D4B;font-weight:bold">▲${r.prev-r.rank}</span>`:r.prev<r.rank?`<span style="color:#B42318;font-weight:bold">▼${r.rank-r.prev}</span>`:'▬')}</tr>`).join('')}</table>
     ${attention.length?eh2('This '+word)+`<ul style="margin:0;padding-left:20px">${attention.map(a=>`<li style="margin:4px 0">${esc(a)}</li>`).join('')}</ul>`:''}
     ${pushes.length?eh2('Next '+word)+`<ol style="margin:0;padding-left:20px">${pushes.map(a=>`<li style="margin:4px 0">${esc(a)}</li>`).join('')}</ol>`:''}
-    <p style="margin:18px 0 0;font-size:12px;color:#7D6E5C">Figures as of ${asOf} October, provisional until the month closes. Prepared by Bpro for ${esc(co.name)}.</p>
+    <p style="margin:18px 0 0;font-size:12px;color:#5B6776">Figures as of ${asOf} October, provisional until the month closes. Prepared by Bpro for ${esc(co.name)}.</p>
   </div></div>`;
 }
 function wrapPlain(text,title){
-  const body=esc(text).replace(/\*([^*\n]+)\*/g,'<b>$1</b>').replace(/_([^_\n]+)_/g,'<i style="color:#7D6E5C">$1</i>');
-  return `<div class="mail"><div style="background:#1F150C;color:#E8D5A3;padding:16px 22px"><div style="font:bold 18px Georgia,serif;color:#FFFFFF">${esc(title||'Update')}</div></div><div style="padding:18px 22px;white-space:pre-wrap;font:13.5px/1.6 Arial">${body}</div></div>`;
+  const body=esc(text).replace(/\*([^*\n]+)\*/g,'<b>$1</b>').replace(/_([^_\n]+)_/g,'<i style="color:#5B6776">$1</i>');
+  return `<div class="mail"><div style="background:#121A26;color:#D6EEF0;padding:16px 22px"><div style="font:bold 18px Georgia,serif;color:#FFFFFF">${esc(title||'Update')}</div></div><div style="padding:18px 22px;white-space:pre-wrap;font:13.5px/1.6 Arial">${body}</div></div>`;
 }
 /* ---------- the catalogue: every audience × cadence × channel ---------- */
 const AUDIENCES=[{id:'person',name:'Every employee',scope:'person'},{id:'Sales',name:'Sales team',scope:'branch'},{id:'CRE',name:'CRE team',scope:'branch'},{id:'Logistics',name:'Logistics team',scope:'branch'},{id:'Back office',name:'Back office team',scope:'branch'},{id:'SM',name:'Sales Manager',scope:'branch'},{id:'BM',name:'Branch Manager',scope:'branch'},{id:'MD',name:'MD and Directors',scope:'group'},{id:'HR',name:'HR team',scope:'group'}];
@@ -1469,39 +1469,39 @@ const delta=(n,p,f,inv)=>p==null?'':(n-p===0?' (no change)':` (${(inv?n<p:n>p)?'
 function emailHtml(w){
   const {now,prev,co,coNow,rankNow,rankPrev,weekSO,lastWeekSO,weekBills,movers,teams,bm,actions}=w, br=now.br;
   const first=bm?bm.p.name.split(' ')[0]:'Branch Manager';
-  const kpi=(k,v,s)=>`<td style="padding:10px 12px;border:1px solid #EFE7DA;vertical-align:top;width:25%"><div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#7D6E5C;font-weight:bold">${k}</div><div style="font-size:20px;font-weight:bold;margin-top:4px">${v}</div><div style="font-size:12px;color:#7D6E5C;margin-top:2px">${s}</div></td>`;
-  const th=t=>`<th style="text-align:left;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#7D6E5C;padding:6px 8px;border-bottom:1px solid #E4DACA">${t}</th>`;
-  const td=(t,r)=>`<td style="padding:6px 8px;border-bottom:1px solid #EFE7DA;${r?'text-align:right;':''}white-space:nowrap">${t}</td>`;
-  const mv=(n,p)=>p==null||p===0?'<span style="color:#7D6E5C">·</span>':p>n?`<span style="color:#1B5E20;font-weight:bold">▲${p-n}</span>`:p<n?`<span style="color:#A61B1B;font-weight:bold">▼${n-p}</span>`:'<span style="color:#7D6E5C">▬</span>';
+  const kpi=(k,v,s)=>`<td style="padding:10px 12px;border:1px solid #E9EEF4;vertical-align:top;width:25%"><div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#5B6776;font-weight:bold">${k}</div><div style="font-size:20px;font-weight:bold;margin-top:4px">${v}</div><div style="font-size:12px;color:#5B6776;margin-top:2px">${s}</div></td>`;
+  const th=t=>`<th style="text-align:left;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#5B6776;padding:6px 8px;border-bottom:1px solid #DCE2EA">${t}</th>`;
+  const td=(t,r)=>`<td style="padding:6px 8px;border-bottom:1px solid #E9EEF4;${r?'text-align:right;':''}white-space:nowrap">${t}</td>`;
+  const mv=(n,p)=>p==null||p===0?'<span style="color:#5B6776">·</span>':p>n?`<span style="color:#1E7D4B;font-weight:bold">▲${p-n}</span>`:p<n?`<span style="color:#B42318;font-weight:bold">▼${n-p}</span>`:'<span style="color:#5B6776">▬</span>';
   const branchRows=coNow.map((b,i)=>`<tr style="${b.br===br?'background:#FBF3DF;font-weight:bold':''}">${td(i+1)}${td(esc(b.br.name))}${td(b.sc.score.toFixed(0),1)}${td(pct(b.vals.ach),1)}${td(pct(b.achProj),1)}${td(pct(b.vals.gp),1)}${td(inrL(b.payProj),1)}</tr>`).join('');
-  const teamTables=teams.map(x=>`<h3 style="font:bold 13px Arial;margin:16px 0 6px;color:#3E2C1A">${x.t}</h3><table cellspacing="0" cellpadding="0" style="width:100%;border-collapse:collapse;font:12.5px Arial"><tr>${th('#')}${th('Name')}${th('Key measure')}${th('Score')}${th('Attend.')}${th('Expected')}${th('Move')}</tr>
+  const teamTables=teams.map(x=>`<h3 style="font:bold 13px Arial;margin:16px 0 6px;color:#1F2D44">${x.t}</h3><table cellspacing="0" cellpadding="0" style="width:100%;border-collapse:collapse;font:12.5px Arial"><tr>${th('#')}${th('Name')}${th('Key measure')}${th('Score')}${th('Attend.')}${th('Expected')}${th('Move')}</tr>
     ${x.rows.map(r=>`<tr>${td(r.rank)}${td(esc(r.m.p.name))}${td(keyMeasure(r.m))}${td(r.m.sc.score.toFixed(0),1)}${td(pct(r.m.vals.att)+(r.m.gate?' ⛔':''),1)}${td(inr(r.m.totalProj),1)}${td(mv(r.rank,r.prev))}</tr>`).join('')}</table>`).join('');
   const up=movers.filter(m=>m.d>0).slice(0,3), down=movers.filter(m=>m.d<0).slice(-3).reverse();
   const mover=(m,sign)=>`<li style="margin:3px 0">${esc(m.l.split(' (')[0])}: ${fmt(m.u,m.pv)} → <b>${fmt(m.u,m.v)}</b> (${sign}${Math.abs(m.d).toFixed(1)} pts)</li>`;
   return `<div class="mail">
-  <div style="background:#1F150C;color:#E8D5A3;padding:18px 22px"><div style="font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:#C9A24B">${esc(co.name)} · ${w.word==='week'?'weekly':w.word==='day'?'daily':'monthly'} branch review</div><div style="font:bold 22px Georgia,serif;color:#FFFFFF;margin-top:4px">${esc(br.name)}, ${w.word==='month'?MONTH:w.word+' ending '+w.weekEnd+' October 2026'}</div></div>
+  <div style="background:#121A26;color:#D6EEF0;padding:18px 22px"><div style="font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:#3FB4BF">${esc(co.name)} · ${w.word==='week'?'weekly':w.word==='day'?'daily':'monthly'} branch review</div><div style="font:bold 22px Georgia,serif;color:#FFFFFF;margin-top:4px">${esc(br.name)}, ${w.word==='month'?MONTH:w.word+' ending '+w.weekEnd+' October 2026'}</div></div>
   <div style="padding:18px 22px">
     <p style="margin:0 0 12px">Dear ${esc(first)},</p>
-    <p style="margin:0 0 14px;color:#3E2C1A">Here is where ${esc(br.name)} stands ${w.word==='month'?'for the month':`after ${w.word} ${Math.ceil(asOf/w.len)}`}, with the leaderboard for ${esc(co.name)} and your team's standings. Figures are the month so far${prev?`, with the change against the ${w.word} before in brackets`:''}.</p>
+    <p style="margin:0 0 14px;color:#1F2D44">Here is where ${esc(br.name)} stands ${w.word==='month'?'for the month':`after ${w.word} ${Math.ceil(asOf/w.len)}`}, with the leaderboard for ${esc(co.name)} and your team's standings. Figures are the month so far${prev?`, with the change against the ${w.word} before in brackets`:''}.</p>
     <table cellspacing="0" cellpadding="0" style="width:100%;border-collapse:collapse"><tr>
       ${kpi(`SO booked this ${w.word}`,inrL(weekSO),lastWeekSO==null?`${weekBills} bills`:`${weekBills} bills · last ${w.word} ${inrL(lastWeekSO)}`)}
       ${kpi('Month to date',pct(now.vals.ach),`${inrL(now.so)} of ${inrL(now.target)} · heading ${pct(now.achProj)}`)}
       ${kpi('Branch score',now.sc.score.toFixed(0),prev?`last ${w.word} ${prev.sc.score.toFixed(0)}`:'out of 100')}
       ${kpi(`Rank in ${esc(co.name)}`,`#${rankNow} of ${coNow.length}`,rankPrev?`last ${w.word} #${rankPrev}`:'branches by score')}
     </tr></table>
-    <h2 style="font:bold 15px Georgia,serif;color:#3E2C1A;margin:20px 0 8px">Leaderboard: ${esc(co.name)} branches</h2>
+    <h2 style="font:bold 15px Georgia,serif;color:#1F2D44;margin:20px 0 8px">Leaderboard: ${esc(co.name)} branches</h2>
     <table cellspacing="0" cellpadding="0" style="width:100%;border-collapse:collapse;font:12.5px Arial"><tr>${th('#')}${th('Branch')}${th('Score')}${th('Ach. now')}${th('Expected')}${th('GP')}${th('Incentive exp.')}</tr>${branchRows}</table>
-    <h2 style="font:bold 15px Georgia,serif;color:#3E2C1A;margin:22px 0 2px">Your team this ${w.word}</h2>
+    <h2 style="font:bold 15px Georgia,serif;color:#1F2D44;margin:22px 0 2px">Your team this ${w.word}</h2>
     ${teamTables}
-    <h2 style="font:bold 15px Georgia,serif;color:#3E2C1A;margin:22px 0 8px">What moved on the branch scorecard</h2>
-    <table cellspacing="0" cellpadding="0" style="width:100%"><tr><td style="vertical-align:top;width:50%;padding-right:10px"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#1B5E20;font-weight:bold">Improved</div><ul style="margin:6px 0 0;padding-left:18px">${up.map(m=>mover(m,'+')).join('')||`<li style="color:#7D6E5C">Nothing moved up this ${w.word}</li>`}</ul></td>
-      <td style="vertical-align:top;width:50%"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#A61B1B;font-weight:bold">Slipped</div><ul style="margin:6px 0 0;padding-left:18px">${down.map(m=>mover(m,'−')).join('')||`<li style="color:#7D6E5C">Nothing slipped this ${w.word}</li>`}</ul></td></tr></table>
-    <h2 style="font:bold 15px Georgia,serif;color:#3E2C1A;margin:22px 0 8px">For next ${w.word}</h2>
+    <h2 style="font:bold 15px Georgia,serif;color:#1F2D44;margin:22px 0 8px">What moved on the branch scorecard</h2>
+    <table cellspacing="0" cellpadding="0" style="width:100%"><tr><td style="vertical-align:top;width:50%;padding-right:10px"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#1E7D4B;font-weight:bold">Improved</div><ul style="margin:6px 0 0;padding-left:18px">${up.map(m=>mover(m,'+')).join('')||`<li style="color:#5B6776">Nothing moved up this ${w.word}</li>`}</ul></td>
+      <td style="vertical-align:top;width:50%"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#B42318;font-weight:bold">Slipped</div><ul style="margin:6px 0 0;padding-left:18px">${down.map(m=>mover(m,'−')).join('')||`<li style="color:#5B6776">Nothing slipped this ${w.word}</li>`}</ul></td></tr></table>
+    <h2 style="font:bold 15px Georgia,serif;color:#1F2D44;margin:22px 0 8px">For next ${w.word}</h2>
     <ol style="margin:0;padding-left:20px">${actions.map(a=>`<li style="margin:5px 0">${esc(a)}</li>`).join('')}</ol>
-    <div style="margin-top:20px;padding:12px 14px;background:#FBF6EE;border:1px solid #E4DACA;font-size:12.5px">
+    <div style="margin-top:20px;padding:12px 14px;background:#F8FAFC;border:1px solid #DCE2EA;font-size:12.5px">
       <b>Your payout position.</b> Management pool ${inr(bm?bm.pool:POOL.BM)}: ${now.achProj>=GATES.managerAch?`open, expected ${inr(bm?bm.payProj:0)} at the current pace`:`closed until the branch reaches ${GATES.managerAch}% (heading ${pct(now.achProj)})`}. Team pool ${inr(POOL.team)}: ${now.teamPoolProj?'on course to unlock':`unlocks at ${GATES.teamAch}% with audit ≥ ${GATES.teamAudit} (audit now ${br.auditScore})`}.
     </div>
-    <p style="margin:18px 0 0;font-size:12px;color:#7D6E5C">Figures as of ${asOf} October, provisional until orders are delivered and paid. Open the incentive board for the live view and each person's own page. Prepared by Bpro for ${esc(co.name)}.</p>
+    <p style="margin:18px 0 0;font-size:12px;color:#5B6776">Figures as of ${asOf} October, provisional until orders are delivered and paid. Open the incentive board for the live view and each person's own page. Prepared by Bpro for ${esc(co.name)}.</p>
   </div></div>`;
 }
 function emailText(w){
@@ -1522,9 +1522,9 @@ function emailText(w){
   return L.join('\n');
 }
 /* ---------- monthly email for the MD ---------- */
-const eth=t=>`<th style="text-align:left;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#7D6E5C;padding:6px 8px;border-bottom:1px solid #E4DACA">${t}</th>`;
-const etd=(t,r,b)=>`<td style="padding:6px 8px;border-bottom:1px solid #EFE7DA;${r?'text-align:right;':''}${b?'font-weight:bold;':''}white-space:nowrap">${t}</td>`;
-const eh2=t=>`<h2 style="font:bold 15px Georgia,serif;color:#3E2C1A;margin:22px 0 8px">${t}</h2>`;
+const eth=t=>`<th style="text-align:left;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#5B6776;padding:6px 8px;border-bottom:1px solid #DCE2EA">${t}</th>`;
+const etd=(t,r,b)=>`<td style="padding:6px 8px;border-bottom:1px solid #E9EEF4;${r?'text-align:right;':''}${b?'font-weight:bold;':''}white-space:nowrap">${t}</td>`;
+const eh2=t=>`<h2 style="font:bold 15px Georgia,serif;color:#1F2D44;margin:22px 0 8px">${t}</h2>`;
 function monthly(){
   const g=computeGroup(), ms=allMembers(g), rk=rankings(g);
   const bs=g.companies.flatMap(c=>c.branches.map(b=>({...b,co:c.co}))).sort((a,b)=>(b.sc.score*1000+b.achProj)-(a.sc.score*1000+a.achProj));
@@ -1550,18 +1550,18 @@ function monthly(){
 }
 function emailMdHtml(w){
   const {g,bs,prevRank,topSales,topLogi,topBack,bms,live,cancelled,over30,avgDisc,outlayRole,teamPools,gated,mgmtOpen,watch,closed,decisions}=w;
-  const kpi=(k,v,s)=>`<td style="padding:10px 12px;border:1px solid #EFE7DA;vertical-align:top;width:25%"><div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#7D6E5C;font-weight:bold">${k}</div><div style="font-size:20px;font-weight:bold;margin-top:4px">${v}</div><div style="font-size:12px;color:#7D6E5C;margin-top:2px">${s}</div></td>`;
-  const mv=(n,p)=>p==null?'<span style="color:#7D6E5C">·</span>':p>n?`<span style="color:#1B5E20;font-weight:bold">▲${p-n}</span>`:p<n?`<span style="color:#A61B1B;font-weight:bold">▼${n-p}</span>`:'<span style="color:#7D6E5C">▬</span>';
+  const kpi=(k,v,s)=>`<td style="padding:10px 12px;border:1px solid #E9EEF4;vertical-align:top;width:25%"><div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#5B6776;font-weight:bold">${k}</div><div style="font-size:20px;font-weight:bold;margin-top:4px">${v}</div><div style="font-size:12px;color:#5B6776;margin-top:2px">${s}</div></td>`;
+  const mv=(n,p)=>p==null?'<span style="color:#5B6776">·</span>':p>n?`<span style="color:#1E7D4B;font-weight:bold">▲${p-n}</span>`:p<n?`<span style="color:#B42318;font-weight:bold">▼${n-p}</span>`:'<span style="color:#5B6776">▬</span>';
   const coRows=g.companies.map(c=>`<tr>${etd(esc(c.co.name),0,1)}${etd(inrL(c.target),1)}${etd(inrL(c.so),1)}${etd(pct(c.ach),1)}${etd(pct(c.achProj),1)}${etd(pct(c.gp),1)}${etd(c.score.toFixed(0),1)}${etd(inrL(c.payProj),1)}</tr>`).join('');
   const brRows=bs.map((b,i)=>`<tr>${etd(i+1)}${etd(esc(b.br.name),0,1)}${etd(esc(b.co.name))}${etd(b.sc.score.toFixed(0),1)}${etd(pct(b.vals.ach),1)}${etd(pct(b.achProj),1)}${etd(pct(b.vals.gp),1)}${etd(b.vals.grating,1)}${etd(b.vals.audit,1)}${etd(inrL(b.payProj),1)}${etd(mv(i+1,prevRank[b.br.id]))}</tr>`).join('');
-  const topRows=(label,l)=>`<tr>${etd(label,0,1)}${l.map((m,i)=>etd(`${i+1}. ${esc(m.p.name)} <span style="color:#7D6E5C">(${esc(m.brc.br.name)}, ${m.sc.score.toFixed(0)}, ${inr(m.totalProj)})</span>`)).join('')}</tr>`;
-  const bmRows=bms.map(m=>`<tr>${etd(esc(m.p.name),0,1)}${etd(esc(m.brc.br.name))}${etd(pct(m.brc.achProj),1)}${etd(m.brc.sc.score.toFixed(0),1)}${etd(m.brc.achProj>=GATES.managerAch?'<span style="color:#1B5E20;font-weight:bold">Open</span>':'<span style="color:#A61B1B;font-weight:bold">Closed</span>')}${etd(inr(m.totalProj),1)}</tr>`).join('');
+  const topRows=(label,l)=>`<tr>${etd(label,0,1)}${l.map((m,i)=>etd(`${i+1}. ${esc(m.p.name)} <span style="color:#5B6776">(${esc(m.brc.br.name)}, ${m.sc.score.toFixed(0)}, ${inr(m.totalProj)})</span>`)).join('')}</tr>`;
+  const bmRows=bms.map(m=>`<tr>${etd(esc(m.p.name),0,1)}${etd(esc(m.brc.br.name))}${etd(pct(m.brc.achProj),1)}${etd(m.brc.sc.score.toFixed(0),1)}${etd(m.brc.achProj>=GATES.managerAch?'<span style="color:#1E7D4B;font-weight:bold">Open</span>':'<span style="color:#B42318;font-weight:bold">Closed</span>')}${etd(inr(m.totalProj),1)}</tr>`).join('');
   const roleRows=Object.entries(outlayRole).map(([k,v])=>`<tr>${etd(k)}${etd(inrL(v),1)}${etd(pct(v/Math.max(g.payProj,1)*100),1)}</tr>`).join('');
   return `<div class="mail">
-  <div style="background:#1F150C;color:#E8D5A3;padding:18px 22px"><div style="font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:#C9A24B">Meubel Grande · Royal Group · monthly incentive review</div><div style="font:bold 22px Georgia,serif;color:#FFFFFF;margin-top:4px">${MONTH}${closed?', month closed':`, to day ${asOf}`}</div></div>
+  <div style="background:#121A26;color:#D6EEF0;padding:18px 22px"><div style="font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:#3FB4BF">Meubel Grande · Royal Group · monthly incentive review</div><div style="font:bold 22px Georgia,serif;color:#FFFFFF;margin-top:4px">${MONTH}${closed?', month closed':`, to day ${asOf}`}</div></div>
   <div style="padding:18px 22px">
     <p style="margin:0 0 12px">Dear MD,</p>
-    <p style="margin:0 0 14px;color:#3E2C1A">${closed?`${MONTH} is closed. Here is the group against target, the branch leaderboard, the people who led it, and the payouts for your approval.`:`Here is the group position ${DAYS-asOf} days before month end, with the expected finish, the leaderboard as it stands and the payouts building up for approval.`}</p>
+    <p style="margin:0 0 14px;color:#1F2D44">${closed?`${MONTH} is closed. Here is the group against target, the branch leaderboard, the people who led it, and the payouts for your approval.`:`Here is the group position ${DAYS-asOf} days before month end, with the expected finish, the leaderboard as it stands and the payouts building up for approval.`}</p>
     <table cellspacing="0" cellpadding="0" style="width:100%;border-collapse:collapse"><tr>
       ${kpi('Group achievement',pct(closed?g.achProj:g.ach),`${inrL(g.so)} of ${inrL(g.target)}${closed?'':` · heading ${pct(g.achProj)}`}`)}
       ${kpi('Group GP',pct(g.gp),`target ${P.gp.t}% · avg discount ${pct(avgDisc)}`)}
@@ -1572,12 +1572,12 @@ function emailMdHtml(w){
     <table cellspacing="0" cellpadding="0" style="width:100%;border-collapse:collapse;font:12.5px Arial"><tr>${eth('Company')}${eth('Target')}${eth('Booked')}${eth('Ach. now')}${eth('Expected')}${eth('GP')}${eth('Score')}${eth('Incentive')}</tr>${coRows}</table>
     ${eh2('Group leaderboard: branches')}
     <table cellspacing="0" cellpadding="0" style="width:100%;border-collapse:collapse;font:12.5px Arial"><tr>${eth('#')}${eth('Branch')}${eth('Company')}${eth('Score')}${eth('Ach.')}${eth('Expected')}${eth('GP')}${eth('Google')}${eth('Audit')}${eth('Incentive')}${eth('Move')}</tr>${brRows}</table>
-    <p style="margin:6px 0 0;font-size:12px;color:#7D6E5C">Ranked by scorecard, then expected achievement. Move is against seven days earlier. ${teamPools} of ${bs.length} branches ${closed?'unlocked':'are on course to unlock'} the ${inr(POOL.team)} team pool.</p>
+    <p style="margin:6px 0 0;font-size:12px;color:#5B6776">Ranked by scorecard, then expected achievement. Move is against seven days earlier. ${teamPools} of ${bs.length} branches ${closed?'unlocked':'are on course to unlock'} the ${inr(POOL.team)} team pool.</p>
     ${eh2('People who led the month')}
     <table cellspacing="0" cellpadding="0" style="width:100%;border-collapse:collapse;font:12.5px Arial"><tr>${eth('Role')}${eth('1st')}${eth('2nd')}${eth('3rd')}</tr>${topRows('Sales',topSales)}${topRows('CRE',w.topCre)}${topRows('Logistics',topLogi)}${topRows('Back office',topBack)}</table>
     ${eh2('Branch Managers: team achievement pools')}
     <table cellspacing="0" cellpadding="0" style="width:100%;border-collapse:collapse;font:12.5px Arial"><tr>${eth('BM')}${eth('Branch')}${eth('Branch ach.')}${eth('Score')}${eth('Pool')}${eth('Expected')}</tr>${bmRows}</table>
-    <p style="margin:6px 0 0;font-size:12px;color:#7D6E5C">${mgmtOpen} of ${bs.length} management pools open (branch at ${GATES.managerAch}% or more). SMs follow the same rule.</p>
+    <p style="margin:6px 0 0;font-size:12px;color:#5B6776">${mgmtOpen} of ${bs.length} management pools open (branch at ${GATES.managerAch}% or more). SMs follow the same rule.</p>
     ${eh2('Incentive outlay by role')}
     <table cellspacing="0" cellpadding="0" style="width:100%;border-collapse:collapse;font:12.5px Arial"><tr>${eth('Role')}${eth('Expected')}${eth('Share')}</tr>${roleRows}<tr>${etd('Total',0,1)}${etd(inrL(g.payProj),1,1)}${etd('100%',1)}</tr></table>
     ${eh2('Policy health')}
@@ -1590,7 +1590,7 @@ function emailMdHtml(w){
     </ul>
     ${eh2(closed?'For your approval':'Decisions building up')}
     <ol style="margin:0;padding-left:20px">${decisions.map(d=>`<li style="margin:5px 0">${esc(d)}</li>`).join('')}</ol>
-    <p style="margin:18px 0 0;font-size:12px;color:#7D6E5C">Figures as of ${asOf} October${closed?'':', projected to month end at the current pace'}. Statements go to each employee for confirmation before payout; disputes within 7 days. Prepared by Bpro for Meubel Grande and Royal Group.</p>
+    <p style="margin:18px 0 0;font-size:12px;color:#5B6776">Figures as of ${asOf} October${closed?'':', projected to month end at the current pace'}. Statements go to each employee for confirmation before payout; disputes within 7 days. Prepared by Bpro for Meubel Grande and Royal Group.</p>
   </div></div>`;
 }
 function emailMdText(w){
@@ -1635,11 +1635,11 @@ function hrMonthly(){
 }
 function emailHrHtml(w,cad){
   const {g,ms,tot,att,byBranch,byRole,gated,chronic,perfect,punct,regs,disputes,groom,lowGroom,closed,actions}=w;
-  const kpi=(k,v,s)=>`<td style="padding:10px 12px;border:1px solid #EFE7DA;vertical-align:top;width:25%"><div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#7D6E5C;font-weight:bold">${k}</div><div style="font-size:20px;font-weight:bold;margin-top:4px">${v}</div><div style="font-size:12px;color:#7D6E5C;margin-top:2px">${s}</div></td>`;
-  return `<div class="mail"><div style="background:#1F150C;color:#E8D5A3;padding:18px 22px"><div style="font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:#C9A24B">Meubel Grande · Royal Group · HR and payroll review</div><div style="font:bold 22px Georgia,serif;color:#FFFFFF;margin-top:4px">${MONTH}${closed?', month closed':`, to day ${asOf}`}</div></div>
+  const kpi=(k,v,s)=>`<td style="padding:10px 12px;border:1px solid #E9EEF4;vertical-align:top;width:25%"><div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#5B6776;font-weight:bold">${k}</div><div style="font-size:20px;font-weight:bold;margin-top:4px">${v}</div><div style="font-size:12px;color:#5B6776;margin-top:2px">${s}</div></td>`;
+  return `<div class="mail"><div style="background:#121A26;color:#D6EEF0;padding:18px 22px"><div style="font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:#3FB4BF">Meubel Grande · Royal Group · HR and payroll review</div><div style="font:bold 22px Georgia,serif;color:#FFFFFF;margin-top:4px">${MONTH}${closed?', month closed':`, to day ${asOf}`}</div></div>
   <div style="padding:18px 22px">
     <p style="margin:0 0 12px">Dear HR team,</p>
-    <p style="margin:0 0 14px;color:#3E2C1A">${closed?'The month is closed.':`${DAYS-asOf} days remain in the month.`} Here are attendance and punctuality by branch, the people the policy gates or flags, the regularisations and disputes on the ledger, and the payroll input by branch and role.</p>
+    <p style="margin:0 0 14px;color:#1F2D44">${closed?'The month is closed.':`${DAYS-asOf} days remain in the month.`} Here are attendance and punctuality by branch, the people the policy gates or flags, the regularisations and disputes on the ledger, and the payroll input by branch and role.</p>
     <table cellspacing="0" cellpadding="0" style="width:100%;border-collapse:collapse"><tr>
       ${kpi('Attendance',pct(att),`${tot.absent} absences in ${tot.days} working days`)}
       ${kpi('Punctuality',`${tot.late} late · ${tot.early} early`,`${chronic.length} chronic · ${perfect.length} spotless`)}
@@ -1648,7 +1648,7 @@ function emailHrHtml(w,cad){
     </tr></table>
     ${eh2('Attendance and punctuality by branch')}
     <table cellspacing="0" cellpadding="0" style="width:100%;border-collapse:collapse;font:12.5px Arial"><tr>${eth('Branch')}${eth('Head')}${eth('Attendance')}${eth('Absent')}${eth('Late')}${eth('Early')}${eth('Gated')}${eth('Grooming')}${eth('Appreciations')}${eth('Payout')}</tr>
-      ${byBranch.map(x=>`<tr>${etd(esc(x.b.br.name)+' <span style="color:#7D6E5C">'+esc(x.b.co.name)+'</span>',0,1)}${etd(x.head,1)}${etd(pct(x.att),1,x.att<GATES.attendance+5)}${etd(x.absent,1)}${etd(x.late,1)}${etd(x.early,1)}${etd(x.gated||'—',1)}${etd((Math.round(x.groom*10)/10)+' / 5',1)}${etd(x.appr,1)}${etd(inrL(x.payout),1)}</tr>`).join('')}</table>
+      ${byBranch.map(x=>`<tr>${etd(esc(x.b.br.name)+' <span style="color:#5B6776">'+esc(x.b.co.name)+'</span>',0,1)}${etd(x.head,1)}${etd(pct(x.att),1,x.att<GATES.attendance+5)}${etd(x.absent,1)}${etd(x.late,1)}${etd(x.early,1)}${etd(x.gated||'—',1)}${etd((Math.round(x.groom*10)/10)+' / 5',1)}${etd(x.appr,1)}${etd(inrL(x.payout),1)}</tr>`).join('')}</table>
     ${eh2('People to act on')}
     <ul style="margin:0;padding-left:20px">
       <li style="margin:4px 0"><b>Under the ${GATES.attendance}% gate (scorecard pay withheld):</b> ${gated.length?gated.map(m=>`${esc(m.p.name)} (${esc(m.brc.br.name)}, ${pct(m.vals.att)})`).join(', '):'none'}</li>
@@ -1668,7 +1668,7 @@ function emailHrHtml(w,cad){
       <tr>${etd('Total',0,1)}${etd(ms.length,1,1)}${etd(pct(att),1,1)}${etd(tot.late,1,1)}${etd(inrL(g.payProj),1,1)}${etd(inr(g.payProj/ms.length),1,1)}</tr></table>
     ${eh2(closed?'For action':'Building up for month end')}
     <ol style="margin:0;padding-left:20px">${actions.map(a=>`<li style="margin:5px 0">${esc(a)}</li>`).join('')}</ol>
-    <p style="margin:18px 0 0;font-size:12px;color:#7D6E5C">Attendance from the biometric feed, grooming from the branch audit, payouts from the incentive board as of ${asOf} October${closed?'':', projected to month end'}. Prepared by Bpro for Meubel Grande and Royal Group.</p>
+    <p style="margin:18px 0 0;font-size:12px;color:#5B6776">Attendance from the biometric feed, grooming from the branch audit, payouts from the incentive board as of ${asOf} October${closed?'':', projected to month end'}. Prepared by Bpro for Meubel Grande and Royal Group.</p>
   </div></div>`;
 }
 function emailHrText(w,cad){
@@ -1731,7 +1731,7 @@ function wireCopy(text,html,subject){
   const bT=$('#cpText'),bS=$('#cpSubj'),bH=$('#cpHtml');
   if(bT)bT.addEventListener('click',()=>copyText(text));
   if(bS)bS.addEventListener('click',()=>copyText(subject));
-  if(bH)bH.addEventListener('click',()=>{const full=`<!doctype html><html><body style="margin:0;background:#E9E4DB;padding:18px">${html}</body></html>`;
+  if(bH)bH.addEventListener('click',()=>{const full=`<!doctype html><html><body style="margin:0;background:#EEF1F5;padding:18px">${html}</body></html>`;
     try{if(typeof ClipboardItem!=='undefined'&&navigator.clipboard.write){navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([full],{type:'text/html'}),'text/plain':new Blob([text],{type:'text/plain'})})]).then(()=>done('Copied as rich HTML; paste into a new mail'),()=>copyText(full))}else copyText(full)}catch(_){copyText(full)}});
 }
 /* ---------- settings: policy values, weights, targets, prediction, data inputs ---------- */
