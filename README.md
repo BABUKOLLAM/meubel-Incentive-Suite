@@ -371,6 +371,15 @@ thirty minutes with Docker Compose (Postgres, the Node back end, Caddy for HTTPS
 - **Operations**: health endpoint, jobs and messages logs, nightly `pg_dump` script, idempotent schema applied
   on start, `git pull && docker compose up -d --build` to update.
 
+- **Live roster**: hosted, the board builds companies, branches and people from the `roster` table instead of the
+  generated sample, each starting empty (nothing booked, no punches, nothing audited); the feeds fill them. A
+  render-test pass checks every view, message, statement and the payout file on an empty live roster and again
+  after three feeds. Non-admin roles receive the roster without phone numbers or emails.
+- **Tools**: `deploy/install.sh <domain> <email>` installs everything on a fresh Ubuntu VPS in one command;
+  `backend/tools/import.js roster|profiles <file.csv> [--check]` validates and loads people from the templates in
+  `deploy/templates/`; `deploy/GO-LIVE.md` is the checklist and `deploy/whatsapp-template.md` the text to submit to
+  Meta. Fonts are bundled (`backend/public/fonts`, SIL Open Font License), so the hosted board needs no Google call.
+
 Without `config.js` on the server (for example the artifact preview or the file opened from disk) the page runs
 exactly as before, on browser storage and sample data.
 
@@ -379,7 +388,7 @@ exactly as before, on browser storage and sample data.
 ```
 index.html                 the whole board: styles, sample universe, computation, views, messages, settings, admin, history, statements, exports
 backend/                   hosted back end: server.js, lib (db, auth, kv, sources, engine), jobs (sync, messages, adapters), send, public
-deploy/                    VPS guide, Caddyfile, backup script
+deploy/                    VPS guide, one-command installer, go-live checklist, WhatsApp template, CSV templates, Caddyfile, backup
 docker-compose.yml         Postgres + back end + Caddy
 test/browser.test.js       headless Chromium walk: no page errors, no bad text, no phone overflow
 CLAUDE.md                  conventions for anyone (or any agent) working on the repo

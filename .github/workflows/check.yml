@@ -39,8 +39,11 @@ jobs:
           node-version: "22"
       - name: Back end syntax and install
         run: |
-          for f in backend/server.js backend/lib/*.js backend/db/migrate.js backend/jobs/*.js backend/jobs/adapters/*.js backend/send/*.js backend/public/*.js; do node --check "$f"; done
+          for f in backend/server.js backend/lib/*.js backend/tools/*.js backend/db/migrate.js backend/jobs/*.js backend/jobs/adapters/*.js backend/send/*.js backend/public/*.js; do node --check "$f"; done
           cd backend && npm install --omit=dev --no-audit --no-fund
+          node tools/import.js roster ../deploy/templates/roster.csv --check
+          node tools/import.js profiles ../deploy/templates/profiles.csv --check
+          bash -n ../deploy/install.sh
       - name: Schema parses
         run: node -e "const s=require('fs').readFileSync('backend/db/schema.sql','utf8');if(!/create table if not exists kv/.test(s))process.exit(1)"
 

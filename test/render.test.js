@@ -57,3 +57,10 @@ const __b=computeBranch(branches[0]);const __t=buildMessage('SM','daily','whatsa
 console.log('november month: DAYS '+DAYS+', '+MONTH+', '+(__e?__e+' problems':'ok'));if(__e)process.exit(1);`;
 new Function(js+checks2)();
 delete global.window.BPRO_CONFIG;
+// live roster, no data yet: every view renders without NaN, undefined or Infinity; then three feeds land
+{const rosterRows=[['r1','Asha K.','Sales','Kollam','klm','Meubel Grande'],['r2','Binu T.','Sales','Kollam','klm','Meubel Grande'],['r3','Chitra N.','CRE','Kollam','klm','Meubel Grande'],['r4','Deepak S.','Logistics','Kollam','klm','Meubel Grande'],['r5','Elsa M.','Back office','Kollam','klm','Meubel Grande'],['r6','Faisal R.','BM','Kollam','klm','Meubel Grande'],['r7','Gita P.','SM','Kollam','klm','Meubel Grande'],['r8','Hari V.','Sales','Calicut','clt','Royal Group'],['r9','Indu J.','BM','Calicut','clt','Royal Group']].map(([id,name,role,branch,branch_id,company])=>({id,name,role,branch,branch_id,company}));
+const store={'mr-roster':rosterRows,'mr-user':'tech@bpropms.com'};
+const savedLS=global.localStorage;global.localStorage={getItem:k=>k in store?JSON.stringify(store[k]):null,setItem(k,v){store[k]=JSON.parse(v)},removeItem(k){delete store[k]}};
+global.window.BPRO_CONFIG={month:'2026-11'};
+new Function(js+require('fs').readFileSync(require('path').join(__dirname,'live-roster.checks.js'),'utf8'))();
+global.localStorage=savedLS;delete global.window.BPRO_CONFIG;}

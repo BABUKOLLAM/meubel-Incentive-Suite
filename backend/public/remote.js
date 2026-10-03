@@ -37,6 +37,8 @@
     if (!r.ok) throw new Error('me: HTTP ' + r.status);
     me = await r.json();
     const kv = await (await api('/kv')).json();
+    const roster = await (await api('/roster')).json();
+    try { if (Array.isArray(roster) && roster.length) localStorage.setItem('mr-roster', JSON.stringify(roster)); else localStorage.removeItem('mr-roster'); } catch (_) {}
     Object.keys(kv).forEach(k => { try { localStorage.setItem(k, JSON.stringify(kv[k])); } catch (_) {} });
     try { // the signed-in person must exist in the users list the board reads
       const extra = JSON.parse(localStorage.getItem('mr-users') || '[]');
@@ -53,7 +55,6 @@
 
   async function afterBoot(B) {
     const sel = document.getElementById('selUser'); if (sel) { sel.disabled = true; sel.setAttribute('data-tip', 'Signed in through single sign-on; the role comes from the roster.'); }
-    const note = document.getElementById('userNote'); if (note) note.innerHTML = `${me.email} · <a href="${cfg.api}/auth/logout">Sign out</a>`;
     let n = 0;
     for (const src of B.SOURCES) {
       try {

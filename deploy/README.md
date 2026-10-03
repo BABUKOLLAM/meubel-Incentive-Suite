@@ -1,5 +1,15 @@
 # Deploying the incentive board on a VPS
 
+**Quick path**: on a fresh Ubuntu VPS, as root, with the domain's A record already pointing at it:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/BABUKOLLAM/meubel-Incentive-Suite/main/deploy/install.sh | bash -s -- incentive.meubelgrande.com tech@bpropms.com
+```
+
+It installs Docker and the firewall, clones the code, writes `.env` with fresh secrets, starts everything in dry-run
+mode, loads the Bpro administrators and schedules the nightly backup. Then follow `GO-LIVE.md`. The manual steps
+below are the same thing done by hand.
+
 One Ubuntu VPS (2 vCPU, 2 GB RAM is plenty), one domain, about thirty minutes. Everything runs in Docker:
 Postgres, the Node back end that serves the page and runs the jobs, and Caddy for HTTPS.
 
@@ -58,11 +68,19 @@ insert into profiles(email,name,role) values
 on conflict (email) do nothing;"
 ```
 
-Roster and branch logins are loaded through the API as JSON (after signing in as super admin, from the browser
-console or with a cookie-carrying client), or straight into the tables with `psql \copy` from a CSV with the
-columns `id,name,role,branch,branch_id,company,phone,email,joined,left_on`. Branch Managers, Sales Managers
-and employees need a `profiles` row with `branch_id` (and `person_id` for SM and employees) so the board opens at
-the right place.
+Then the roster and the branch logins, from the templates in `deploy/templates/` (copy, fill, put in
+`/opt/incentive/data/`):
+
+```bash
+docker compose exec app node tools/import.js roster   /data/roster.csv --check   # validates, loads nothing
+docker compose exec app node tools/import.js roster   /data/roster.csv
+docker compose exec app node tools/import.js profiles /data/profiles.csv --check
+docker compose exec app node tools/import.js profiles /data/profiles.csv
+```
+
+The board builds its branches and people from the roster: real names, starting empty until the feeds arrive.
+Branch Managers, Sales Managers and employees need a profiles row with `branch_id` (and `person_id`, the roster id,
+for SM and employees) so the board opens at the right place.
 
 ## 5. Data feeds
 
@@ -104,7 +122,7 @@ records every scheduled run and failure.
 
 ## What is still sample until the feeds arrive
 
-The engine keeps the sample universe for anything no source has supplied yet, so the board is never empty. As
-each feed lands, its rows replace the sample for the people and branches they name. When hosted, the engine scores the live month in India (day count, labels and the as-of day follow the calendar);
+Once a roster is loaded the sample universe is gone: every person and branch is real and starts empty, and each
+feed fills its part. Until a roster is loaded the hosted board still shows the sample. When hosted, the engine scores the live month in India (day count, labels and the as-of day follow the calendar);
 `BOARD_MONTH=YYYY-MM` on the server, or `BPRO_CONFIG.month` in `config.js`, pins a different month, for example to
 re-run a close.

@@ -487,6 +487,8 @@ Super Admin and Admin edit. Consultants see every value read-only. Client roles 
 
 Rows name people by the roster name or id and branches by name. Press **Copy roster** on the panel to get `id,name,role,branch,company` for every person and paste it into the source system's export mapping. A row that names nobody on the roster is ignored and counted in the status line, so check the count after every upload.
 
+When the board is hosted, its branches and people are built from the roster loaded by the administrator, not from the sample: every person starts empty and the sources below fill them.
+
 ### 9.2 The sources
 
 | Source | Columns | Example row | Feeds |

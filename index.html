@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Meubel & Royal Incentive Board</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="fonts.css" onerror="this.onerror=null;this.href='https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap'">
 <style>
 /* Layout: breadcrumb drill-down (Group → Company → Branch → Team → Person). Each level: summary tiles, one comparison chart, the scorecard that makes the number, then "further push" and "what lags" side by side. */
 :root{
@@ -436,13 +436,32 @@ const norm=r=>{const u=1-r(),v=r();return Math.sqrt(-2*Math.log(u))*Math.cos(2*M
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const FIRST=['Anjali','Rahul','Meera','Suresh','Nithya','Arun','Divya','Vishnu','Lakshmi','Jithin','Sreeja','Manoj','Aswathy','Rakesh','Reshma','Faisal','Anu','Hari','Neethu','Sanoj','Gopika','Shibu','Parvathy','Akhil','Remya','Bijoy','Soumya','Nikhil','Athira','Prasad','Rejani','Vinod','Haritha','Sajan','Jisha','Ratheesh','Deepa','Ajmal','Shalini','Binu','Anusha','Midhun','Sandra','Febin','Amrutha','Sumesh','Greeshma','Noufal','Keerthi','Sarath','Ramya','Aneesh','Sruthi','Jomon','Veena','Ashiq','Dhanya','Renjith','Nimmy','Shyam','Priya','Alan','Mridula','Vipin','Krishna','Tintu','Abhilash','Sona','Anoop','Chitra','Riyas','Lekshmi','Mahesh','Sneha'];
 const ITEMS=['L-shape sofa','3-seater sofa','Recliner','Dining set 6','Dining set 4','Queen bed','King bed','Wardrobe 4 door','Wardrobe 3 door','Study table','Coffee table','TV unit','Bookshelf','Dresser','Shoe rack','Lounge chair','Bunk bed','Side table','Mattress','Office chair'];
-const GROUP={name:'Meubel & Royal',companies:[
+const ROSTER=(()=>{try{const r=JSON.parse(localStorage.getItem('mr-roster')||'null');return Array.isArray(r)&&r.length?r:null}catch(_){return null}})(); // live roster from the server
+const LIVE=!!ROSTER;
+const slug=s=>String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'x';
+const onRoll=x=>!x.left_on||new Date(x.left_on)>new Date();
+const GROUP=LIVE?(()=>{ // companies and branches in roster order; the first two keep the board's company colours
+  const cos=[],COLORS=['var(--c-mg)','var(--c-rg)','var(--s1)','var(--s2)','var(--s3)','var(--s4)'];
+  ROSTER.filter(onRoll).forEach(x=>{const cn=x.company||'Company';let co=cos.find(c=>c.name===cn);if(!co){co={id:slug(cn).slice(0,12),name:cn,color:COLORS[cos.length%COLORS.length],branches:[]};cos.push(co)}
+    const bid=x.branch_id||slug(x.branch);if(!co.branches.some(b=>b.id===bid))co.branches.push({id:bid,name:x.branch,tilt:1})});
+  return {name:cos.map(c=>c.name).join(' & '),companies:cos};
+})():{name:'Meubel & Royal',companies:[
  {id:'mg',name:'Meubel Grande',color:'var(--c-mg)',branches:[{id:'klm',name:'Kollam',tilt:1.08},{id:'ekm',name:'Kochi',tilt:.92},{id:'tvm',name:'Trivandrum',tilt:1.0},{id:'tsr',name:'Thrissur',tilt:.84}]},
  {id:'rg',name:'Royal Group',color:'var(--c-rg)',branches:[{id:'clt',name:'Calicut',tilt:1.05},{id:'knr',name:'Kannur',tilt:.95},{id:'pkd',name:'Palakkad',tilt:.88}]},
 ]};
 let nameI=0; const nextName=()=>FIRST[nameI++%FIRST.length]+' '+'KRMSNPVTAJ'[nameI%10]+'.';
 const people=[], branches=[];
+function liveEmpty(p){ // a real person before any feed: nothing booked, no punches known, nothing audited
+  p.off=-1;p.att=Array.from({length:DAYS},()=>'');p.acts=[];p.appr=[];p.groom=0;
+  if(p.role==='Sales'){p.bills=[];p.cust=Array.from({length:DAYS},()=>0);p.target=0;p.tend=0;p.skill=1;p.lastDisc=0}
+  if(p.role==='CRE'){p.logged=Array.from({length:DAYS},()=>0);p.follow=[]}
+  if(p.role==='Logistics')p.deliv=[];
+  if(p.role==='Back office'){p.neat=0;p.dues=[];p.docs=[];p.calls=[]}
+}
 (function build(){
+  if(LIVE){GROUP.companies.forEach(co=>co.branches.forEach(br=>{br.company=co;branches.push(br);br.lastDisc=0;br.auditScore=0;br.neat=0;br.gratingBase=0;br.walkIns=Array.from({length:DAYS},()=>0);br.activities=[];br.people=[];
+      ROSTER.filter(x=>onRoll(x)&&(x.branch_id||slug(x.branch))===br.id).forEach(x=>{const p={id:String(x.id),name:x.name,role:x.role,branch:br};liveEmpty(p);people.push(p);br.people.push(p)});
+      br.target=0}));return}
   let seed=7;
   GROUP.companies.forEach(co=>co.branches.forEach(br=>{
     const r=rng(seed++*9973); br.company=co; branches.push(br);
@@ -509,7 +528,8 @@ function genBack(p,r,tilt){
 let asOf=CAL.today;
 const inr=n=>(n<0?'−':'')+'₹'+Math.round(Math.abs(n)).toLocaleString('en-IN');
 const inrL=n=>{const a=Math.abs(n),s=n<0?'−':'',f=(x,w)=>s+'₹'+(Math.round(x*100)/100).toFixed(2).replace(/\.?0+$/,'')+' '+w;return a>=1e7?f(a/1e7,'crore'):a>=1e5?f(a/1e5,'lakh'):inr(n)}; // Indian units in words; exact rupees below a lakh
-const pct=n=>(Math.round(n*10)/10)+'%';
+const pct=n=>isFinite(n)?(Math.round(n*10)/10)+'%':'—';
+const dv=(a,b)=>b>0?a/b:0; // safe ratio: nothing to divide by (no target loaded yet) reads as zero
 const fmt=(u,v)=>u==='inr'?inrL(v):u==='pct'?pct(v):u==='pp'?(v>0?'+':'')+(Math.round(v*10)/10)+' pp':u==='r5'?(Math.round(v*10)/10)+' / 5':u==='x'?(Math.round(v*10)/10):u==='score'?Math.round(v)+' / 100':Math.round(v);
 function erf(x){const s=Math.sign(x);x=Math.abs(x);const t=1/(1+.3275911*x);const y=1-(((((1.061405429*t-1.453152027)*t)+1.421413741)*t-.284496736)*t+.254829592)*t*Math.exp(-x*x);return s*y}
 const Phi=z=>.5*(1+erf(z/Math.SQRT2));
@@ -566,7 +586,7 @@ function computePerson(p){
   const sc=role?scorecard(role,vals):{rows:[],score:0};
   // projected score: achievement replaced by month-end projection, other rates held
   let scProj=sc;
-  if(p.role==='Sales'){scProj=scorecard('Sales',{...vals,ach:extra.soProj/p.target*100,cust:vals.cust/asOf*DAYS,appr:vals.appr/asOf*DAYS})}
+  if(p.role==='Sales'){scProj=scorecard('Sales',{...vals,ach:dv(extra.soProj,p.target)*100,cust:vals.cust/asOf*DAYS,appr:vals.appr/asOf*DAYS})}
   const gate=vals.att<GATES.attendance;
   const pool=POOL[p.role]||0;
   const pay=role?(gate?0:pool*Math.min(sc.score,120)/100):0, payProj=role?(gate?0:pool*Math.min(scProj.score,120)/100):0;
@@ -584,13 +604,13 @@ function computeBranch(br){
   const gp=so?bills.reduce((s,b)=>s+b.margin*b.bill,0)/so:0;
   const tgtPro=br.target*asOf/DAYS;
   const staff=members.filter(m=>W[m.p.role]);
-  const vals={ach:so/tgtPro*100,gp,conv:cust?bills.length/cust*100:0,walkout:walk?Math.max(0,(walk-bills.length)/walk*100):0,
+  const vals={ach:dv(so,tgtPro)*100,gp,conv:cust?bills.length/cust*100:0,walkout:walk?Math.max(0,(walk-bills.length)/walk*100):0,
     grating:+(br.gratingBase+Math.min(.2,reviews/200)).toFixed(1),rev:bills.length?reviews/bills.length*10:0,audit:br.auditScore,neat:br.neat,
     act:acts.length?rate(acts,a=>a.done):100,dtrend:avgDisc-br.lastDisc,appr:members.reduce((s,m)=>s+m.vals.appr,0),
     att:members.reduce((s,m)=>s+m.vals.att,0)/members.length,commit:staff.length?staff.reduce((s,m)=>s+(m.vals.commit??90),0)/staff.length:90};
   const sc=scorecard('Branch',vals);
   const soProj=so/Math.max(asOf,1)*DAYS, sd=soProj*PRED.cv*.8*Math.sqrt((DAYS-asOf)/DAYS)+1, pTarget=1-Phi((br.target-soProj)/sd);
-  const achProj=soProj/br.target*100;
+  const achProj=dv(soProj,br.target)*100;
   const scProj=scorecard('Branch',{...vals,ach:achProj,appr:vals.appr/asOf*DAYS});
   // management: team achievement
   const mgmt=members.filter(m=>m.p.role==='BM'||m.p.role==='SM').map(m=>{const pool=POOL[m.p.role];
@@ -611,8 +631,8 @@ function computeCompany(co){
   const bs=co.branches.map(computeBranch);
   const so=bs.reduce((s,b)=>s+b.so,0),target=bs.reduce((s,b)=>s+b.target,0),soProj=bs.reduce((s,b)=>s+b.soProj,0);
   const sd=soProj*PRED.cv*.6*Math.sqrt((DAYS-asOf)/DAYS)+1;
-  const wavg=f=>bs.reduce((s,b)=>s+f(b)*b.target,0)/target;
-  return {co,branches:bs,so,target,soProj,pTarget:1-Phi((target-soProj)/sd),ach:so/(target*asOf/DAYS)*100,achProj:soProj/target*100,
+  const wavg=f=>target>0?bs.reduce((s,b)=>s+f(b)*b.target,0)/target:bs.reduce((s,b)=>s+f(b),0)/Math.max(1,bs.length);
+  return {co,branches:bs,so,target,soProj,pTarget:1-Phi((target-soProj)/sd),ach:dv(so,target*asOf/DAYS)*100,achProj:dv(soProj,target)*100,
     gp:bs.reduce((s,b)=>s+b.vals.gp*b.so,0)/Math.max(so,1),score:wavg(b=>b.sc.score),scoreProj:wavg(b=>b.scProj.score),grating:wavg(b=>b.vals.grating),
     pay:bs.reduce((s,b)=>s+b.pay,0),payProj:bs.reduce((s,b)=>s+b.payProj,0),conv:wavg(b=>b.vals.conv),audit:wavg(b=>b.vals.audit),walkout:wavg(b=>b.vals.walkout)};
 }
@@ -620,8 +640,8 @@ function computeGroup(){
   const cs=GROUP.companies.map(computeCompany);
   const so=cs.reduce((s,c)=>s+c.so,0),target=cs.reduce((s,c)=>s+c.target,0),soProj=cs.reduce((s,c)=>s+c.soProj,0);
   const sd=soProj*PRED.cv*.5*Math.sqrt((DAYS-asOf)/DAYS)+1;
-  return {companies:cs,so,target,soProj,pTarget:1-Phi((target-soProj)/sd),ach:so/(target*asOf/DAYS)*100,achProj:soProj/target*100,
-    gp:cs.reduce((s,c)=>s+c.gp*c.so,0)/Math.max(so,1),score:cs.reduce((s,c)=>s+c.score*c.target,0)/target,pay:cs.reduce((s,c)=>s+c.pay,0),payProj:cs.reduce((s,c)=>s+c.payProj,0)};
+  return {companies:cs,so,target,soProj,pTarget:1-Phi((target-soProj)/sd),ach:dv(so,target*asOf/DAYS)*100,achProj:dv(soProj,target)*100,
+    gp:cs.reduce((s,c)=>s+c.gp*c.so,0)/Math.max(so,1),score:(target>0?cs.reduce((s,c)=>s+c.score*c.target,0)/target:cs.reduce((s,c)=>s+c.score,0)/Math.max(1,cs.length)),pay:cs.reduce((s,c)=>s+c.pay,0),payProj:cs.reduce((s,c)=>s+c.payProj,0)};
 }
 
 /* ---------- rankings (per role, across a scope) ---------- */
@@ -1473,7 +1493,7 @@ function viewPerson(){
     const over=m.bills.filter(x=>x.share===0&&x.cat!=='C'&&x.status!=='cancelled');if(over.length)lag.unshift(li('bad','!',`${over.length} bill${over.length>1?'s':''} above 30% discount earn nothing under the policy`,over.map(x=>`${x.no} at ${x.disc}%`).join(', ')+'. Needs the manager’s written approval.','−'+inr(over.reduce((s,x)=>s+x.base,0))));
     const canc=m.bills.filter(x=>x.status==='cancelled');if(canc.length)lag.unshift(li('bad','✕',`${canc.length} order${canc.length>1?'s':''} cancelled after advance`,canc.map(x=>`${x.no}: ${x.reason}`).join('; ')+'. No incentive; already-paid amounts come off the next payout.','−'+inr(canc.reduce((s,x)=>s+x.full,0))));
     tiles=`${tile('Expected month end',inr(m.totalProj),`Per-bill ${inr(pb.expected)} + scorecard ${inr(m.payProj)} + team ${inr(m.teamShare)}${m.adj?` + adjustments ${inr(m.adj)}`:''}`,'hero')}
-      ${tile('Target vs achievement',pct(m.vals.ach),`${inrL(m.so)} of ${inrL(m.target)} · ${pct(m.soProj/m.target*100)} expected`,'',m.vals.ach>=100?'good':m.vals.ach>=85?'warn':'bad')}
+      ${tile('Target vs achievement',pct(m.vals.ach),`${inrL(m.so)} of ${inrL(m.target)} · ${pct(dv(m.soProj,m.target)*100)} expected`,'',m.vals.ach>=100?'good':m.vals.ach>=85?'warn':'bad')}
       ${tile('Chance of target',pct(m.pTarget*100),`${DAYS-asOf} days left`,'','brass')}
       ${tile('Scorecard',m.sc.score.toFixed(0),`${m.scProj.score.toFixed(0)} expected · pool ${inr(m.pool)}${m.gate?' · gated':''}`,'',m.gate?'bad':m.sc.score>=85?'good':m.sc.score>=70?'warn':'bad')}
       ${tile('Per-bill, confirmed',inr(pb.confirmed),`${pb.bonus?'+'+Math.round(pb.bonus*100)+'% closing bonus':'no closing bonus'} · ${inr(pb.provF)} provisional`,'','good')}
@@ -1502,7 +1522,7 @@ function viewPerson(){
       ${key.map(k=>tile(k[0],k[1],'','','info')).join('')}
       ${tile('Attendance',pct(m.vals.att),`${m.vals.late} late · ${m.vals.early} early`,'',m.gate?'bad':m.vals.att>=95?'good':'warn')}`;
   }
-  const strip=`<div class="strip">${p.att.map((s,i)=>`<i class="${i<asOf?s:'f'}" title="${MON} ${i+1}: ${{p:'present',l:'late punch',e:'early going',a:'absent',o:'weekly off'}[s]}"></i>`).join('')}</div><div class="legend"><span><i class="sw" style="background:var(--good)"></i>Present</span><span><i class="sw" style="background:var(--warn)"></i>Late punch</span><span><i class="sw" style="background:var(--info)"></i>Early going</span><span><i class="sw" style="background:var(--bad)"></i>Absent</span><span><i class="sw" style="background:var(--line)"></i>Weekly off</span></div>`;
+  const strip=`<div class="strip">${p.att.map((s,i)=>`<i class="${i<asOf?s:'f'}" title="${MON} ${i+1}: ${({p:'present',l:'late punch',e:'early going',a:'absent',o:'weekly off'}[s]||'no punch recorded')}"></i>`).join('')}</div><div class="legend"><span><i class="sw" style="background:var(--good)"></i>Present</span><span><i class="sw" style="background:var(--warn)"></i>Late punch</span><span><i class="sw" style="background:var(--info)"></i>Early going</span><span><i class="sw" style="background:var(--bad)"></i>Absent</span><span><i class="sw" style="background:var(--line)"></i>Weekly off</span></div>`;
   if(m.gate)lag.unshift(li('bad','⛔',`Attendance ${pct(m.vals.att)} is under the ${GATES.attendance}% gate: scorecard payout is zero`,`Every remaining day present moves it; the per-bill policy incentive is not gated.`,'−'+inr(m.pool*Math.min(m.sc.score,120)/100)));
   if(!b.teamPoolProj)push.push(li('info','◎',`Team pool share of ${inr(POOL.team/b.members.length)} unlocks when ${br.name} reaches ${GATES.teamAch}%`,`Branch is heading for ${pct(b.achProj)}. Walk-ins converted and commitments kept are how every role moves it.`,''));
   const rk=rankings(computeGroup()), r=rk[p.id], badges=badgesFor(m,b,rk);
@@ -2294,7 +2314,7 @@ function toolbar(){
     <button class="navflip" id="navFlip" title="Move the menu between the top bar and a side bar">${(document.body&&document.body.classList&&document.body.classList.contains('sidenav'))?'⇆ Top bar':'⇆ Side bar'}</button>`;
   $('#roleLbl').innerHTML=`<span class="role ${r.cls}">${r.name}</span>`;
   const us=allUsers();$('#selUser').innerHTML=us.map(u=>`<option value="${u.email}" ${u.email===ME.email?'selected':''}>${u.name} · ${u.email}</option>`).join('');
-  $('#userNote').textContent=r.scope==='group'?`Sees the whole group${r.settings==='edit'?', edits settings':r.settings==='read'?', settings read-only':''}.`:r.scope==='branch'?'Sees own branch, its teams and people.':r.scope==='team'?'Sees own branch sales team and people.':'Sees own page and messages only.';
+  $('#userNote').innerHTML=(window.BPRO_REMOTE&&BPRO_REMOTE.me&&BPRO_REMOTE.me()?`${esc(BPRO_REMOTE.me().email)} · <a href="${(window.BPRO_CONFIG||{}).api||'/api'}/auth/logout">Sign out</a><br>`:'')+esc(r.scope==='group'?`Sees the whole group${r.settings==='edit'?', edits settings':r.settings==='read'?', settings read-only':''}.`:r.scope==='branch'?'Sees own branch, its teams and people.':r.scope==='team'?'Sees own branch sales team and people.':'Sees own page and messages only.');
   $('#selUser').onchange=()=>{setUser($('#selUser').value);go(homeState())};
   const jump=(over)=>{const st={co:$('#selCo').value||null,br:$('#selBr').value||null,team:$('#selTeam').value||null,person:$('#selPerson').value||null,...over};
     if(st.br){const b=branches.find(x=>x.id===st.br);if(b)st.co=b.company.id}else{st.team=null;st.person=null}

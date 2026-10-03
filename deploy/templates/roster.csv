@@ -1,0 +1,13 @@
+# Roster: one row per person the board scores. id is your employee code and must not change. role is one of
+# Sales, CRE, Logistics, Back office, BM, SM. branch is the name shown on the board; branch_id is a short code
+# (letters only) used in sign-in profiles. phone with country code for WhatsApp. Leavers: fill left_on, keep the row.
+# Lines starting with # are ignored. Check: node tools/import.js roster /data/roster.csv --check
+id,name,role,branch,branch_id,company,phone,email,joined,left_on
+MG1001,Anjali R.,Sales,Kollam,klm,Meubel Grande,+919800000001,anjali.r@meubelgrande.com,2024-04-01,
+MG1002,Meera S.,CRE,Kollam,klm,Meubel Grande,+919800000002,,2023-06-15,
+MG1003,Suresh N.,Logistics,Kollam,klm,Meubel Grande,+919800000003,,2022-01-10,
+MG1004,Arun V.,Back office,Kollam,klm,Meubel Grande,+919800000004,arun.v@meubelgrande.com,2021-09-01,
+MG1005,Jithin K.,BM,Kollam,klm,Meubel Grande,+919800000005,jithin.k@meubelgrande.com,2020-02-01,
+MG1006,Divya T.,SM,Kollam,klm,Meubel Grande,+919800000006,divya.t@meubelgrande.com,2022-07-01,
+RG2001,Sarath K.,Sales,Calicut,clt,Royal Group,+919800000101,,2023-03-01,
+RG2002,Remya P.,BM,Calicut,clt,Royal Group,+919800000102,remya.p@royalgroup.in,2019-11-01,

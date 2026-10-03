@@ -36,7 +36,11 @@ app.get('/api/source/:id', requireUser, async (req, res) => { const rows = await
 
 // ---- admin: roster and profiles management (CSV or JSON body)
 const requireAdmin = (req, res, next) => (['superadmin', 'admin'].includes(req.me.role) ? next() : res.status(403).json({ error: 'admin only' }));
-app.get('/api/roster', requireUser, async (req, res) => res.json((await q('select * from roster order by branch,name')).rows));
+app.get('/api/roster', requireUser, async (req, res) => { // contact details only for administrators
+  const admin = ['superadmin', 'admin'].includes(req.me.role);
+  const cols = admin ? '*' : "id,name,role,branch,branch_id,company,to_char(joined,'YYYY-MM-DD') as joined,to_char(left_on,'YYYY-MM-DD') as left_on";
+  res.json((await q(`select ${cols} from roster order by company,branch,name`)).rows);
+});
 app.put('/api/roster', requireUser, requireAdmin, async (req, res) => {
   const rows = Array.isArray(req.body) ? req.body : []; let n = 0;
   for (const r of rows) { await q('insert into roster(id,name,role,branch,branch_id,company,phone,email,joined,left_on) values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) on conflict (id) do update set name=$2,role=$3,branch=$4,branch_id=$5,company=$6,phone=$7,email=$8,joined=$9,left_on=$10', [r.id, r.name, r.role, r.branch, r.branch_id || null, r.company, r.phone || null, r.email || null, r.joined || null, r.left_on || null]); n++; }
@@ -60,6 +64,7 @@ app.post('/api/jobs/messages/:kind', requireUser, requireAdmin, async (req, res)
 const ROOT = path.join(__dirname, '..');
 app.use(express.static(path.join(__dirname, 'public'), { maxAge: '5m' }));
 app.use('/docs', express.static(path.join(ROOT, 'docs'), { maxAge: '1h' }));
+app.get('/favicon.ico', (req, res) => res.type('image/svg+xml').send('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#1F2D44"/><text x="16" y="21" font-family="Arial" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">MR</text></svg>'));
 app.get('/', (req, res) => res.sendFile(path.join(ROOT, 'index.html')));
 app.get('/index.html', (req, res) => res.sendFile(path.join(ROOT, 'index.html')));
 

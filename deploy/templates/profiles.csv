@@ -1,0 +1,14 @@
+# Sign-in profiles: who may open the board and what they see. Only these emails can sign in.
+# role: superadmin, admin, consultant, md, director, hr (whole group); bm (own branch, needs branch_id);
+# sm and employee (need branch_id and person_id = the roster id). active: true or false.
+# Check: node tools/import.js profiles /data/profiles.csv --check
+email,name,role,branch_id,person_id,phone,active
+tech@bpropms.com,Bpro Tech,superadmin,,,,true
+process@bpropms.com,Bpro Process,admin,,,,true
+drbabu@bpropms.com,Dr. Babu B.,consultant,,,,true
+md@meubelgrande.com,Managing Director,md,,,,true
+director@royalgroup.in,Director Royal Group,director,,,,true
+hr@meubelgrande.com,HR team,hr,,,,true
+jithin.k@meubelgrande.com,Jithin K.,bm,klm,MG1005,+919800000005,true
+divya.t@meubelgrande.com,Divya T.,sm,klm,MG1006,+919800000006,true
+anjali.r@meubelgrande.com,Anjali R.,employee,klm,MG1001,+919800000001,true

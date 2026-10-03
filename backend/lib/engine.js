@@ -24,6 +24,8 @@ async function load(opts = {}) {
   const js = html.match(/<script id="board-src"[^>]*>([\s\S]*?)<\/script>/)[1];
   const kv = await q('select key, value from kv'); const store = {}; kv.rows.forEach(r => { store[r.key] = r.value; });
   store['mr-user'] = 'tech@bpropms.com';
+  const ros = await q("select id,name,role,branch,branch_id,company,to_char(left_on,'YYYY-MM-DD') as left_on from roster order by company,branch,name");
+  if (ros.rows.length) store['mr-roster'] = ros.rows;
   const g = stubDom(store);
   const keys = Object.keys(g);
   const api = {};
