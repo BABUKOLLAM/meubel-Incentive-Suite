@@ -123,7 +123,8 @@ The app bar carries the brand mark, the page title, the signed-in switch, the as
 type a branch or a person and the board jumps there, within the role's scope. A dismissible welcome card
 explains the board on first use and offers the three places to start. Copies and downloads confirm with a toast,
 a back-to-top button appears on long pages, views fade in (off under reduced motion), the current view is marked
-for assistive tech, and a skip link leads to the content. On a phone the view buttons become a fixed bottom bar.
+for assistive tech, and a skip link leads to the content. On a phone the view buttons become a fixed bottom bar. Tables longer than 15 rows carry a pager (15, 30, 60 or
+all rows); CSV exports always take every row.
 
 ## Selector bar
 

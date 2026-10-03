@@ -293,6 +293,11 @@ tr.link:hover td{background:var(--fam-bg,var(--row))}
   body:not(.tv) .wrap{padding-bottom:88px}.totop{bottom:80px}
   body.sidenav #toolbar .views{position:fixed}
 }
+/* Table pagination: long tables show 15 rows with a pager under them */
+.pager{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:space-between;margin-top:10px;font-size:12px;color:var(--muted)}
+.pager .pg{display:flex;gap:8px;align-items:center}.pager button{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:4px 10px;cursor:pointer;color:var(--text);font:600 12px var(--ui)}.pager button:disabled{opacity:.4;cursor:default}
+.pager select{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:3px 6px;font:12px var(--ui);color:var(--text);margin-left:4px}
+.tw table.paged tbody tr td{background:transparent}.tw table.paged tbody tr.pg-even td{background:var(--row)}.tw table.paged tbody tr.pg-hide{display:none}
 </style>
 </head>
 <body>
@@ -2322,6 +2327,25 @@ const FAMILIES=[
  ['c-admin',/adjustments|audit log|data inputs|data sources|wirings|scheduled jobs|month close|save, export|settings/i,'Admin: data, jobs, close'],
  ['c-position',/.*/,'Position: targets, achievement, scorecards'],
 ];
+const PAGE_SIZE=15,PAGER={}; // per table (card heading + view): current page and page size
+function paginate(){ // long tables get a pager; the CSV export still reads every row
+  if(typeof document.querySelectorAll!=='function')return;
+  document.querySelectorAll('#view .tw > table').forEach((tb,idx)=>{
+    const rows=[...tb.querySelectorAll(':scope > tbody > tr')];
+    const old=tb.parentElement.nextElementSibling;
+    if(rows.length<=PAGE_SIZE||state.tv){tb.classList.remove('paged');rows.forEach(r=>r.classList.remove('pg-hide','pg-even'));if(old&&old.classList.contains('pager'))old.remove();return}
+    const card=tb.closest('.card'),hd=card&&card.querySelector(':scope>h2');
+    const key=(hd?hd.textContent.trim():'t'+idx)+'|'+state.level+'|'+(state.lbTab||'')+'|'+(state.adminTab||'')+'|'+(state.br||'')+'|'+(state.co||'');
+    const st=PAGER[key]||(PAGER[key]={page:0,size:PAGE_SIZE});
+    const size=Math.min(st.size,rows.length),pages=Math.max(1,Math.ceil(rows.length/size));if(st.page>=pages)st.page=pages-1;
+    tb.classList.add('paged');let k=0;
+    rows.forEach((r,i)=>{const on=i>=st.page*size&&i<(st.page+1)*size;r.classList.toggle('pg-hide',!on);r.classList.toggle('pg-even',on&&(k++%2===1))});
+    let bar=old&&old.classList.contains('pager')?old:null;if(!bar){bar=document.createElement('div');bar.className='pager';tb.parentElement.insertAdjacentElement('afterend',bar)}
+    const sizes=[15,30,60].filter(v=>v<rows.length);
+    bar.innerHTML=`<span>Showing ${st.page*size+1}–${Math.min(rows.length,(st.page+1)*size)} of ${rows.length}</span><span class="pg"><button data-p="prev" ${st.page?'':'disabled'} aria-label="Previous page">‹ Prev</button><span>Page ${st.page+1} of ${pages}</span><button data-p="next" ${st.page<pages-1?'':'disabled'} aria-label="Next page">Next ›</button></span><label>Rows<select data-p="size" aria-label="Rows per page">${sizes.map(v=>`<option value="${v}" ${v===st.size?'selected':''}>${v}</option>`).join('')}<option value="${rows.length}" ${st.size>=rows.length?'selected':''}>All ${rows.length}</option></select></label>`;
+    bar.querySelectorAll('[data-p]').forEach(el=>el.addEventListener(el.tagName==='SELECT'?'change':'click',()=>{if(el.dataset.p==='prev')st.page--;else if(el.dataset.p==='next')st.page++;else{st.size=+el.value;st.page=0}paginate();if(el.dataset.p!=='size'&&tb.scrollIntoView)tb.scrollIntoView({block:'nearest'})}));
+  });
+}
 function paintBlocks(){ // colour family per card by its heading; grade score cells; the key under the view
   if(typeof document.querySelectorAll!=='function')return;
   document.querySelectorAll('#view .card').forEach(c=>{const hd=c.querySelector(':scope>h2');const t=hd?hd.textContent:'';FAMILIES.forEach(f=>c.classList.remove(f[0]));const f=FAMILIES.find(f=>f[1].test(t));if(f)c.classList.add(f[0])});
@@ -2338,6 +2362,7 @@ function render(){
   enforce(state);
   ({group:viewGroup,company:viewCompany,branch:viewBranch,team:viewTeam,person:viewPerson,sales:viewSales,leaderboard:viewLeaderboard,messages:viewMessages,settings:viewSettings,total:viewTotal,admin:viewAdmin})[state.level]();
   paintBlocks();
+  paginate();
   introCard();
 }
 $('#asof').addEventListener('input',e=>{asOf=+e.target.value;render()});

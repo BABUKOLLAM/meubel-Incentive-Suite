@@ -277,7 +277,7 @@ def build_body(toc_pages):
                  '<li><span class="chip-inline">▶ Procedure</span> marks step-by-step instructions for administrators, to be followed in order; <span class="chip-inline">Q</span> marks a question in the FAQ and RAQ.</li>'
                  '<li><b>Block colours.</b> Every card on the board carries a family colour on its top edge and heading: navy for position, teal for charts, green for pushes, red for lags, gold for recognition, sea-green for messages, purple for history, blue for people, brown for policy, slate for admin. A key sits under every page of the board.</li>'
                  '<li>Amounts are Indian rupees with Indian digit grouping (₹1,30,680); lakh and crore are written in words (₹20.62 lakh, ₹1.07 crore); percentages carry one decimal; all numerals are lining figures.</li>'
-                 '<li>Each numbered section starts on a new page and can be handed out alone; the contents page numbers match the footer. Board, Lens, Settings and Admin in the contents name the screen a section is about.</li>'
+                 '<li>Each numbered section starts on a new page and can be handed out alone; the contents page numbers match the footer.</li>'
                  '</ul></section>')
     # ---- sections
     fig_no[0] = 0

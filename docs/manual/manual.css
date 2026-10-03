@@ -152,3 +152,21 @@ figure.tall img { max-height: 228mm; }
 .plate h3 { margin-top: 0; }
 .plate figure.tall { break-before: auto; page-break-before: auto; }
 .plate figure.tall img { max-height: 212mm; }
+
+/* pagination tuning: plates no longer force a page break; tall figures cap at 150mm so they fit below text more often */
+.plate{break-before:auto;page-break-before:auto;break-inside:avoid;page-break-inside:avoid}
+figure.tall{break-before:auto;page-break-before:auto}
+figure.tall img,.plate figure.tall img{max-height:150mm}
+figure.dia img{width:86%}
+.call{margin:8pt 0 9pt}
+
+/* tail tuning */
+.howto .lede{font-size:10.2pt;line-height:1.45}.howto table{font-size:8.8pt}.howto .legend .call{padding:6pt 10pt 6pt}.howto ul.conv li{margin-bottom:3pt}.howto h3.plain{margin-top:9pt}
+figure img{max-height:96mm}
+
+.howto td,.howto th{padding:3.5pt 6pt}
+figure img{max-height:92mm}
+.call{margin:7pt 0 8pt}
+
+.howto .legend{grid-template-columns:repeat(4,1fr);gap:6pt}.howto .legend .call p{font-size:9pt;line-height:1.35}.howto .legend .call .tag{font-size:7.6pt}
+figure img{max-height:88mm}
