@@ -1,0 +1,24 @@
+{
+  "name": "meubel-incentive-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Back end for the Meubel Grande and Royal Group incentive board: Postgres, sign-in, shared state, data feeds, scheduled messages",
+  "type": "commonjs",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "start": "node server.js",
+    "migrate": "node db/migrate.js",
+    "sync": "node jobs/sync.js",
+    "messages": "node jobs/messages.js",
+    "dev": "DEV_LOGIN=1 node server.js"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "node-cron": "^3.0.3",
+    "nodemailer": "^6.9.14",
+    "openid-client": "^5.6.5",
+    "pg": "^8.12.0"
+  }
+}

@@ -351,7 +351,9 @@ td.attr[data-tip]{text-decoration:underline dotted;text-decoration-color:var(--l
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div id="tip" role="tooltip" aria-hidden="true"></div>
 <div id="print" aria-hidden="true"></div>
-<script>
+<script src="config.js"></script>
+<script src="remote.js"></script>
+<script id="board-src" type="text/x-board">
 /* =========================================================
    1. Attributes, weights, targets, pools
    ========================================================= */
@@ -2490,11 +2492,18 @@ function render(){
 }
 $('#asof').addEventListener('input',e=>{asOf=+e.target.value;render()});
 try{const s=JSON.parse(localStorage.getItem('mr-state')||'null');if(s&&s.level&&(!s.person||people.some(p=>p.id===s.person)))Object.assign(state,s);if(!state.lbTab)state.lbTab='Sales';if(!state.emailMode)state.emailMode='bm';if(!state.msg||!state.msg.aud)state.msg={aud:'Sales',cad:'weekly',ch:'whatsapp'};if(!state.adminTab)state.adminTab='policy'}catch(_){}
-applyNav();applyTheme();wireTips();
+applyNav();applyTheme();wireTips();if(window.BPRO_REMOTE&&BPRO_REMOTE.afterBoot)BPRO_REMOTE.afterBoot({SOURCES,applySource,SRC_STATE,render,setUser,allUsers,toast,saveSrc:typeof saveSrc==='function'?saveSrc:null});
 const _tb=$('#themeBtn');if(_tb)_tb.addEventListener('click',cycleTheme);
 const _tt=$('#totop');if(_tt)_tt.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
 if(typeof window.addEventListener==='function')window.addEventListener('scroll',()=>{const b=$('#totop');if(b&&b.classList)b.classList.toggle('show',window.scrollY>600)},{passive:true});
 if(state.tv)setTv(true);else{rules();render()}
+</script>
+<script>
+(function(){ // run the board now, or after the hosted back end has signed the user in and loaded the shared state
+  const src=document.getElementById('board-src').textContent;
+  const run=()=>{const s=document.createElement('script');s.textContent=src;document.body.appendChild(s)};
+  if(window.BPRO_REMOTE&&window.BPRO_CONFIG&&BPRO_CONFIG.api)BPRO_REMOTE.preload().then(run,err=>{console.error(err);run()});else run();
+})();
 </script>
 </body>
 </html>

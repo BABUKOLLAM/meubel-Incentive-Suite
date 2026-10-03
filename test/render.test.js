@@ -1,7 +1,7 @@
 // Renders every view of index.html under every role with a stub DOM and fails on any exception, NaN or undefined in the output.
 const fs=require('fs'),path=require('path');
 const html=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
-const js=html.match(/<script>([\s\S]*)<\/script>/)[1];
+const js=html.match(/<script id="board-src"[^>]*>([\s\S]*?)<\/script>/)[1];
 const stub=()=>({innerHTML:'',textContent:'',className:'',value:'',hidden:false,style:{},dataset:{},files:[],addEventListener(){},setAttribute(){},getBoundingClientRect(){return{left:0,width:600}},querySelectorAll(){return[]},querySelector(){return stub()}});
 const nodes={};global.nodes=nodes;
 global.document={querySelector:s=>nodes[s]||(nodes[s]=stub()),getElementById:id=>nodes['#'+id]||(nodes['#'+id]=stub())};

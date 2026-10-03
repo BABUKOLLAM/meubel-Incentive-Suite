@@ -350,10 +350,37 @@ attendance punches, delivery log, collection register, audit and activity sheets
 (computation, charts, drill-down, push and lags) stay as they are. Each employee's login opens the board at their
 own node; managers open at their branch.
 
+## Production back end
+
+`backend/` turns the single page into a hosted system; `deploy/README.md` walks through a VPS install in about
+thirty minutes with Docker Compose (Postgres, the Node back end, Caddy for HTTPS).
+
+- **Sign-in** through Google Workspace or Microsoft 365 (OpenID Connect). Only emails on the `profiles` table
+  may enter; the role, branch and person come from that table, so scope is decided on the server.
+- **Shared state** (settings, policy versions, ledger, wirings, month close, audit log, archive, users) lives in
+  Postgres as JSON documents. The page caches it in the browser and writes through on every save; client roles
+  receive the ledger filtered to their scope and never the audit log or user list. Every change is also appended
+  to an immutable `audit_events` table.
+- **Data feeds**: one table per data input, keyed by month, with views the page reads as its link mode. Adapters
+  in `backend/jobs/adapters` pull from the ERP, CRM, biometric, delivery, accounts and Google systems; a CSV inbox
+  adapter works on day one with scheduled exports. The sync runs every 15 minutes.
+- **Scheduled messages** are built on the server with the board's own engine (the same script, run against a
+  stub DOM with the live data loaded), then sent through the WhatsApp Business API and SMTP, with every send
+  logged. `DRY_RUN=1` logs without sending.
+- **Operations**: health endpoint, jobs and messages logs, nightly `pg_dump` script, idempotent schema applied
+  on start, `git pull && docker compose up -d --build` to update.
+
+Without `config.js` on the server (for example the artifact preview or the file opened from disk) the page runs
+exactly as before, on browser storage and sample data.
+
 ## Repository layout
 
 ```
 index.html                 the whole board: styles, sample universe, computation, views, messages, settings, admin, history, statements, exports
+backend/                   hosted back end: server.js, lib (db, auth, kv, sources, engine), jobs (sync, messages, adapters), send, public
+deploy/                    VPS guide, Caddyfile, backup script
+docker-compose.yml         Postgres + back end + Caddy
+test/browser.test.js       headless Chromium walk: no page errors, no bad text, no phone overflow
 CLAUDE.md                  conventions for anyone (or any agent) working on the repo
 test/render.test.js        renders every view under every role with a stub DOM; fails on any exception, NaN or undefined
 .github/workflows/check.yml  runs the render test and a secret scan on every push and pull request

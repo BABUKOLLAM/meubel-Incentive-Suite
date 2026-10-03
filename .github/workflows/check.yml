@@ -19,7 +19,7 @@ jobs:
           node-version: "22"
       - name: Syntax
         run: |
-          node -e "const fs=require('fs');const h=fs.readFileSync('index.html','utf8');fs.writeFileSync('board.js',h.match(/<script>([\s\S]*)<\/script>/)[1])"
+          node -e "const fs=require('fs');const h=fs.readFileSync('index.html','utf8');fs.writeFileSync('board.js',h.match(/<script id=\"board-src\"[^>]*>([\s\S]*?)<\/script>/)[1])"
           node --check board.js
       - name: Render every view under every role
         run: node test/render.test.js
@@ -28,3 +28,31 @@ jobs:
           if git grep -nIE '(sk-[A-Za-z0-9-]{20,}|-----BEGIN [A-Z ]*PRIVATE KEY-----|EAAG[A-Za-z0-9]{20,})' -- . ':!*.md'; then
             echo "::error::a key or token appears to be committed"; exit 1
           fi
+
+  backend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Back end syntax and install
+        run: |
+          for f in backend/server.js backend/lib/*.js backend/db/migrate.js backend/jobs/*.js backend/jobs/adapters/*.js backend/send/*.js backend/public/*.js; do node --check "$f"; done
+          cd backend && npm install --omit=dev --no-audit --no-fund
+      - name: Schema parses
+        run: node -e "const s=require('fs').readFileSync('backend/db/schema.sql','utf8');if(!/create table if not exists kv/.test(s))process.exit(1)"
+
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install Chromium
+        run: npm i -g playwright@1.48.0 && npx playwright@1.48.0 install --with-deps chromium
+      - name: Browser smoke test
+        run: NODE_PATH=$(npm root -g) node test/browser.test.js
