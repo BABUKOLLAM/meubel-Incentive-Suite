@@ -1,10 +1,10 @@
 /* Incentive Board Manual · print stylesheet (A4) */
 @page { size: A4; }
 :root {
-  --ink: #241A10; --muted: #6E6052; --espresso: #3E2C1A; --brass: #B8860B; --brass-ink: #7A5607; --brass-soft: #EFE2BE;
-  --ivory: #F4EFE7; --line: #DDD3C4; --row: #F7F2EA;
+  --ink: #1B2430; --muted: #5B6776; --espresso: #1F2D44; --brass: #0E7C86; --brass-ink: #0A5E66; --brass-soft: #D6EEF0;
+  --ivory: #F3F5F8; --line: #DCE2EA; --row: #F5F7FA;
   --sticky: #FFF1A8; --sticky-ink: #5A4500; --sticky-edge: #E8D370;
-  --lens: #E4EEF6; --lens-ink: #12507A; --lens-edge: #7FA7C7;
+  --lens: #E8EFFA; --lens-ink: #2F5FA8; --lens-edge: #8FB3E6;
   --policy: #FBE9E4; --policy-ink: #8A2E1C; --policy-edge: #D9876F;
   --game: #ECE6F7; --game-ink: #4B2D8A; --game-edge: #A48BD6;
   --serif: "Liberation Serif", "DejaVu Serif", Georgia, serif;
@@ -120,7 +120,7 @@ figcaption b { color: var(--brass-ink); }
 ul.conv li { margin-bottom: 5pt; }
 
 /* ---------- cover ---------- */
-.cover { height: 297mm; padding: 22mm 20mm 18mm; display: flex; flex-direction: column; background: linear-gradient(180deg, #FBF8F2 0%, #F4EFE7 100%); position: relative; }
+.cover { height: 297mm; padding: 22mm 20mm 18mm; display: flex; flex-direction: column; background: linear-gradient(180deg, #FFFFFF 0%, #F3F5F8 100%); position: relative; }
 .cover::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 9mm; background: var(--espresso); }
 .cover::before { content: ""; position: absolute; left: 0; right: 0; bottom: 9mm; height: 2.5mm; background: var(--brass); }
 .cv-top { display: flex; align-items: center; gap: 12pt; }
