@@ -116,6 +116,14 @@ the discount bands; and a salesperson table with CSV export. Every role except e
 Sales Managers see their own branch. Charts use one hue for a single series, the validated four-hue set for
 stacked states, and the company colours for branch identity.
 
+## Tooltips
+
+Hover, focus or tap almost anything and a tooltip explains it: every KPI tile, every column heading, every
+scorecard attribute (with its target or limit), achievement and status pills, ranks and movement arrows, badges,
+chart bars and segments, the view buttons, the scope selectors, breadcrumbs, settings fields and admin state
+chips. The glossary lives in `GLOSS`, `ATTR_TIP` and `PILL_TIP` beside the renderer; the pass runs after every
+render, so a new card only needs a recognisable label. Escape or scrolling hides the tooltip.
+
 ## Everyday controls
 
 The app bar carries the brand mark, the page title, the signed-in switch, the as-of slider, a theme button

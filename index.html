@@ -298,6 +298,14 @@ tr.link:hover td{background:var(--fam-bg,var(--row))}
 .pager .pg{display:flex;gap:8px;align-items:center}.pager button{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:4px 10px;cursor:pointer;color:var(--text);font:600 12px var(--ui)}.pager button:disabled{opacity:.4;cursor:default}
 .pager select{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:3px 6px;font:12px var(--ui);color:var(--text);margin-left:4px}
 .tw table.paged tbody tr td{background:transparent}.tw table.paged tbody tr.pg-even td{background:var(--row)}.tw table.paged tbody tr.pg-hide{display:none}
+/* Tooltips: one layer, positioned by the pointer or the focused element */
+#tip{position:fixed;z-index:70;max-width:320px;background:var(--brown);color:var(--bg);padding:8px 11px;border-radius:9px;font:12px/1.45 var(--ui);box-shadow:0 10px 30px -10px rgba(16,24,40,.5);pointer-events:none;opacity:0;transition:opacity .12s;transform:translateY(2px)}
+#tip.show{opacity:1;transform:none}#tip b{display:block;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;opacity:.7;margin-bottom:2px}
+:root[data-theme="dark"] #tip,:root:not([data-theme="light"]) #tip{background:#E6EBF2;color:#1B2430}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]) #tip{background:#1F2D44;color:#F3F5F8}}
+th[data-tip],.tile .k[data-tip],.set label>span[data-tip],td.attr[data-tip]{cursor:help}
+th[data-tip]{text-decoration:underline dotted;text-decoration-color:var(--line);text-underline-offset:3px}
+td.attr[data-tip]{text-decoration:underline dotted;text-decoration-color:var(--line);text-underline-offset:3px}
 </style>
 </head>
 <body>
@@ -341,6 +349,7 @@ tr.link:hover td{background:var(--fam-bg,var(--row))}
 
 <button class="totop" id="totop" aria-label="Back to top">↑ Top</button>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div id="tip" role="tooltip" aria-hidden="true"></div>
 <div id="print" aria-hidden="true"></div>
 <script>
 /* =========================================================
@@ -2327,6 +2336,119 @@ const FAMILIES=[
  ['c-admin',/adjustments|audit log|data inputs|data sources|wirings|scheduled jobs|month close|save, export|settings/i,'Admin: data, jobs, close'],
  ['c-position',/.*/,'Position: targets, achievement, scorecards'],
 ];
+/* ---------- Tooltips: glossary and the pass that attaches them ---------- */
+const GLOSS={ // label (lower case, start of text) → [heading, explanation]
+ // tiles and headline figures
+ 'expected month end':['Expected month end','What the month would pay or reach if the pace so far continues to day 31. Per-bill amounts count at their payment probability; nothing is final until delivered and paid.'],
+ 'achieved so far':['Achieved so far','SO value booked, net of discount, against the target pro-rated to today.'],
+ 'chance of target':['Chance of target','Probability that the month-end projection lands above the target. The band narrows as the month runs: a guess on the 5th, nearly a fact on the 25th.'],
+ 'group gp':['Group GP','Gross profit on bills, value-weighted, against the 32% line.'],
+ 'overall gp':['Overall GP','Gross profit on the branch\'s bills, value-weighted, against the 32% line in the branch scorecard.'],
+ 'group score':['Group score','Branch scorecards weighted by target, out of 100.'],
+ 'branch score':['Branch score','The branch scorecard: 13 attributes from achievement and GP to audit and Google rating, out of 100. Management pools pay on it.'],
+ 'incentive outlay':['Incentive outlay','Every incentive the engine expects to pay this month, all roles, at the current pace.'],
+ 'incentive':['Incentive','Expected total for the month: scorecard pay, per-bill, override, bonuses, team share and approved adjustments.'],
+ 'walk-ins':['Walk-ins','Footfall logged by the CRE; the share attended and the share converted follow.'],
+ 'google':['Google','Average Google review rating of the branch and reviews per 10 bills.'],
+ 'target vs achievement':['Target vs achievement','SO value booked against the month target pro-rated to today; counts up to 120% on the scorecard.'],
+ 'scorecard':['Scorecard','Weighted attainment of every attribute for the role, out of 100. Scorecard pay = pool × score ÷ 100; zero under 85% attendance.'],
+ 'per-bill, confirmed':['Per-bill, confirmed','Policy per-bill incentive on bills already delivered and paid; the provisional part waits for payment.'],
+ 'conversion':['Conversion','Bills ÷ customers attended. 30% opens the 10% closing-ratio bonus; 20% opens 5%.'],
+ 'rank':['Rank','By scorecard, then expected incentive, among the same role in the company and in the group.'],
+ 'so value booked':['SO value booked','Sale order value net of discount for the scope, month to date.'],
+ 'bills':['Bills','Bills booked this month, excluding cancellations; the cancellation rate follows.'],
+ 'average ticket':['Average ticket','SO value ÷ bills, net of discount; the list figure is before discount.'],
+ 'walk-in to attended':['Walk-in to attended','Customers attended ÷ walk-ins logged: how much of the footfall the floor actually served.'],
+ 'average discount':['Average discount','Mean discount on live bills. Up to 12% keeps the full per-bill incentive, up to 20% keeps 60%, up to 30% keeps 40%, above 30% nothing.'],
+ 'margin':['Margin','Gross margin on bills, value-weighted. The sales scorecard targets 30%.'],
+ 'paid share':['Paid share','Share of booked value already collected. Per-bill incentive is paid only on this part.'],
+ 'this week':['This week','SO value in the last seven days against the seven days before.'],
+ 'upsell · cross-sell':['Upsell and cross-sell','Share of bills with an upgrade, and share with an add-on. Targets 20% and 25%.'],
+ 'live data feeds':['Live data feeds','Integrations in live mode out of all data wirings; the rest run on sandbox or sample data.'],
+ 'channels':['Channels','WhatsApp Business API and email: off, sandbox or live.'],
+ 'sources on sample':['Sources on sample','Data inputs still using generated data. The programme is live when this reads zero.'],
+ 'pending adjustments':['Pending adjustments','Ledger entries awaiting approval; they block the adjustments step of month close.'],
+ 'policy':['Policy','The rule set in force: a live approved version, or the draft defaults until one is made live.'],
+ 'audit entries':['Audit entries','Every settings save, upload, user change, policy move, adjustment, wiring change, job run and close-step tick.'],
+ 'leading branch':['Leading branch','Highest branch scorecard in the scope.'],
+ 'attendance':['Attendance','Days present ÷ working days this month. Under 85% the scorecard pay is zero until it recovers.'],
+ 'branch achievement':['Branch achievement','Branch SO value against its target; the management pool opens at 90%, the team pool at 100% with audit 70.'],
+ 'your pool':['Your pool','Management pool × branch achievement (to 120%) × branch score ÷ 100, payable once the branch passes 90%.'],
+ 'top sales':['Top Sales','Best Sales scorecard in the scope, then expected incentive.'],'top cre':['Top CRE','Best CRE scorecard in the scope.'],'top logistics':['Top Logistics','Best Logistics scorecard in the scope.'],'top back office':['Top Back office','Best Back office scorecard in the scope.'],
+ // column headings
+ 'target':['Target','Month target; for people, the sales target; for attributes, the value that earns full points.'],
+ 'booked':['Booked','SO value booked so far, net of discount, cancellations excluded.'],
+ 'ach.':['Achievement','Booked against the target pro-rated to today.'],'achievement':['Achievement','Booked against the target pro-rated to today.'],
+ 'expected':['Expected','At month end if the current pace holds.'],'expected incentive':['Expected incentive','Month-end total if the pace holds, provisional parts at their payment probability.'],'expected total':['Expected total','Scorecard pay + per-bill + override and bonuses + team share + approved adjustments, at month end.'],'incentive exp.':['Incentive expected','Every incentive the branch is expected to pay this month.'],
+ 'gp':['GP','Gross profit on bills, value-weighted; the line is 32%.'],'conv.':['Conversion','Bills ÷ customers attended.'],'walk-out':['Walk-out ratio','Walk-ins that left without buying; the branch scorecard caps it at 70%.'],
+ 'audit':['Audit score','Latest branch audit out of 100; the team pool needs 70, the scorecard targets 85.'],'score':['Score','Scorecard out of 100: green at 85 and above, amber from 70, red below.'],
+ 'people':['People','Staff in the team.'],'avg score':['Average score','Mean scorecard of the team members.'],'earned so far':['Earned so far','Confirmed incentive today; provisional parts excluded.'],
+ 'pace':['Pace','SO value against the target pro-rated to today.'],'avg ticket':['Average ticket','SO value ÷ bills.'],'avg discount':['Average discount','Mean discount on the person\'s live bills.'],
+ 'upsell':['Upsell','Share of bills with an upgrade; target 20%.'],'cross-sell':['Cross-sell','Share of bills with an add-on; target 25%.'],'cancelled':['Cancelled','Orders cancelled after advance; no incentive, and amounts already paid come off the next payout.'],
+ 'badges':['Badges','Recognition earned this month; hover a badge for its rule. No rupee value.'],'badge':['Badge','Recognition rule; hover the chip for the reason.'],'holders':['Holders','People or branches holding the badge this month.'],
+ 'team pool':['Team pool','₹20,000 per branch shared equally when the branch reaches 100% of target with audit 70 or more.'],'key measure':['Key measure','The one number that drives the role: achievement for Sales, follow-ups for CRE, on-time for Logistics, collection for Back office.'],
+ 'scorecard pay':['Scorecard pay','Pool × score ÷ 100; zero under 85% attendance.'],'per-bill (policy)':['Per-bill (policy)','Category rate × bill value × discount share, plus the closing-ratio bonus; paid on delivery and payment.'],'team share':['Team share','This person\'s equal share of the team pool when the branch earns it.'],
+ 'now':['Now','The attribute\'s value month to date.'],'attainment':['Attainment','Value against target, 0 to 100% (achievement to 120%); for limits, how far under the limit it stays.'],'weight':['Weight','Points the attribute carries in the role\'s scorecard; every role totals 100.'],'points':['Points','Weight × attainment: what the attribute earns today.'],'attribute':['Attribute','A measured behaviour or result with a target or a limit.'],
+ 'order':['Order','Order number; click the row\'s person for detail.'],'item':['Item','What was sold.'],'cat':['Category','A: list ₹60,000 and above at 0.8%; B: ₹25,000 to ₹60,000 at 0.5%; C: offer price or under ₹25,000, no per-bill incentive.'],'bill':['Bill','Bill value net of discount.'],'disc.':['Discount','Discount given; above 30% the per-bill incentive is nil.'],'status':['Status','Booked → delivered → paid, or cancelled. Per-bill incentive is paid only at paid.'],
+ 'month':['Month','Closed months from the archive; the running month is marked.'],'company':['Company','Meubel Grande or Royal Group.'],'branch':['Branch','Showroom.'],'person':['Person','Click to open the person\'s own page.'],'role':['Role','Sales, CRE, Logistics, Back office, Branch Manager or Sales Manager.'],
+ 'kind':['Kind','Data feed, message channel or sign-on.'],'schedule':['Schedule','How often the job runs once hosted.'],'state':['State','Enabled, sandbox or disabled.'],'last run':['Last run','When the job last ran.'],'result':['Result','What the last run reported.'],'job':['Job','A scheduled sync, recompute, message send or month close.'],
+ 'date':['Date','When the entry was raised.'],'type':['Type','Addition, deduction, clawback exemption, discount approval, dispute or attendance regularisation.'],'employee':['Employee','The person the entry concerns.'],'amount':['Amount','Rupees added or deducted when approved.'],'ref':['Reference','Ticket, email or bill number behind the entry.'],'reason':['Reason','Why the entry was raised.'],'requested by':['Requested by','Who raised it.'],'approver':['Approver','Who approved or rejected it; must differ from the requester.'],
+ 'follow-ups on time':['Follow-ups on time','Share of CRM follow-ups done by the due time; 95% earns the full ₹2,000 bonus, 85% half.'],'walk-ins logged':['Walk-ins logged','Walk-ins the CRE recorded; the 10% override is paid only on logged ones.'],'converted':['Converted','Logged walk-ins that became bills.'],'override + bonus':['Override and bonus','10% of the sales incentive on logged walk-ins, plus the follow-up discipline bonus.'],
+ 'on time':['On time','Deliveries made by the promised date.'],'damage-free':['Damage-free','Deliveries without damage.'],'commitments':['Commitments','Promises communicated to the customer on time.'],'deliveries':['Deliveries','Deliveries made this month.'],'collection':['Collection','Dues collected by the due date.'],'documents':['Documents','Documents processed without correction.'],'calls on time':['Calls on time','Customer calls made by the due time.'],'neatness':['Neatness','Audit score for neatness, out of 5.'],
+ 'version':['Version','Policy version number.'],'effective from':['Effective from','The month the version applies to.'],'communicated':['Communicated','The policy says no rule takes effect before it is communicated to the teams.'],'mode':['Mode','Not connected, sandbox or live.'],'endpoint':['Endpoint','Where the integration is called.'],'auth · secret reference':['Auth and secret','Auth type and the name of the secret in the server vault; the secret itself is never typed here.'],'feeds':['Feeds','What the integration supplies.'],'system':['System','The integration.'],
+ 'audience':['Audience','Who receives the message.'],'cadence':['Cadence','Daily, weekly or monthly.'],'channel':['Channel','WhatsApp text or inline-styled HTML email.'],'recipients':['Recipients','How many people receive it in the scope.'],'when':['When','Send time once scheduled.'],
+ 'source and columns':['Source and columns','The data input and the exact column header its CSV or API must return.'],'upload':['Upload','CSV or JSON; rows replace the sample for the people or branches they name.'],'link / api':['Link or API','A URL returning the same columns; fetched on schedule once hosted.'],'schedule when hosted':['Schedule when hosted','How often the link is fetched on the group\'s server.'],
+ 'component':['Component','One line of the payout.'],'pool':['Pool','Monthly rupee amount a role\'s scorecard is paid against.'],'per head':['Per head','Average per person in the role.'],'outlay':['Outlay','Total expected payout.'],'share':['Share','Outlay as a share of SO value.'],'flags':['Flags','Risk flags: under 85%, pool closed, GP under the line, audit under 70, staff gated.'],
+ // views and controls
+ 'board':['Board','The incentive lens for the selected scope: position, scorecards, pushes and lags.'],'sales analytics':['Sales analytics','The sales picture for the scope: KPIs, trends, funnel, pipeline, mix, bands and the salesperson table.'],'total view':['Total view','The whole programme on one page for the Bpro team: health, risks, feeds, messages, users, actions.'],'leaderboard':['Leaderboard','Ranked by scorecard, then expected incentive, with movement against seven days ago.'],'messages':['Messages','Every audience × cadence × channel, generated from the same figures as the board.'],'settings':['Settings','Pools, gates, bands, weights, targets, prediction constants and data inputs.'],'admin':['Admin','Policy versions, adjustments, wirings, jobs, month close and the audit log.'],
+ 'whole group':['Scope','Meubel Grande and Royal Group together.'],'find':['Find','Type a branch or a person; the board jumps there, within what your role may open.'],
+};
+const ATTR_TIP={ach:'SO value booked against the target pro-rated to today; counts up to 120%.',conv:'Bills ÷ customers attended.',cust:'Customers the salesperson attended, pro-rated through the month.',disc:'Mean discount given; lower is better.',dtrend:'Change in average discount against last month, in percentage points.',margin:'Gross margin on own bills, value-weighted.',gp:'Gross profit of the branch on all bills.',upsell:'Share of bills with an upgrade.',cross:'Share of bills with an add-on.',att:'Days present ÷ working days; under 85% the scorecard pay is zero.',late:'Late punches this month; fewer is better.',early:'Early goings this month; fewer is better.',groom:'Grooming audit, out of 5.',appr:'Customer appreciations recorded, pro-rated.',rev:'Google reviews received per 10 bills.',grating:'Average Google rating of the branch.',commit:'Commitments communicated to the customer on time.',act:'Activities done against those planned.',neat:'Neatness audit, out of 5.',audit:'Branch audit score out of 100.',walkout:'Walk-ins that left without buying; lower is better.',ontime:'Deliveries by the promised date.',dmg:'Deliveries without damage.',coll:'Dues collected by the due date.',docs:'Documents processed without correction.',calls:'Customer calls made by the due time.',walk:'Walk-ins logged and handled by the CRE, pro-rated.',follow:'CRM follow-ups done by the due time; 95% earns the full bonus, 85% half.',convLog:'Logged walk-ins that became bills.'};
+const PILL_TIP=[[/^paid$/i,'Delivered and paid: the per-bill incentive is confirmed.'],[/^booked$/i,'Booked, not yet delivered: counts at 85% until delivered and paid.'],[/^payment due$/i,'Delivered, payment pending: counts at 95% until paid.'],[/^cancelled$/i,'Cancelled after advance: no incentive; amounts already paid come off the next payout.'],[/^unlocked$/i,'Team pool earned: branch at 100% of target with audit 70 or more.'],[/^locked$/i,'Team pool not earned yet: needs 100% of target and audit 70.'],[/^gated$/i,'Attendance under 85%: scorecard pay is zero until it recovers.'],[/^open$/i,'Management pool open: branch at or above 90% of target.'],[/^closed$/i,'Management pool closed: branch under 90% of target.'],[/^earned$/i,'Earned this month.'],[/^running$/i,'The current month, still changing.'],[/^sample$/i,'Generated month shown until the first real close is archived.'],[/^new$/i,'Not ranked seven days ago.'],[/^live$/i,'In force now.'],[/^draft$/i,'Being prepared; not in force.'],[/^pending$/i,'Awaiting approval.'],[/^approved$/i,'Approved; applied to the board.'],[/^rejected$/i,'Rejected; no effect.'],[/^sandbox$/i,'Connected to a test endpoint; nothing goes to real recipients.'],[/^enabled$/i,'Runs on schedule.'],[/^disabled$/i,'Not running.'],[/^under review$/i,'Shared with the approver.'],[/^communicated$/i,'Teams have been told; the version may go live.'],[/^done$/i,'Step completed and logged.'],[/^blocked$/i,'Blocked until the pending items are cleared.'],[/^\d+(\.\d+)?%$/,'Achievement: SO value against the target pro-rated to today. Green at 100%, amber at 85%, red below.'],[/^[ABC]$/,'Policy category: A ≥ ₹60,000 at 0.8%, B ≥ ₹25,000 at 0.5%, C offer or under ₹25,000 at 0%.']];
+function tipLookup(txt){const t=(txt||'').replace(/\s+/g,' ').trim().toLowerCase();if(!t)return null;if(GLOSS[t])return GLOSS[t];const k=Object.keys(GLOSS).find(k=>t.startsWith(k+' ')||t.startsWith(k+':'));return k?GLOSS[k]:null}
+function setTip(el,head,body){if(!el||!el.setAttribute)return;el.setAttribute('data-tip',body);if(head)el.setAttribute('data-tip-head',head);el.removeAttribute('title')}
+function applyTips(){ // attach explanations to everything on the page that carries a meaning
+  if(typeof document.querySelectorAll!=='function')return;
+  const V=document.getElementById('view');if(!V)return;
+  V.querySelectorAll('.tile').forEach(t=>{const k=t.querySelector('.k');const g=tipLookup(k&&k.textContent);if(g)setTip(t,g[0],g[1])});
+  V.querySelectorAll('th').forEach(th=>{const g=tipLookup(th.textContent);if(g)setTip(th,g[0],g[1])});
+  V.querySelectorAll('table').forEach(tb=>{const ths=[...tb.querySelectorAll('thead th')].map(x=>x.textContent.trim().toLowerCase());const ai=ths.indexOf('attribute');if(ai<0)return;
+    tb.querySelectorAll('tbody tr').forEach(tr=>{const td=tr.children[ai];if(!td)return;const name=td.textContent.trim();const k=Object.keys(P).find(k=>name.startsWith(P[k].l.split(' (')[0]));if(k){td.classList.add('attr');setTip(td,P[k].l,(ATTR_TIP[k]||'')+' '+(P[k].dir==='down'?'Limit':'Target')+(P[k].t!=null?' '+fmt(P[k].u,P[k].t):'')+'.')}})});
+  V.querySelectorAll('.pill,.st').forEach(p=>{const t=p.textContent.trim();const m=PILL_TIP.find(x=>x[0].test(t));if(m)setTip(p,null,m[1])});
+  V.querySelectorAll('.rank').forEach(r=>setTip(r,'Rank','By scorecard, then expected incentive, within this table.'));
+  V.querySelectorAll('.mv').forEach(m=>{const t=m.textContent.trim();setTip(m,'Movement',t.startsWith('▲')?'Up '+t.slice(1)+' place'+(t.slice(1)==='1'?'':'s')+' against seven days ago.':t.startsWith('▼')?'Down '+t.slice(1)+' place'+(t.slice(1)==='1'?'':'s')+' against seven days ago.':t==='new'?'Not ranked seven days ago.':'Same rank as seven days ago.')});
+  V.querySelectorAll('.who-cell').forEach(w=>setTip(w,null,'Open '+w.textContent.trim().replace(/^[A-Z]{1,2}(?=[A-Z][a-z])/,'')+'\'s page.'));
+  V.querySelectorAll('.badge[title],.strip i[title]').forEach(b=>setTip(b,null,b.getAttribute('title')));
+  V.querySelectorAll('svg title').forEach(t=>{const el=t.parentElement;if(el&&el.setAttribute){el.setAttribute('data-tip',t.textContent);t.remove()}});
+  V.querySelectorAll('.list li').forEach(li=>{const cls=li.className;const head=cls.includes('bad')?'Lag':cls.includes('warn')?'Watch':cls.includes('info')?'Note':'Push';const amt=li.querySelector('.amt');if(amt)setTip(amt,head==='Lag'?'Rupees at stake':'Worth',head==='Lag'?'What this is costing at the current pace.':'What closing this is worth on the pool or the policy.')});
+  V.querySelectorAll('.set label>span').forEach(s=>{const g=tipLookup(s.textContent);if(g)setTip(s,g[0],g[1])});
+  V.querySelectorAll('.tabs button').forEach(b=>{const g=tipLookup(b.textContent);if(g)setTip(b,g[0],g[1])});
+  V.querySelectorAll('.dot[style]').forEach(d=>{const bg=d.getAttribute('style')||'';const co=GROUP.companies.find(c=>bg.includes(c.color));if(co)setTip(d,null,co.name)});
+  V.querySelectorAll('.legend2 span,.legend span').forEach(s=>{if(!s.getAttribute('data-tip'))setTip(s,'Legend',s.textContent.trim())});
+  // controls outside the view
+  const tb=document.getElementById('toolbar');if(tb){tb.querySelectorAll('.views button').forEach(b=>{const g=tipLookup(b.textContent.replace(/^[^\w]+/,''));if(g)setTip(b,g[0],g[1])});
+    const sc={selCo:['Company','Narrow the board to Meubel Grande or Royal Group.'],selBr:['Branch','Narrow to one showroom; the leaderboard and messages follow.'],selTeam:['Team','Sales, CRE, Logistics, Back office or Management within the branch.'],selPerson:['Person','Open one person\'s own page.'],find:['Find','Type a branch or a person; the board jumps there, within what your role may open.'],navFlip:['Menu position','Dock this menu to the left as a side bar, or return it to the top. Remembered on this device.']};
+    Object.keys(sc).forEach(id=>{const el=document.getElementById(id);if(el)setTip(el,sc[id][0],sc[id][1])})}
+  const hb={themeBtn:['Theme','Follows the device, or light, or dark. Remembered on this device.'],manualLink:['Manual','Opens the settings and user manual (PDF).'],selUser:['Signed in as','Who the board is showing. In production this comes from single sign-on.'],asof:['As of','Replay the sample month day by day; every figure, chance and message recomputes. In production this is today.'],totop:['Back to top','Scroll to the top of the page.']};
+  Object.keys(hb).forEach(id=>{const el=document.getElementById(id);if(el)setTip(el,hb[id][0],hb[id][1])});
+  document.querySelectorAll('#crumbs button').forEach(b=>setTip(b,'Breadcrumb','Step back up to '+b.textContent.trim()+'.'));
+  document.querySelectorAll('#colorkey span[class]').forEach(s=>setTip(s,'Block colour',s.textContent.trim()));
+}
+function wireTips(){ // one listener set for the whole page: pointer and keyboard focus
+  if(typeof document.addEventListener!=='function')return;
+  const tip=document.getElementById('tip');if(!tip)return;let cur=null,hideT=null;
+  const place=(x,y)=>{const r=tip.getBoundingClientRect(),W=window.innerWidth,H=window.innerHeight;let lx=x+14,ly=y+18;if(lx+r.width>W-8)lx=Math.max(8,x-r.width-14);if(ly+r.height>H-8)ly=Math.max(8,y-r.height-12);tip.style.left=lx+'px';tip.style.top=ly+'px'};
+  const show=(el,x,y)=>{const body=el.getAttribute('data-tip');if(!body)return;const head=el.getAttribute('data-tip-head');tip.innerHTML=(head?'<b>'+esc(head)+'</b>':'')+esc(body);tip.classList.add('show');tip.setAttribute('aria-hidden','false');cur=el;if(x==null){const r=el.getBoundingClientRect();x=r.left;y=r.bottom}place(x,y)};
+  const hide=()=>{tip.classList.remove('show');tip.setAttribute('aria-hidden','true');cur=null};
+  document.addEventListener('mouseover',e=>{const el=e.target.closest&&e.target.closest('[data-tip]');if(!el){if(cur)hide();return}if(el!==cur)show(el,e.clientX,e.clientY)});
+  document.addEventListener('mousemove',e=>{if(cur&&tip.classList.contains('show'))place(e.clientX,e.clientY)},{passive:true});
+  document.addEventListener('mouseout',e=>{if(cur&&!(e.relatedTarget&&e.relatedTarget.closest&&e.relatedTarget.closest('[data-tip]')===cur))hide()});
+  document.addEventListener('focusin',e=>{const el=e.target.closest&&e.target.closest('[data-tip]');if(el)show(el)});
+  document.addEventListener('focusout',()=>hide());
+  document.addEventListener('touchstart',e=>{const el=e.target.closest&&e.target.closest('[data-tip]');if(!el){hide();return}show(el,e.touches[0].clientX,e.touches[0].clientY);clearTimeout(hideT);hideT=setTimeout(hide,2600)},{passive:true});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')hide()});
+  window.addEventListener('scroll',()=>{if(cur)hide()},{passive:true});
+}
 const PAGE_SIZE=15,PAGER={}; // per table (card heading + view): current page and page size
 function paginate(){ // long tables get a pager; the CSV export still reads every row
   if(typeof document.querySelectorAll!=='function')return;
@@ -2364,10 +2486,11 @@ function render(){
   paintBlocks();
   paginate();
   introCard();
+  applyTips();
 }
 $('#asof').addEventListener('input',e=>{asOf=+e.target.value;render()});
 try{const s=JSON.parse(localStorage.getItem('mr-state')||'null');if(s&&s.level&&(!s.person||people.some(p=>p.id===s.person)))Object.assign(state,s);if(!state.lbTab)state.lbTab='Sales';if(!state.emailMode)state.emailMode='bm';if(!state.msg||!state.msg.aud)state.msg={aud:'Sales',cad:'weekly',ch:'whatsapp'};if(!state.adminTab)state.adminTab='policy'}catch(_){}
-applyNav();applyTheme();
+applyNav();applyTheme();wireTips();
 const _tb=$('#themeBtn');if(_tb)_tb.addEventListener('click',cycleTheme);
 const _tt=$('#totop');if(_tt)_tt.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
 if(typeof window.addEventListener==='function')window.addEventListener('scroll',()=>{const b=$('#totop');if(b&&b.classList)b.classList.toggle('show',window.scrollY>600)},{passive:true});

@@ -84,7 +84,7 @@ Settings and the Admin console sit above the engine: they change the rules, neve
 
 ### 🧰 Everyday controls
 
-**What to look at.** The app bar carries the brand mark, the page title, the signed-in switch, the as-of slider, a theme button (follows the device, or light, or dark; remembered per browser) and a Manual button. The selector bar has a **Find** box: type a branch or a person and the board jumps there, within the role's scope. A dismissible welcome card explains the board on first use and offers the three places to start. Copies and downloads confirm with a toast, a back-to-top button appears on long pages, and on a phone the view buttons become a fixed bottom bar. Tables longer than 15 rows carry a pager with a rows-per-page choice; exports always take every row.
+**What to look at.** The app bar carries the brand mark, the page title, the signed-in switch, the as-of slider, a theme button (follows the device, or light, or dark; remembered per browser) and a Manual button. The selector bar has a **Find** box: type a branch or a person and the board jumps there, within the role's scope. A dismissible welcome card explains the board on first use and offers the three places to start. Copies and downloads confirm with a toast, a back-to-top button appears on long pages, and on a phone the view buttons become a fixed bottom bar. Tables longer than 15 rows carry a pager with a rows-per-page choice; exports always take every row. Hover, focus or tap almost anything and a tooltip explains it: tiles, column headings, scorecard attributes with their targets, pills, ranks and movement arrows, badges, chart marks, view buttons, selectors and admin states.
 
 ### 🌐 Group lens
 
