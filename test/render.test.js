@@ -42,9 +42,9 @@ asOf=31;const __snapM=snapshotMonth(MONTH);if(__snapM.people.length!==people.len
 if(__snapM.people.some(x=>!isFinite(x.total)||!isFinite(x.score))||__snapM.branches.some(x=>!isFinite(x.payout)||!isFinite(x.midProj))){__errs++;console.log('snapshot has non-finite numbers')}
 HIST.push(__snapM);if(history().length!==4||observedSpread(history())==null){__errs++;console.log('history or spread failed')}HIST.pop();
 let __sn=0;allMembers(computeGroup()).forEach(m=>{const s=statementHtml(m,m.brc);__sn++;if(!/Total payable/.test(s)||/NaN|undefined/.test(s)){__errs++;console.log('statement problem for',m.p.name,(s.match(/.{30}(NaN|undefined).{20}/)||[''])[0])}});
-const __csv=csvText(PAYOUT_HEADER,payoutRows(computeGroup()));if(__csv.split('\n').length!==people.length+1||/NaN|undefined/.test(__csv)){__errs++;console.log('payout csv problem')}
-if(csvText(['a'],[['x,"y"']])!=='a\n"x,""y"""'){__errs++;console.log('csv quoting wrong')}
-console.log(__sn+' statements, '+__csv.split('\n').length+' payout rows');asOf=18;
+const __csv=csvText(PAYOUT_HEADER,payoutRows(computeGroup()));if(__csv.split('\\n').length!==people.length+1||/NaN|undefined/.test(__csv)){__errs++;console.log('payout csv problem')}
+if(csvText(['a'],[['x,"y"']])!=='a\\n"x,""y"""'){__errs++;console.log('csv quoting wrong')}
+console.log(__sn+' statements, '+__csv.split('\\n').length+' payout rows');asOf=18;
 console.log(__n+' renders, '+__errs+' failures');
 if(__errs)process.exit(1);
 `;
