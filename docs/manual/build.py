@@ -11,6 +11,7 @@ MD = open(os.path.join(HERE, 'manual.md'), encoding='utf-8').read()
 
 # ---------- image mapping: placeholder alt text -> file ----------
 IMG = [
+    ('Reports window', '35-reports.png'), ('Subtotals and the grand total', '36-totals.png'),
     ('Sales analytics', '33-sales-top.png'), ('docked as a side bar', '34-sales-sidenav.png'),
     ('The header', '18-header.png'), ('Group lens', '01-group.png'), ('Company lens', '02-company.png'),
     ('Branch lens', '03-branch.png'), ('Team lens, Sales', '04-team-sales.png'), ('Team lens, CRE', '21-team-cre.png'),
@@ -293,7 +294,7 @@ def build_cover():
   <div class="cv-mid">
     <div class="eyebrow">Meubel Grande · Royal Group</div>
     <h1>Incentive Board<br>Manual</h1>
-    <p class="sub"><strong>Settings manual and user manual</strong> for administrators and top management<br>Release 1.2 · October 2026</p>
+    <p class="sub"><strong>Settings manual and user manual</strong> for administrators and top management<br>Release 1.3 · October 2026</p>
     <div class="cv-strip">%s</div>
   </div>
   <div class="cv-bottom">
@@ -329,6 +330,6 @@ if __name__ == '__main__':
         print('pass', p + 1, 'pages', total, 'sections found', len(new), 'of', len(sections))
         if new == pages: break
         pages = new
-    final = os.path.join(out, 'Incentive-Board-Manual-v1.2.pdf')
+    final = os.path.join(out, 'Incentive-Board-Manual-v1.3.pdf')
     subprocess.run(['pdfunite', os.path.join(out, 'cover.pdf'), os.path.join(out, 'body.pdf'), final], check=True)
     print('wrote', final, json.dumps(pages))

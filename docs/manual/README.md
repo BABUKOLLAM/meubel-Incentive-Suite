@@ -1,7 +1,7 @@
 # Incentive Board Manual
 
-`Incentive-Board-Manual-v1.2.pdf` is the settings manual cum user manual for administrators and top management:
-58 pages, A4, with a contents page carrying page numbers, a "How to read this document" page, one section per
+`Incentive-Board-Manual-v1.3.pdf` is the settings manual cum user manual for administrators and top management:
+60 pages, A4, with a contents page carrying page numbers, a "How to read this document" page, one section per
 page start, sticky notes, lenses, policy rules and gamification call-outs, numbered figures and running headers.
 
 ## Rebuild
@@ -14,7 +14,7 @@ section starts on with `pdftotext`, renders again with those numbers in the cont
 pip install nothing            # standard library only
 npm i -g playwright && npx playwright install chromium
 sudo apt-get install poppler-utils   # pdftotext, pdfunite
-python3 build.py               # writes out/Incentive-Board-Manual-v1.2.pdf
+python3 build.py               # writes out/Incentive-Board-Manual-v1.3.pdf
 ```
 
 Set `CHROME_PATH` if Chromium is not where Playwright expects it.

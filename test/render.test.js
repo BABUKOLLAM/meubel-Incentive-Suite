@@ -3,7 +3,7 @@ const fs=require('fs'),path=require('path');
 const html=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
 const js=html.match(/<script id="board-src"[^>]*>([\s\S]*?)<\/script>/)[1];
 const stub=()=>({innerHTML:'',textContent:'',className:'',value:'',hidden:false,style:{},dataset:{},files:[],addEventListener(){},setAttribute(){},getBoundingClientRect(){return{left:0,width:600}},querySelectorAll(){return[]},querySelector(){return stub()}});
-const nodes={};global.nodes=nodes;
+const nodes={};global.nodes=nodes;global.__zcrc=require('zlib').crc32;
 global.document={querySelector:s=>nodes[s]||(nodes[s]=stub()),getElementById:id=>nodes['#'+id]||(nodes['#'+id]=stub())};
 global.window={scrollTo(){},getSelection(){return{removeAllRanges(){},addRange(){}}}};
 global.localStorage={getItem(){return null},setItem(){},removeItem(){}};
@@ -13,7 +13,7 @@ const __snap=()=>nodes['#view'].innerHTML;let __errs=0,__n=0;
 const __chk=(label)=>{__n++;try{render();const m=__snap().match(/.{40}(NaN|undefined).{20}/);if(m){__errs++;console.log('NaN/undefined',label,m[0])}}catch(e){__errs++;console.log('ERR',label,e.stack.split('\\n').slice(0,3).join(' | '))}};
 nodes['#selUser']=Object.assign(nodes['#selUser']||{},{value:'',onchange:null});
 for(const u of allUsers().slice(0,12)){setUser(u.email);for(const day of [1,18,31]){asOf=day;
-  for(const st of [{level:'group'},{level:'total'},{level:'company',co:'mg'},{level:'branch',co:'mg',br:'klm'},{level:'sales'},{level:'sales',co:'mg',br:'klm'},{level:'leaderboard'},{level:'messages'},{level:'settings'},{level:'admin'}]){Object.assign(state,{co:null,br:null,team:null,person:null},st);__chk(u.role+' '+day+' '+st.level)}
+  for(const st of [{level:'group'},{level:'total'},{level:'company',co:'mg'},{level:'branch',co:'mg',br:'klm'},{level:'sales'},{level:'sales',co:'mg',br:'klm'},{level:'reports'},{level:'reports',co:'mg',br:'klm'},{level:'leaderboard'},{level:'messages'},{level:'settings'},{level:'admin'}]){Object.assign(state,{co:null,br:null,team:null,person:null},st);__chk(u.role+' '+day+' '+st.level)}
   for(const t of ['Sales','CRE','Logistics','Back office','Management']){Object.assign(state,{level:'team',co:'mg',br:'klm',team:t,person:null});__chk(u.role+' '+day+' team '+t)}
   for(const p of branches[0].people){Object.assign(state,{level:'person',co:'mg',br:'klm',team:p.role,person:p.id});__chk(u.role+' '+day+' person '+p.role)}}}
 setUser('tech@bpropms.com');
@@ -40,10 +40,27 @@ if(state.msg.cad!=='weekly'){__errs++;console.log('bad cadence not reset')}
 // history, statements, exports
 asOf=31;const __snapM=snapshotMonth(MONTH);if(__snapM.people.length!==people.length||__snapM.branches.length!==branches.length){__errs++;console.log('snapshot incomplete')}
 if(__snapM.people.some(x=>!isFinite(x.total)||!isFinite(x.score))||__snapM.branches.some(x=>!isFinite(x.payout)||!isFinite(x.midProj))){__errs++;console.log('snapshot has non-finite numbers')}
-HIST.push(__snapM);if(history().length!==4||observedSpread(history())==null){__errs++;console.log('history or spread failed')}HIST.pop();
+HIST.push(__snapM);if(history().length!==25||history()[24].sample||history()[0].key!==keyShift(CAL.key,-24)||observedSpread(history())==null){__errs++;console.log('history or spread failed',history().length)}HIST.pop();
 let __sn=0;allMembers(computeGroup()).forEach(m=>{const s=statementHtml(m,m.brc);__sn++;if(!/Total payable/.test(s)||/NaN|undefined/.test(s)){__errs++;console.log('statement problem for',m.p.name,(s.match(/.{30}(NaN|undefined).{20}/)||[''])[0])}});
-const __csv=csvText(PAYOUT_HEADER,payoutRows(computeGroup()));if(__csv.split('\\n').length!==people.length+1||/NaN|undefined/.test(__csv)){__errs++;console.log('payout csv problem')}
-if(csvText(['a'],[['x,"y"']])!=='a\\n"x,""y"""'){__errs++;console.log('csv quoting wrong')}
+const __csv=csvText(PAYOUT_HEADER,payoutRows(computeGroup()));if(__csv.split('\\n').length!==people.length+3||/NaN|undefined/.test(__csv)||!__csv.endsWith('=HYPERLINK(""https://www.bpropms.com"",""www.bpropms.com"")"')){__errs++;console.log('payout csv problem')}
+if(csvText(['a'],[['x,"y"']],false)!=='a\\n"x,""y"""'){__errs++;console.log('csv quoting wrong')}
+// reports: every row type × period grouping renders clean; subtotals add up to the grand total; the outputs carry the footer
+asOf=18;const __recs=rptRecords(),__yrs=rptYears();if(__yrs.length!==3){__errs++;console.log('report years',__yrs)}
+for(const type of RPT_TYPES.map(t=>t.id))for(const gran of RPT_GRANS.map(g=>g[0])){Object.assign(state,{level:'reports',co:null,br:null,team:null,person:null,rpt:{type,gran,ms:RPT_MEASURES.map(m=>m.id),years:__yrs,months:[1,2,3,4,5,6,7,8,9,10,11,12],total:true}});__chk('report '+type+' '+gran);
+  const R=buildReport(rptSpec(),__recs),q=R.MS.findIndex(m=>m.id==='qty');
+  if(q>=0){const sub=R.sections.reduce((s,x)=>s+x.tot[q],0),rows=R.sections.reduce((s,x)=>s+x.rows.reduce((a,r)=>a+r.tot[q],0),0);if(Math.abs(sub-R.grand.tot[q])>1e-6||Math.abs(rows-R.grand.tot[q])>1e-6){__errs++;console.log('report totals do not add up',type,gran,sub,rows,R.grand.tot[q])}}
+  const csv=reportCSV(R);if(/NaN|undefined/.test(csv)||!csv.includes('Grand total')||!csv.includes('https://www.drbabu.in')){__errs++;console.log('report csv',type,gran)}}
+{const sp={type:'branch',gran:'year',ms:['qty','value'],years:__yrs,months:[1,2,3,4,5,6,7,8,9,10,11,12],total:true};const a=buildReport(sp,__recs),b=buildReport({...sp,type:'product'},__recs),c=buildReport({...sp,type:'seller'},__recs);
+  if(Math.abs(a.grand.tot[1]-b.grand.tot[1])>1||Math.abs(a.grand.tot[0]-b.grand.tot[0])>0||Math.abs(a.grand.tot[1]-c.grand.tot[1])>1){__errs++;console.log('branch, product and seller reports disagree',a.grand.tot,b.grand.tot,c.grand.tot)}
+  if(a.periods.length!==3||!a.periods.some(p=>p.running)){__errs++;console.log('report periods',a.periods.map(p=>p.l))}
+  const z=reportXLSX(a),dv2=new DataView(z.buffer);let off=z.length-22,files=[];if(dv2.getUint32(off,true)!==0x06054b50){__errs++;console.log('xlsx: no end record')}else{let p=dv2.getUint32(off+16,true);for(let i=0;i<dv2.getUint16(off+10,true);i++){const nl=dv2.getUint16(p+28,true),crc=dv2.getUint32(p+16,true),size=dv2.getUint32(p+20,true),lo=dv2.getUint32(p+42,true),name=new TextDecoder().decode(z.slice(p+46,p+46+nl)),data=z.slice(lo+30+dv2.getUint16(lo+26,true),lo+30+dv2.getUint16(lo+26,true)+size);if(crc32(data)!==crc||global.__zcrc(data)!==crc){__errs++;console.log('xlsx crc',name)}files.push([name,new TextDecoder().decode(data)]);p+=46+nl}}
+  const f=Object.fromEntries(files);if(!f['xl/worksheets/sheet1.xml']||!/Grand total/.test(f['xl/worksheets/sheet1.xml'])||!/TargetMode="External"/.test(f['xl/worksheets/_rels/sheet1.xml.rels']||'')||!/D&amp;&amp;D by Dr.Babu.B./.test(f['xl/worksheets/sheet1.xml'])){__errs++;console.log('xlsx content',Object.keys(f))}}
+Object.assign(state,{rpt:null});
+const __bm=allUsers().find(u=>u.role==='sm');setUser(__bm.email);Object.assign(state,{level:'reports',co:null,br:null,team:null,person:null});enforce(state);if(state.level!=='reports'||state.br!==__bm.br||rptTypes().some(t=>t.id==='person')){__errs++;console.log('sales manager report scope',state.level,state.br)}
+setUser('tech@bpropms.com');
+// totals rows: the board's main tables carry a grand total
+Object.assign(state,{level:'group',co:null,br:null,team:null,person:null});render();if((__snap().match(/class="grand"/g)||[]).length<2||!/Subtotal · Meubel Grande/.test(__snap())){__errs++;console.log('group totals missing')}
+Object.assign(state,{level:'branch',co:'mg',br:'klm'});render();if(!/Kollam total/.test(__snap())||!/Subtotal · Sales/.test(__snap())){__errs++;console.log('branch totals missing')}
 console.log(__sn+' statements, '+__csv.split('\\n').length+' payout rows');asOf=18;
 console.log(__n+' renders, '+__errs+' failures');
 if(__errs)process.exit(1);

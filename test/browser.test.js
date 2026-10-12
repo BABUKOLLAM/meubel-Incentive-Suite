@@ -23,13 +23,17 @@ const path = require('path');
         for (const w of ['NaN', 'undefined', '[object Object]']) if (txt.includes(w)) out.push(`${email} ${v}: ${w}`);
       }
     }
+    setUser('tech@bpropms.com'); go({ level: 'reports' }); window.print = () => {};
+    document.getElementById('rPdf').click();
+    const pr = document.getElementById('print');
+    if (!pr.querySelector('.ddfoot a[href="https://www.drbabu.in"]') || !pr.querySelector('.ddfoot a[href="https://www.bpropms.com"]') || !/Grand total/.test(pr.textContent)) out.push('report print: footer links or grand total missing');
     return out;
   });
   const ph = await b.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   ph.on('pageerror', e => errs.push('phone pageerror: ' + e.message));
   await ph.goto('file://' + path.resolve(__dirname, '..', 'index.html'), { waitUntil: 'load' });
   await ph.waitForTimeout(400);
-  const overflow = await ph.evaluate(() => { const r = []; for (const v of ['group', 'sales', 'leaderboard']) { setUser('tech@bpropms.com'); go({ level: v }); if (document.documentElement.scrollWidth > innerWidth) r.push(v + ': ' + document.documentElement.scrollWidth); } return r; });
+  const overflow = await ph.evaluate(() => { const r = []; for (const v of ['group', 'sales', 'reports', 'leaderboard']) { setUser('tech@bpropms.com'); go({ level: v }); if (document.documentElement.scrollWidth > innerWidth) r.push(v + ': ' + document.documentElement.scrollWidth); } return r; });
   await b.close();
   const problems = [...errs, ...bad, ...overflow.map(o => 'phone overflow ' + o)];
   if (problems.length) { console.log(problems.join('\n')); process.exit(1); }

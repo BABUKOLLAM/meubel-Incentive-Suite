@@ -207,11 +207,50 @@ Amounts are Indian rupees with Indian digit grouping (₹1,30,680); lakh and cro
 (₹20.62 lakh, ₹1.07 crore); percentages carry one decimal. Every numeral is a lining figure (the display font's
 old-style numerals are switched off), tabular in tiles and table columns so amounts align.
 
+## Reports window
+
+📑 Reports builds one output from several parameters: the **rows** (branches by company, salespeople by branch,
+products by category, incentive by role by company, everyone by branch), any **measures** (Qty, Value, Avg ticket,
+Target, Achievement, Incentive, Score, Attendance, People), one or more **years** and **months**, and the
+**columns** (month, quarter, calendar year or the April to March financial year, where the year chips become
+financial years). Each period is a column group with every measure under it, then a Total group across the
+periods; rows sit under their group with a subtotal after each group and a grand total at the foot. Totals are
+computed from the underlying figures (sums, ratios of sums, averages), not by adding displayed cells. Five quick
+starts set the common reports. Outputs:
+
+- **Excel (.xlsx)**, written in the page without a library: numbers stay numbers in rupee and quantity formats,
+  period headers merged, first column and headers frozen, headers repeated on every printed page, landscape fitted
+  to the width, the parameters on top and the footer with live links at the bottom and on every printed page.
+- **PDF**: the browser's print dialog, landscape, with the footer and its links on every page.
+- **CSV** with the parameters, subtotals and grand total.
+
+The scope follows the Company and Branch selectors; Branch and Sales Managers get their own branch (Sales Managers
+the sales reports only). The sample build fills the two years before the month with generated months (season,
+9% a year growth, seeded noise), flagged *sample*; an archived real close replaces its sample month, and a board
+on the live roster shows only real months.
+
+## Subtotals and grand totals
+
+Every table that lists branches, people or money carries its totals in the table footer, so paging never moves
+them and every CSV export includes them: company subtotals and the group total under All branches and the risk
+flags; team subtotals and the branch total under Everyone in a branch; the team total under each team; company
+or branch subtotals under the salespeople in Sales analytics; a total under each leaderboard tab; the net of
+approved and pending adjustments under the ledger; and a total across the months in each history card.
+
+## Footer on every output
+
+Reports (screen, Excel, PDF, CSV), statements, the payout file, the ledger and every table export, every email
+and the board page carry **D&D by Dr.Babu.B. Bpro Consulting & Technologies · www.drbabu.in | www.bpropms.com**
+with both addresses as links: anchors in HTML and PDF, hyperlinks in Excel, `HYPERLINK` formulas in CSV (Excel,
+LibreOffice and Google Sheets open them as links), full URLs in the plain-text part of emails. WhatsApp messages
+stay short and carry no footer. The payout file ends with the footer's two lines: a payroll import that reads to
+the end of the file should stop at the first blank row.
+
 ## Month history, statements and exports
 
 - **History**: the group, every branch and every person carry a history card (achievement, score, GP, payout;
   score, achievement, incentive, badges) with the running month marked. Until the first real close the cards
-  show three generated sample months, flagged as such. **Archive October 2026 into history** in 🛠 Admin → Month
+  show the last five months with the running one, generated sample months flagged as such until real closes exist. **Archive the month into history** in 🛠 Admin → Month
   close (open on the last day) snapshots the closed month, including each branch's mid-month projection, so the
   prediction spread can be calibrated: Settings → Prediction constants shows the observed spread from the archive.
 - **Statements**: one printable page per employee with every component of the month's incentive and the rule

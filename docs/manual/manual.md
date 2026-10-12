@@ -6,7 +6,7 @@ Oct 3, 2026 · @BABU
 
 &#91;image: Bpro\]
 
-**Settings manual and user manual** for administrators and top management, release 1.2, October 2026.
+**Settings manual and user manual** for administrators and top management, release 1.3, October 2026.
 
 One board pays every role from the same written policy, shows each person their incentive as it builds through the month, and sends the right summary to the right person on WhatsApp or email. This manual explains the whole programme, then walks through every screen: the lenses for leadership, the settings and data inputs for administrators, and the back-end console for the Bpro team.
 
@@ -133,6 +133,24 @@ Settings and the Admin console sit above the engine: they change the rules, neve
 &#91;image: Sales analytics: the Meubel sales picture for the scope, from KPI tiles to the salesperson table\]
 
 **What to look at.** A separate window for the sales picture, scoped by the same selector: SO value against the pro-rated target, bills and cancellations, average ticket, conversion, walk-in to attended, average discount, margin, paid share, this week against last, upsell and cross-sell. Below the tiles: SO value by day with a 7-day average and by weekday, the walk-in to paid funnel, the payment pipeline, SO value by branch against pace, the product mix, the policy category mix, the discount bands, and a salesperson table with CSV export. Every role except employees can open it; Branch and Sales Managers see their own branch.
+
+### 📑 Reports window
+
+&#91;image: Reports window: rows, measures and periods across years in one output, with subtotals and a grand total\]
+
+**What to look at.** One report that combines what used to need several exports. Choose the **rows** (branches by company, salespeople by branch, products by category, incentive by role by company, or everyone by branch), tick any **measures** (Qty, Value, Avg ticket, Target, Achievement, Incentive, Score, Attendance, People), tick one or more **years** and **months**, and choose the **columns**: month, quarter, calendar year or the Indian financial year (April to March). Each period becomes a column group with every measure under it, followed by a **Total** column group across the periods. Rows sit under their group with a **subtotal** after each group and a **grand total** at the foot. Five quick starts set common reports in one click: this year by month, year on year, financial years with achievement, incentive by role by quarter, and the product mix by year.
+
+**Outputs.** ⬇ **Excel (.xlsx)** keeps the numbers as numbers in Indian rupee and quantity formats, with the period headers merged, the first column and the headers frozen, the headers repeated on every printed page, landscape printing fitted to the page width and the footer on every page. 🖨 **PDF** prints the same report landscape, with the footer and its links on every page. ⬇ **CSV** carries the parameters, the subtotals and the grand total. All three list the parameters used, so a printed report explains itself.
+
+> 📌 **Sticky note.** Subtotals and grand totals are computed from the underlying figures, not by adding the cells above: Qty, Value, Target, Incentive and People are sums; Avg ticket and Achievement are worked out from those sums; Score and Attendance are averages. The running month is to the day on the slider, with its target pro-rated to the day.
+
+> 🔍 **Lens.** Until real months are archived, the sample build fills the two years before this month from the current month with season and growth, marked *sample* in every output. A real close archived from 🛠 Admin → Month close replaces its sample month; a board running on the live roster shows only real months.
+
+### ➕ Subtotals and grand totals on the board
+
+&#91;image: Subtotals and the grand total under the All branches table\]
+
+**What to look at.** Every table that lists branches, people or money ends with its totals: company subtotals and the group total under All branches and the risk-flag table; the team subtotals and the branch total under Everyone in a branch; the team total under each team; company or branch subtotals under the salespeople in Sales analytics; a total under each leaderboard tab; the net effect of approved and pending adjustments under the ledger; and a total across the months in each history card. The totals stay put when a long table is paged, and every CSV export includes them.
 
 ### ⇆ Top bar or side bar
 
@@ -839,11 +857,12 @@ Newest first, with a copy button for the auditor. In this preview the console ke
 | 1.0 | 3 October 2026 | first release of the manual, matching the sample build with roles, Total view, Admin console, messages matrix and data inputs |
 | 1.1 | 3 October 2026 | board audit fixes (document skeleton, stale-state sanitiser, labels, workflow); badge ladder and badge wall built in; manual section 6.3 updated |
 | 1.2 | 3 October 2026 | month history and archive, printable statements, payout file and ledger exports, leaderboard export and TV mode; manual sections 5.3, 6.2 and 10.7 |
+| 1.3 | 12 October 2026 | Reports window (measures across months, quarters, calendar and financial years in one Excel, PDF or CSV output); subtotals and grand totals on the board's tables; the D&D footer with its links on every report, statement, export and email; manual section 2 |
 
 ### Colophon
 
 &#91;image: Bpro\]
 
-**Incentive board: settings manual cum user manual.** Designed and developed by **Dr. Babu B.**, Team Bpro Consulting & Technologies, for Meubel Grande and Royal Group. [www.drbabu.in](https://www.drbabu.in) · [www.bpropms.com](https://www.bpropms.com). Screenshots are from the sample build of 3 October 2026; names, branches and figures are generated. The policy values quoted are the 19 September 2026 draft's placeholders until leadership confirms them in Settings.
+**Incentive board: settings manual cum user manual.** Designed and developed by **Dr. Babu B.**, Team Bpro Consulting & Technologies, for Meubel Grande and Royal Group. [www.drbabu.in](https://www.drbabu.in) · [www.bpropms.com](https://www.bpropms.com). Every report, statement, export and email the board produces carries the line *D&D by Dr.Babu.B. Bpro Consulting & Technologies · www.drbabu.in | www.bpropms.com*, with both addresses as links. Screenshots are from the sample build of 3 October 2026; names, branches and figures are generated. The policy values quoted are the 19 September 2026 draft's placeholders until leadership confirms them in Settings.
 
 > 🎮 **Last note.** A programme people check every evening beats a policy people read once a year. The board exists to make the second into the first.

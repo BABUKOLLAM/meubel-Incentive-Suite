@@ -78,7 +78,18 @@ h1{font:600 34px/1.05 var(--display);margin:0 0 6px;color:var(--brown);text-wrap
 .badge-row{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card2)}
 .badge-row.off{opacity:.55}.badge-row .bi{font-size:22px;line-height:1}.badge-row small{color:var(--muted)}
 #print{display:none}
-@media print{body>.wrap{display:none!important}#print{display:block}body{background:#fff;color:#111}.stmt{page-break-after:always;padding:24px 28px;font:12.5px/1.45 Arial,Helvetica,sans-serif;color:#111}.stmt:last-child{page-break-after:auto}.stmt h1{font:700 20px/1.2 Georgia,serif;margin:0 0 2px}.stmt .sub{color:#555;margin:0 0 14px}.stmt table{width:100%;border-collapse:collapse;margin:10px 0 14px}.stmt th,.stmt td{border-bottom:1px solid #ddd;padding:6px 8px;text-align:left;vertical-align:top}.stmt th{background:#EEF2F6;font-size:11px;letter-spacing:.06em;text-transform:uppercase}.stmt td.r,.stmt th.r{text-align:right}.stmt tr.total td{font-weight:700;border-top:2px solid #333;border-bottom:none}.stmt .sig{display:flex;gap:40px;margin-top:36px}.stmt .sig div{flex:1;border-top:1px solid #333;padding-top:6px;font-size:11px;color:#555}.stmt .note{font-size:11px;color:#555}}
+@media print{body>*:not(#print){display:none!important}#print{display:block}body{background:#fff;color:#111}.stmt{page-break-after:always;padding:24px 28px;font:12.5px/1.45 Arial,Helvetica,sans-serif;color:#111}.stmt:last-child{page-break-after:auto}.stmt h1{font:700 20px/1.2 Georgia,serif;margin:0 0 2px}.stmt .sub{color:#555;margin:0 0 14px}.stmt table{width:100%;border-collapse:collapse;margin:10px 0 14px}.stmt th,.stmt td{border-bottom:1px solid #ddd;padding:6px 8px;text-align:left;vertical-align:top}.stmt th{background:#EEF2F6;font-size:11px;letter-spacing:.06em;text-transform:uppercase}.stmt td.r,.stmt th.r{text-align:right}.stmt tr.total td{font-weight:700;border-top:2px solid #333;border-bottom:none}.stmt .sig{display:flex;gap:40px;margin-top:36px}.stmt .sig div{flex:1;border-top:1px solid #333;padding-top:6px;font-size:11px;color:#555}.stmt .note{font-size:11px;color:#555}
+table.pwrap{width:100%;border-collapse:collapse}table.pwrap>tbody>tr>td,table.pwrap>tfoot>tr>td{padding:0;border:0;background:none!important}.ddspace{height:9mm}
+.ddfoot{position:fixed;left:0;right:0;bottom:0;padding-top:4px;border-top:1px solid #bbb;font:9px/1.3 Arial,Helvetica,sans-serif;color:#555;text-align:center;background:#fff}.ddfoot a{color:#0A5E66;text-decoration:underline}
+.rpt{font:10px/1.35 Arial,Helvetica,sans-serif;color:#111;padding:0 2px}.rpt h1{font:700 17px/1.2 Georgia,serif;margin:0 0 3px}.rpt .sub{color:#444;margin:0 0 8px;font-size:9px}
+.rpt table{width:100%;border-collapse:collapse;font-size:inherit}.rpt th,.rpt td{border-bottom:1px solid #ddd;padding:3px 5px;text-align:right;white-space:nowrap;position:static!important;background:none!important}.rpt [data-tip]{border:0!important;text-decoration:none!important;cursor:auto}
+.rpt th:first-child,.rpt td:first-child{text-align:left;white-space:normal}.rpt thead{display:table-header-group}.rpt tr{break-inside:avoid}
+.rpt thead th{background:#1F2D44!important;color:#fff;font-size:.9em;letter-spacing:.04em;text-transform:none;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.rpt th.pc{text-align:center}.rpt .b0{border-left:1px solid #ccc}.rpt .pill,.rpt small{font-size:.85em;color:#666;background:none;padding:0}
+.rpt tr.grp td{background:#F5F7FA!important;color:#0A5E66;font-weight:700;text-align:left;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.rpt tr.sub td{background:#EEF2F6!important;font-weight:700;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.rpt tr.grand td{background:#D6EEF0!important;font-weight:700;border-top:2px solid #0E7C86;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.rpt td.ind{padding-left:14px}.rpt .note{font-size:8.5px;color:#555;margin:6px 0 0}.rpt tfoot{display:table-row-group}.toast,#tip{display:none!important}}
 body.tv header.top,body.tv #toolbar,body.tv #crumbs,body.tv details,body.tv .foot{display:none}body.tv .wrap{max-width:none;padding-top:10px}body.tv table{font-size:17px}body.tv .card h2{font-size:17px}body.tv .tiles .v{font-size:30px}
 .hbar{display:inline-block;height:9px;border-radius:4px;background:var(--brass);vertical-align:middle;margin-right:6px;min-width:2px}.hbar.cur{background:var(--info)}
 .pill.good{background:var(--good-bg);color:var(--good)}.pill.warn{background:var(--warn-bg);color:var(--warn)}.pill.bad{background:var(--bad-bg);color:var(--bad)}.pill.info{background:var(--info-bg);color:var(--info)}.pill.brass{background:var(--brass-soft);color:var(--brass-ink)}
@@ -92,6 +103,29 @@ td.r,th.r{text-align:right;font-variant-numeric:tabular-nums}
 tr.link{cursor:pointer}tr.link:hover td{background:var(--row)}
 tr.off td{color:var(--muted)}
 tfoot td{font-weight:600;background:var(--row)}
+tfoot td small{font-weight:400;color:var(--muted)}
+tfoot tr.sub td{background:var(--row);color:var(--text);font-weight:600;border-top:1px solid var(--line);border-bottom:0}
+tfoot tr.grand td{background:var(--brass-soft);color:var(--text);font-weight:700;border-top:2px solid var(--brass);border-bottom:0}
+tfoot tr.grand td .pill{font-weight:600}
+.tw-r{overflow-x:auto;margin:0 -16px;padding:0 16px}
+.rp th.pc{text-align:center;border-left:1px solid var(--line)}
+.rp th.b0,.rp td.b0{border-left:1px solid var(--line)}
+.rp .tc{background:var(--card2)}
+.rp tr.grp td{background:var(--card2);color:var(--brass-ink);font-weight:700;border-top:1px solid var(--line)}
+.rp tr.grp td small{color:var(--muted);font-weight:400}
+.rp tbody tr.sub td{background:var(--row);font-weight:700;border-top:1px solid var(--line)}
+.rp td.ind{padding-left:22px}.rp td.ind small{color:var(--muted)}
+.rp th:first-child,.rp td:first-child{position:sticky;left:0;z-index:1;background:var(--card)}
+.rp tr.grp td:first-child{background:var(--card2)}.rp tbody tr.sub td:first-child{background:var(--row)}.rp tfoot tr.grand td:first-child{background:var(--brass-soft)}
+.rpt-form .rf{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;padding:7px 0;border-bottom:1px dashed var(--line)}
+.rpt-form .rl{flex:0 0 96px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.chips label{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:999px;padding:3px 10px;cursor:pointer;font-size:12.5px;background:var(--card);user-select:none}
+.chips label.on{background:var(--brass-soft);border-color:var(--brass);color:var(--brass-ink);font-weight:600}
+.chips label.dis{opacity:.45;cursor:not-allowed}.chips input{margin:0;accent-color:var(--brass)}
+.rpt-form select{background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font:inherit;font-size:13px;max-width:100%}
+.rpt-form label.chk{display:inline-flex;align-items:center;gap:6px;font-size:13px}
+.dd{color:var(--muted);font-size:12px}.dd a{color:var(--brass-ink);font-weight:600}
 .bar{position:relative;height:8px;border-radius:4px;background:var(--row);min-width:90px;overflow:hidden}
 .bar i{position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:var(--brass)}
 .bar.good i{background:var(--good)}.bar.warn i{background:var(--warn)}.bar.bad i{background:var(--bad)}
@@ -287,7 +321,7 @@ tr.link:hover td{background:var(--fam-bg,var(--row))}
 @media (prefers-reduced-motion:reduce){#view>*{animation:none}.tile,.toast,.totop{transition:none}}
 @media (max-width:860px){
   .hcontrols{margin-left:0;width:100%}h1{font-size:23px}.hbtns{flex-direction:row}
-  body:not(.tv) .toolbar .views{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--card);border-top:1px solid var(--line);padding:6px 6px calc(6px + env(safe-area-inset-bottom));display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:2px;margin:0;box-shadow:0 -6px 20px -12px rgba(16,24,40,.35)}
+  body:not(.tv) .toolbar .views{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--card);border-top:1px solid var(--line);padding:6px 6px calc(6px + env(safe-area-inset-bottom));display:grid;grid-auto-flow:column;grid-auto-columns:minmax(66px,1fr);overflow-x:auto;scrollbar-width:none;gap:2px;margin:0;box-shadow:0 -6px 20px -12px rgba(16,24,40,.35)}
   body:not(.tv) .toolbar .views button{border:none;background:none;border-radius:8px;padding:6px 2px;font-size:10.5px;line-height:1.2;white-space:normal;text-align:center;color:var(--muted)}
   body:not(.tv) .toolbar .views button.on{background:var(--brass-soft);color:var(--brass-ink)}
   body:not(.tv) .wrap{padding-bottom:88px}.totop{bottom:80px}
@@ -330,7 +364,7 @@ td.attr[data-tip]{text-decoration:underline dotted;text-decoration-color:var(--l
     </div>
     <div class="hbtns">
       <button class="hbtn" id="themeBtn" title="Theme: follows the device, or light, or dark">◐ Auto</button>
-      <a class="hbtn" id="manualLink" href="https://github.com/BABUKOLLAM/meubel-Incentive-Suite/blob/main/docs/manual/Incentive-Board-Manual-v1.2.pdf" target="_blank" rel="noopener" title="Open the manual (PDF)">📘 Manual</a>
+      <a class="hbtn" id="manualLink" href="https://github.com/BABUKOLLAM/meubel-Incentive-Suite/blob/main/docs/manual/Incentive-Board-Manual-v1.3.pdf" target="_blank" rel="noopener" title="Open the manual (PDF)">📘 Manual</a>
     </div>
     </div>
   </header>
@@ -344,12 +378,12 @@ td.attr[data-tip]{text-decoration:underline dotted;text-decoration-color:var(--l
     <summary>Scoring rules used on this board (sample weights, for leadership to confirm)</summary>
     <div class="body rules" id="rules"></div>
   </details>
-  <p class="foot">All people, branches and figures are generated samples. Pools, weights, targets and gates are placeholders awaiting leadership confirmation. <b>Prepared by Bpro</b> for Meubel Grande.</p>
+  <p class="foot">All people, branches and figures are generated samples. Pools, weights, targets and gates are placeholders awaiting leadership confirmation. <b>Prepared by Bpro</b> for Meubel Grande.<br><span class="dd">D&amp;D by Dr.Babu.B. Bpro Consulting &amp; Technologies · <a href="https://www.drbabu.in" target="_blank" rel="noopener">www.drbabu.in</a> | <a href="https://www.bpropms.com" target="_blank" rel="noopener">www.bpropms.com</a></span></p>
 </div>
 
 <button class="totop" id="totop" aria-label="Back to top">↑ Top</button>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
-<div id="tip" role="tooltip" aria-hidden="true"></div>
+<div id="tip" role="tooltip" aria-hidden="true"></div><style id="pgsize"></style>
 <div id="print" aria-hidden="true"></div>
 <script src="config.js"></script>
 <script src="remote.js"></script>
@@ -705,42 +739,67 @@ function badgeWall(g){const rk=rankings(g),ms=allMembers(g),bs=g.companies.flatM
 
 /* ---------- Month history: closed months archived from the Admin console, plus a generated sample past ---------- */
 const HIST=(()=>{try{return JSON.parse(localStorage.getItem('mr-hist')||'[]')}catch(_){return []}})(); // archived real closes, newest last
-function snapshotMonth(label){ // the whole group as of the last day, with the mid-month projection kept for calibrating the spread
-  const g=withAsOf(DAYS,computeGroup), mid=withAsOf(15,computeGroup), rk=rankings(g);
-  const midBr={};mid.companies.forEach(c=>c.branches.forEach(b=>midBr[b.br.id]=b.soProj));
-  const brs=g.companies.flatMap(c=>c.branches.map(b=>({id:b.br.id,name:b.br.name,co:c.co.name,target:b.target,so:b.so,ach:b.vals.ach,score:b.sc.score,gp:b.vals.gp,audit:b.vals.audit,grating:b.vals.grating,payout:b.members.reduce((s,m)=>s+m.total,0),midProj:midBr[b.br.id]||b.so,teamPool:!!b.teamPoolNow})));
-  const ppl=allMembers(g).map(m=>({id:m.p.id,name:m.p.name,role:m.p.role,branch:m.brc.br.name,co:m.co.name,score:m.sc.score,ach:m.vals.ach,att:m.vals.att,gate:m.gate,pay:m.pay||0,perBill:m.perBill?m.perBill.confirmed:0,cre:m.cre?m.cre.confirmed:0,teamShare:m.teamShareNow||0,adj:m.adj||0,total:m.total,rank:rk[m.p.id]?rk[m.p.id].group.rank:null,badges:badgesFor(m,m.brc,rk).filter(x=>x.earned).map(x=>x.id)}));
-  return {month:label,closedOn:nowStr(),by:ME.email,sample:false,branches:brs,people:ppl};
+const MNAMES=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const keyLabel=k=>MNAMES[+k.slice(5,7)-1]+' '+k.slice(0,4);
+const keyShift=(k,d)=>{const t=+k.slice(0,4)*12+(+k.slice(5,7)-1)+d;return Math.floor(t/12)+'-'+String(t%12+1).padStart(2,'0')};
+const keyOfLabel=l=>{const m=String(l||'').match(/([A-Za-z]{3})[a-z]*\s+(\d{4})/);const i=m?MNAMES.findIndex(n=>n.slice(0,3).toLowerCase()===m[1].toLowerCase()):-1;return i<0?'':m[2]+'-'+String(i+1).padStart(2,'0')};
+function monthRecord(g){ // one computed month in the shape the history cards and the reports read; sales targets pro-rated to the day
+  const rk=rankings(g), live=m=>(m.bills||[]).filter(x=>x.status!=='cancelled'), f=asOf/DAYS;
+  const people=allMembers(g).map(m=>({id:m.p.id,name:m.p.name,role:m.p.role,br:m.brc.br.id,branch:m.brc.br.name,co:m.co.name,coId:m.co.id,score:m.sc.score,ach:m.vals.ach,att:m.vals.att,gate:m.gate,pay:m.pay||0,perBill:m.perBill?m.perBill.confirmed:0,cre:m.cre?m.cre.confirmed:0,teamShare:m.teamShareNow||0,adj:m.adj||0,total:m.total,rank:rk[m.p.id]?rk[m.p.id].group.rank:null,badges:badgesFor(m,m.brc,rk).filter(x=>x.earned).map(x=>x.id),
+    qty:live(m).length,so:m.p.role==='Sales'?(m.so||0):0,target:m.p.role==='Sales'?(m.p.target||0)*f:0}));
+  const products=[];g.companies.forEach(c=>c.branches.forEach(b=>{const mp=new Map();b.members.forEach(m=>live(m).forEach(y=>{const r=mp.get(y.item)||{br:b.br.id,item:y.item,cat:y.cat,qty:0,value:0};r.qty++;r.value+=y.bill;mp.set(y.item,r)}));products.push(...mp.values())}));
+  const brs=g.companies.flatMap(c=>c.branches.map(b=>({id:b.br.id,name:b.br.name,co:c.co.name,coId:c.co.id,target:b.target,so:b.so,qty:people.filter(p=>p.br===b.br.id).reduce((s,p)=>s+p.qty,0),ach:b.vals.ach,score:b.sc.score,gp:b.vals.gp,audit:b.vals.audit,grating:b.vals.grating,payout:b.members.reduce((s,m)=>s+m.total,0),teamPool:!!b.teamPoolNow})));
+  return {people,branches:brs,products};
 }
+function snapshotMonth(label){ // the whole group as of the last day, with the mid-month projection kept for calibrating the spread
+  const g=withAsOf(DAYS,computeGroup), mid=withAsOf(15,computeGroup);
+  const midBr={};mid.companies.forEach(c=>c.branches.forEach(b=>midBr[b.br.id]=b.soProj));
+  const rec=withAsOf(DAYS,()=>monthRecord(g));rec.branches.forEach(b=>{b.midProj=midBr[b.id]||b.so});
+  return {month:label,key:CAL.key,closedOn:nowStr(),by:ME.email,sample:false,...rec};
+}
+const SEASON=[.95,.9,1.02,.86,.9,.8,.82,1.16,1.1,1.05,1.12,1.04]; // January to December: the monsoon lull, Onam, the wedding season
+function allot(total,ws){const s=ws.reduce((a,b)=>a+b,0)||1,raw=ws.map(w=>total*w/s),fl=raw.map(Math.floor);let rem=total-fl.reduce((a,b)=>a+b,0);raw.map((x,i)=>[x-fl[i],i]).sort((a,b)=>b[0]-a[0]).forEach(([,i])=>{if(rem>0){fl[i]++;rem--}});return fl} // whole units that add up exactly
 let _sampleHist=null;
-function sampleHistory(){ // three earlier months derived from the current month with seeded noise, so trends can be seen before any real close exists
+function sampleHistory(){ // two years before this month, derived from it with season, growth and seeded noise, so trends and year-on-year reports work before any real close; never with a live roster
+  if(LIVE)return [];
   if(_sampleHist)return _sampleHist;
-  const r=rng(4242), noise=s=>1+(r()-.5)*2*s;
-  const cur=withAsOf(DAYS,()=>snapshotMonth(MONTH));
-  _sampleHist=CAL.prev.map((label,i)=>{const drift=.9+i*.04;return {month:label,closedOn:'',by:'',sample:true,
-    branches:cur.branches.map(b=>{const f=drift*noise(.09);const so=b.so*f;return {...b,so,ach:b.ach*f,score:Math.min(100,b.score*noise(.06)),gp:b.gp*noise(.04),payout:b.payout*f*noise(.08),midProj:so*noise(.18),teamPool:b.ach*f>=GATES.teamAch&&b.audit>=GATES.teamAudit}}),
-    people:cur.people.map(p=>{const f=drift*noise(.12);return {...p,score:Math.min(100,p.score*noise(.07)),ach:p.ach*f,total:Math.max(0,p.total*f*noise(.1)),badges:p.badges.filter(()=>r()<.6),rank:null}})}});
+  const r=rng(4242), noise=s=>1+(r()-.5)*2*s, cur=withAsOf(DAYS,()=>snapshotMonth(MONTH));
+  _sampleHist=Array.from({length:24},(_,i)=>24-i).map(back=>{
+    const key=keyShift(CAL.key,-back), season=SEASON[+key.slice(5,7)-1]/SEASON[CAL.month];
+    const demand=season*Math.pow(1.09,-back/12), tf=season*Math.pow(1.07,-back/12); // sales grow 9% a year, targets 7%
+    const bf={};cur.branches.forEach(b=>{bf[b.id]=demand*noise(.1)});
+    const people=cur.people.map(p=>{const f=(bf[p.br]||demand)*noise(.1),so=p.so*f,target=p.target*tf;
+      return {...p,so,target,qty:Math.max(0,Math.round(p.qty*f*noise(.06))),ach:p.role==='Sales'?dv(so,target)*100:p.ach*noise(.05),score:Math.min(100,p.score*noise(.07)),att:Math.min(100,p.att*noise(.03)),total:Math.max(0,p.total*f*noise(.1)),badges:p.badges.filter(()=>r()<.6),rank:null}});
+    const brs=cur.branches.map(b=>{const ps=people.filter(p=>p.br===b.id),so=ps.reduce((s,p)=>s+p.so,0),target=b.target*tf;
+      return {...b,so,target,qty:ps.reduce((s,p)=>s+p.qty,0),ach:dv(so,target)*100,score:Math.min(100,b.score*noise(.06)),gp:b.gp*noise(.04),payout:ps.reduce((s,p)=>s+p.total,0),midProj:so*noise(.18),teamPool:dv(so,target)*100>=GATES.teamAch&&b.audit>=GATES.teamAudit}});
+    const products=brs.flatMap(b=>{const items=cur.products.filter(x=>x.br===b.id);if(!items.length)return [];
+      const qs=allot(b.qty,items.map(x=>x.qty*noise(.3))), w=items.map((x,i)=>qs[i]?x.value/x.qty*qs[i]*noise(.05):0), ws=w.reduce((a,c)=>a+c,0)||1;
+      return items.map((x,i)=>({...x,qty:qs[i],value:b.so*w[i]/ws})).filter(x=>x.qty>0)});
+    return {month:keyLabel(key),key,closedOn:'',by:'',sample:true,people,branches:brs,products}});
   return _sampleHist;
 }
-function history(){return [...sampleHistory(),...HIST]} // oldest first; sample months are flagged
+function history(){ // oldest first; sample months are flagged and a real close replaces its sample month; a live roster sees only real closes
+  const real=HIST.map(h=>({...h,key:h.key||keyOfLabel(h.month)}));
+  return [...sampleHistory().filter(x=>!real.some(h=>h.key===x.key)),...real].sort((a,b)=>a.key<b.key?-1:a.key>b.key?1:0);
+}
 function observedSpread(months){ // coefficient of variation of the mid-month projection against the closed figure, across branches and months
   const xs=months.flatMap(h=>h.branches.filter(b=>b.so>0&&b.midProj>0).map(b=>b.midProj/b.so-1));if(xs.length<3)return null;
   const mean=xs.reduce((a,b)=>a+b,0)/xs.length;return Math.sqrt(xs.reduce((s,x)=>s+(x-mean)*(x-mean),0)/(xs.length-1));
 }
 function historyTable(rows,cols,cur){ // rows oldest first; cur = the running month's row, drawn last and marked
   const all=[...rows,...(cur?[{...cur,running:true}]:[])], max=Math.max(1,...all.map(x=>+x.bar||0));
-  return `<div class="tw"><table><thead><tr><th>Month</th>${cols.map(c=>`<th class="${c.r?'r':''}">${c.h}</th>`).join('')}</tr></thead><tbody>${all.map(x=>`<tr class="${x.running?'':''}"><td><b>${x.month}</b>${x.running?' <span class="pill info">running</span>':x.sample?' <span class="pill" style="background:var(--row);color:var(--muted)">sample</span>':''}</td>${cols.map(c=>`<td class="${c.r?'r':''}">${c.bar?`<span class="hbar ${x.running?'cur':''}" style="width:${Math.round(60*(+x.bar||0)/max)}px"></span>`:''}${c.f(x)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+  return `<div class="tw"><table><thead><tr><th>Month</th>${cols.map(c=>`<th class="${c.r?'r':''}">${c.h}</th>`).join('')}</tr></thead><tbody>${all.map(x=>`<tr class="${x.running?'':''}"><td><b>${x.month}</b>${x.running?' <span class="pill info">running</span>':x.sample?' <span class="pill" style="background:var(--row);color:var(--muted)">sample</span>':''}</td>${cols.map(c=>`<td class="${c.r?'r':''}">${c.bar?`<span class="hbar ${x.running?'cur':''}" style="width:${Math.round(60*(+x.bar||0)/max)}px"></span>`:''}${c.f(x)}</td>`).join('')}</tr>`).join('')}</tbody>${cols.some(c=>c.t)&&all.length>1?`<tfoot><tr class="grand"><td><b>Total</b> <small>${all.length} months${cur?', this one expected':''}</small></td>${cols.map(c=>`<td class="${c.r?'r':''}">${c.t?c.t(all):''}</td>`).join('')}</tr></tfoot>`:''}</table></div>`;
 }
-function personHistory(p,m){const rows=history().map(h=>{const x=h.people.find(y=>y.id===p.id);return x?{month:h.month,sample:h.sample,score:x.score,ach:x.ach,total:x.total,badges:x.badges,bar:x.total}:null}).filter(Boolean);
+function personHistory(p,m){const rows=history().slice(-5).map(h=>{const x=h.people.find(y=>y.id===p.id);return x?{month:h.month,sample:h.sample,score:x.score,ach:x.ach,total:x.total,badges:x.badges,bar:x.total}:null}).filter(Boolean);
   const cur={month:MONTH,score:m.sc.score,ach:m.vals.ach,total:m.totalProj,badges:badgesFor(m,m.brc||computeBranch(p.branch)).filter(x=>x.earned).map(x=>x.id),bar:m.totalProj};
-  const cols=[{h:'Score',r:true,f:x=>x.score.toFixed(0)},...(p.role==='Sales'?[{h:'Achievement',r:true,f:x=>pct(x.ach)}]:[]),{h:'Incentive',r:true,bar:true,f:x=>inr(x.total)},{h:'Badges',f:x=>x.badges.map(id=>badgeDef(id)).filter(Boolean).map(d=>`<span title="${esc(d.name)}">${d.icon}</span>`).join(' ')||'<span style="color:var(--muted)">—</span>'}];
+  const cols=[{h:'Score',r:true,f:x=>x.score.toFixed(0)},...(p.role==='Sales'?[{h:'Achievement',r:true,f:x=>pct(x.ach)}]:[]),{h:'Incentive',r:true,bar:true,f:x=>inr(x.total),t:a=>inr(sumBy(a,x=>x.total))},{h:'Badges',f:x=>x.badges.map(id=>badgeDef(id)).filter(Boolean).map(d=>`<span title="${esc(d.name)}">${d.icon}</span>`).join(' ')||'<span style="color:var(--muted)">—</span>'}];
   return historyTable(rows,cols,cur)}
-function branchHistory(br,b){const rows=history().map(h=>{const x=h.branches.find(y=>y.id===br.id);return x?{month:h.month,sample:h.sample,ach:x.ach,score:x.score,gp:x.gp,payout:x.payout,teamPool:x.teamPool,bar:x.ach}:null}).filter(Boolean);
+function branchHistory(br,b){const rows=history().slice(-5).map(h=>{const x=h.branches.find(y=>y.id===br.id);return x?{month:h.month,sample:h.sample,ach:x.ach,score:x.score,gp:x.gp,payout:x.payout,teamPool:x.teamPool,bar:x.ach}:null}).filter(Boolean);
   const cur={month:MONTH,ach:b.achProj,score:b.sc.score,gp:b.vals.gp,payout:b.members.reduce((s,m)=>s+m.totalProj,0),teamPool:!!b.teamPoolProj,bar:b.achProj};
-  return historyTable(rows,[{h:'Achievement',r:true,bar:true,f:x=>pct(x.ach)},{h:'Score',r:true,f:x=>x.score.toFixed(0)},{h:'GP',r:true,f:x=>pct(x.gp)},{h:'Payout',r:true,f:x=>inrL(x.payout)},{h:'Team pool',f:x=>x.teamPool?'<span class="pill good">earned</span>':'<span class="pill warn">no</span>'}],cur)}
-function groupHistory(g){const rows=history().map(h=>{const so=h.branches.reduce((s,b)=>s+b.so,0),t=h.branches.reduce((s,b)=>s+b.target,0),pay=h.branches.reduce((s,b)=>s+b.payout,0);return {month:h.month,sample:h.sample,ach:t?so/t*100:0,so,pay,share:so?pay/so*100:0,under:h.branches.filter(b=>b.ach<85).length,bar:so}});
-  const so=g.so,pay=allMembers(g).reduce((s,m)=>s+m.totalProj,0);const cur={month:MONTH,ach:g.achProj,so:g.soProj,pay,share:g.soProj?pay/g.soProj*100:0,under:g.companies.flatMap(c=>c.branches).filter(b=>b.achProj<85).length,bar:g.soProj};
-  return historyTable(rows,[{h:'Achievement',r:true,f:x=>pct(x.ach)},{h:'SO value',r:true,bar:true,f:x=>inrL(x.so)},{h:'Incentive outlay',r:true,f:x=>inrL(x.pay)},{h:'Outlay ÷ SO',r:true,f:x=>pct(x.share)},{h:'Branches under 85%',r:true,f:x=>x.under}],cur)}
+  return historyTable(rows,[{h:'Achievement',r:true,bar:true,f:x=>pct(x.ach)},{h:'Score',r:true,f:x=>x.score.toFixed(0)},{h:'GP',r:true,f:x=>pct(x.gp)},{h:'Payout',r:true,f:x=>inrL(x.payout),t:a=>inrL(sumBy(a,x=>x.payout))},{h:'Team pool',f:x=>x.teamPool?'<span class="pill good">earned</span>':'<span class="pill warn">no</span>'}],cur)}
+function groupHistory(g){const rows=history().slice(-5).map(h=>{const so=h.branches.reduce((s,b)=>s+b.so,0),t=h.branches.reduce((s,b)=>s+b.target,0),pay=h.branches.reduce((s,b)=>s+b.payout,0);return {month:h.month,sample:h.sample,ach:t?so/t*100:0,so,tg:t,pay,share:so?pay/so*100:0,under:h.branches.filter(b=>b.ach<85).length,bar:so}});
+  const so=g.so,pay=allMembers(g).reduce((s,m)=>s+m.totalProj,0);const cur={month:MONTH,ach:g.achProj,so:g.soProj,tg:g.target,pay,share:g.soProj?pay/g.soProj*100:0,under:g.companies.flatMap(c=>c.branches).filter(b=>b.achProj<85).length,bar:g.soProj};
+  return historyTable(rows,[{h:'Achievement',r:true,f:x=>pct(x.ach),t:a=>pct(dv(sumBy(a,x=>x.so),sumBy(a,x=>x.tg))*100)},{h:'SO value',r:true,bar:true,f:x=>inrL(x.so),t:a=>inrL(sumBy(a,x=>x.so))},{h:'Incentive outlay',r:true,f:x=>inrL(x.pay),t:a=>inrL(sumBy(a,x=>x.pay))},{h:'Outlay ÷ SO',r:true,f:x=>pct(x.share),t:a=>pct(dv(sumBy(a,x=>x.pay),sumBy(a,x=>x.so))*100)},{h:'Branches under 85%',r:true,f:x=>x.under}],cur)}
 
 /* ---------- Statements: one printable page per employee (print to PDF, no library) ---------- */
 function statementHtml(m,b){const p=m.p,br=b.br,co=br.company,isMgmt=p.role==='BM'||p.role==='SM',closed=asOf>=DAYS;
@@ -760,15 +819,55 @@ function statementHtml(m,b){const p=m.p,br=b.br,co=br.company,isMgmt=p.role==='B
   ${earned.length?`<p class="note">Recognition this month: ${earned.map(x=>x.icon+' '+x.name).join(', ')} (no rupee value).</p>`:''}
   <p class="note">Please check this statement and confirm it. Disputes within 7 days of issue through your Branch Manager or HR, quoting the order number or day concerned. Rules: Corporate Incentive Structure in force for ${MONTH}.</p>
   <div class="sig"><div>Employee</div><div>Branch Manager</div><div>HR / Accounts</div></div></div>`}
-function printStatements(items){const box=$('#print');if(!box)return;box.innerHTML=items.map(x=>statementHtml(x.m,x.b)).join('');if(typeof window.print==='function')window.print()}
+function printStatements(items){const box=$('#print');if(!box)return;box.innerHTML=printWrap(items.map(x=>statementHtml(x.m,x.b)).join(''));if(typeof window.print==='function')window.print()}
+
+/* ---------- Footer on every report output: designed and developed by ---------- */
+const DD={text:'D&D by Dr.Babu.B. Bpro Consulting & Technologies',links:[['www.drbabu.in','https://www.drbabu.in'],['www.bpropms.com','https://www.bpropms.com']]};
+const DD_TEXT=DD.text+' · '+DD.links.map(l=>l[1]).join(' | '); // plain text carries the full address so mail and chat apps make it a link
+const ddLinks=st=>DD.links.map(([t,u])=>`<a href="${u}" target="_blank" rel="noopener"${st?` style="${st}"`:''}>${t}</a>`).join(' | ');
+const ddHtml=()=>`<span class="dd">${esc(DD.text)} · ${ddLinks()}</span>`;
+const ddEmail=()=>`<p style="margin:12px 0 0;padding-top:10px;border-top:1px solid #DCE2EA;font-size:11.5px;color:#5B6776">${esc(DD.text)} · ${ddLinks('color:#0A5E66')}</p>`;
+const ddPrint=()=>`<div class="ddfoot">${esc(DD.text)} · ${ddLinks()}</div>`;
+const ddCsvRows=()=>[[],[DD.text,...DD.links.map(([t,u])=>`=HYPERLINK("${u}","${t}")`)]]; // Excel, LibreOffice and Google Sheets open these as links
+const printWrap=(html,cls)=>{const pg=document.getElementById('pgsize');if(pg)pg.textContent=cls==='land'?'@page{size:A4 landscape;margin:9mm 9mm 8mm}':'';return `<table class="pwrap"><tfoot><tr><td><div class="ddspace"></div></td></tr></tfoot><tbody><tr><td>${html}</td></tr></tbody></table>${ddPrint()}`}; // the footer repeats on every printed page; the empty table footer keeps room for it
+
+/* ---------- Subtotals and grand totals: table-footer rows, so paging never moves them and the CSV export carries them ---------- */
+const sumBy=(a,f)=>a.reduce((s,x)=>s+(+f(x)||0),0);
+const wavgBy=(a,f,w)=>{const t=sumBy(a,w);return t>0?sumBy(a,x=>(+f(x)||0)*(+w(x)||0))/t:a.length?sumBy(a,f)/a.length:0}; // weighted average, plain mean when the weights are all zero
+const plural=(n,one,many)=>n+' '+(n===1?one:many);
+const footLbl=(l,n)=>`<b>${esc(l)}</b> <small>${n}</small>`;
+function groupsOf(a,key,label){const m=new Map();a.forEach(x=>{const k=key(x);if(!m.has(k))m.set(k,{label:label(x),items:[]});m.get(k).items.push(x)});return [...m.values()]}
+function totFoot(groups,row,grand){ // groups [{label,items}] → a subtotal per group (when there is more than one) and the grand total
+  const all=groups.flatMap(g=>g.items);if(!all.length)return '';
+  return `<tfoot>${groups.length>1?groups.map(g=>row('Subtotal · '+g.label,g.items,'sub')).join(''):''}${row(grand||(groups.length>1?'Grand total':'Total'),all,'grand')}</tfoot>`;
+}
+function branchFoot(l,a,cls){const t=sumBy(a,b=>b.target),so=sumBy(a,b=>b.so);
+  return `<tr class="${cls}"><td colspan="2">${footLbl(l,plural(a.length,'branch','branches'))}</td><td class="r">${inrL(t)}</td><td class="r">${inrL(so)}</td><td>${achPill(dv(so,t*asOf/DAYS)*100)}</td><td class="r">${pct(dv(sumBy(a,b=>b.soProj),t)*100)}</td><td class="r">${pct(wavgBy(a,b=>b.vals.gp,b=>b.so))}</td><td class="r">${pct(wavgBy(a,b=>b.vals.conv,b=>b.cust))}</td><td class="r">${pct(wavgBy(a,b=>b.vals.walkout,b=>b.walk))}</td><td class="r">${wavgBy(a,b=>b.vals.grating,b=>b.target).toFixed(1)}</td><td class="r">${wavgBy(a,b=>b.vals.audit,()=>1).toFixed(0)}</td><td class="r">${wavgBy(a,b=>b.sc.score,b=>b.target).toFixed(0)}</td><td class="r">${inrL(sumBy(a,b=>b.payProj))}</td></tr>`}
+function riskFoot(l,a,cls){const t=sumBy(a,b=>b.target),so=sumBy(a,b=>b.so);
+  return `<tr class="${cls}"><td colspan="3">${footLbl(l,plural(a.length,'branch','branches'))}</td><td>${achPill(dv(so,t*asOf/DAYS)*100)}</td><td class="r">${pct(dv(sumBy(a,b=>b.soProj),t)*100)}</td><td class="r">${wavgBy(a,b=>b.sc.score,b=>b.target).toFixed(0)}</td><td class="r">${pct(wavgBy(a,b=>b.vals.gp,b=>b.so))}</td><td class="r">${pct(wavgBy(a,b=>b.vals.conv,b=>b.cust))}</td><td class="r">${wavgBy(a,b=>b.vals.grating,b=>b.target).toFixed(1)}</td><td class="r">${wavgBy(a,b=>b.vals.audit,()=>1).toFixed(0)}</td><td class="r">${inrL(sumBy(a,b=>b.payProj))}</td><td></td></tr>`}
+function peopleFoot(l,a,cls){const sc=a.filter(m=>m.sc.rows.length);
+  return `<tr class="${cls}"><td colspan="3">${footLbl(l,plural(a.length,'person','people'))}</td><td class="r">${pct(wavgBy(a,m=>m.vals.att,()=>1))}</td><td class="r">${sc.length?wavgBy(sc,m=>m.sc.score,()=>1).toFixed(0):'—'}</td><td class="r">${inr(sumBy(a,m=>m.payProj))}</td><td class="r">${inr(sumBy(a,m=>m.perBill?m.perBill.expected:m.cre?m.cre.expected:0))}</td><td class="r">${inr(sumBy(a,m=>m.teamShare))}</td><td class="r"><b>${inr(sumBy(a,m=>m.totalProj))}</b></td></tr>`}
+function salesFoot(l,a,cls){const so=sumBy(a,r=>r.so),n=sumBy(a,r=>r.n);
+  return `<tr class="${cls}"><td colspan="3">${footLbl(l,plural(a.length,'salesperson','salespeople'))}</td><td class="r"><b>${inrL(so)}</b></td><td class="r">${achPill(dv(so,sumBy(a,r=>r.p.target*asOf/DAYS))*100)}</td><td class="r">${n}</td><td class="r">${inrL(dv(so,n))}</td><td class="r">${pct(dv(n,sumBy(a,r=>r.cu))*100)}</td><td class="r">${pct(wavgBy(a,r=>r.disc,r=>r.n))}</td><td class="r">${pct(wavgBy(a,r=>r.margin,r=>r.so))}</td><td class="r">${pct(wavgBy(a,r=>r.up,r=>r.n))}</td><td class="r">${pct(wavgBy(a,r=>r.cross,r=>r.n))}</td><td class="r">${sumBy(a,r=>r.canc)||'—'}</td></tr>`}
+const LB_AVG={'Conversion':'conv','Avg discount':'disc','Margin':'margin','Follow-ups on time':'follow','Converted':'convLog','On time':'ontime','Damage-free':'dmg','Commitments':'commit','Collection':'coll','Documents':'docs','Calls on time':'calls','Neatness':'neat'};
+function lbTot(h,a){const so=sumBy(a,m=>m.so);
+  if(h==='Achievement')return achPill(dv(so,sumBy(a,m=>(m.p.target||0)*asOf/DAYS))*100);
+  if(h==='SO value')return inrL(so);
+  if(h==='Walk-ins logged')return sumBy(a,m=>m.vals.walk);
+  if(h==='Override + bonus')return inr(sumBy(a,m=>m.cre?m.cre.expected:0));
+  if(h==='Deliveries')return sumBy(a,m=>m.deliv?m.deliv.length:0);
+  const f=LB_AVG[h];if(!f)return '';const v=wavgBy(a,m=>m.vals[f],()=>1);return `<small>avg</small> ${h==='Neatness'?fmt('r5',v):pct(v)}`}
+const adjNet=a=>sumBy(a,x=>(x.type==='Manual deduction'?-1:x.type==='Manual addition'?1:0)*(+x.amount||0));
 
 /* ---------- CSV exports ---------- */
 const csvCell=v=>{const s=v==null?'':String(v);return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s};
-function csvText(header,rows){return [header,...rows].map(r=>r.map(csvCell).join(',')).join('\n')}
-function downloadText(name,text,type){try{const blob=new Blob(['\ufeff'+text],{type:type||'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();toast('Downloading '+name);setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}catch(e){alertNote('Download failed: '+e.message)}}
+function csvText(header,rows,foot=true){return [header,...rows,...(foot?ddCsvRows():[])].map(r=>r.map(csvCell).join(',')).join('\n')}
+function downloadBlob(name,blob){try{const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();toast('Downloading '+name);setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}catch(e){alertNote('Download failed: '+e.message)}}
+function downloadText(name,text,type){downloadBlob(name,new Blob(['\ufeff'+text],{type:type||'text/csv;charset=utf-8'}))}
 function payoutRows(g){const rk=rankings(g);return allMembers(g).map(m=>[m.p.id,m.p.name,m.p.role,m.brc.br.name,m.co.name,m.vals.att.toFixed(1),m.gate?'yes':'no',m.sc.rows.length?m.sc.score.toFixed(1):'',Math.round(m.pay||0),m.perBill?Math.round(m.perBill.confirmed):0,m.perBill?Math.round(m.perBill.provF):0,m.cre?Math.round(m.cre.overrideEarned):0,m.cre?Math.round(m.cre.followBonus):0,Math.round(m.teamShareNow||0),Math.round(m.adj||0),Math.round(m.total),Math.round(m.totalProj),rk[m.p.id]?rk[m.p.id].group.rank:'',badgesFor(m,m.brc,rk).filter(x=>x.earned).map(x=>x.name).join('; ')])}
 const PAYOUT_HEADER=['employee_id','name','role','branch','company','attendance_pct','gated','score','scorecard_pay','per_bill_confirmed','per_bill_provisional','cre_override','follow_up_bonus','team_pool_share','adjustments','total_confirmed','total_expected','group_rank','badges'];
-function tableToCSV(tbl){return [...tbl.querySelectorAll('tr')].map(tr=>[...tr.children].map(td=>csvCell(td.textContent.replace(/\s+/g,' ').trim())).join(',')).join('\n')}
+const cellText=td=>{if(!td.cloneNode)return td.textContent;const c=td.cloneNode(true);c.querySelectorAll('.av').forEach(e=>e.remove());c.querySelectorAll('.rank').forEach(e=>e.append(' '));return c.textContent}; // no avatar initials, rank apart from its movement
+function tableToCSV(tbl){return [...[...tbl.querySelectorAll('tr')].map(tr=>[...tr.children].flatMap(td=>[csvCell(cellText(td).replace(/\s+/g,' ').trim()),...Array(Math.max(0,(td.colSpan||1)-1)).fill('')]).join(',')),...ddCsvRows().map(r=>r.map(csvCell).join(','))].join('\n')} // subtotal and total rows included; colspans kept aligned
 
 /* ---------- TV mode: the leaderboard full screen, cycling its tabs ---------- */
 let tvTimer=null;
@@ -1117,12 +1216,12 @@ function digestHtml(d){
     ${rows.map(r=>`<tr>${etd(r.rank)}${etd(esc(r.m.p.name),0,1)}${etd(keyMeasure(r.m))}${etd(r.m.sc.score.toFixed(0),1)}${etd(pct(r.m.vals.att),1)}${etd(inr(r.m.totalProj),1)}${etd(r.prev==null||r.prev===0?'·':r.prev>r.rank?`<span style="color:#1E7D4B;font-weight:bold">▲${r.prev-r.rank}</span>`:r.prev<r.rank?`<span style="color:#B42318;font-weight:bold">▼${r.rank-r.prev}</span>`:'▬')}</tr>`).join('')}</table>
     ${attention.length?eh2('This '+word)+`<ul style="margin:0;padding-left:20px">${attention.map(a=>`<li style="margin:4px 0">${esc(a)}</li>`).join('')}</ul>`:''}
     ${pushes.length?eh2('Next '+word)+`<ol style="margin:0;padding-left:20px">${pushes.map(a=>`<li style="margin:4px 0">${esc(a)}</li>`).join('')}</ol>`:''}
-    <p style="margin:18px 0 0;font-size:12px;color:#5B6776">Figures as of ${asOf} October, provisional until the month closes. Prepared by Bpro for ${esc(co.name)}.</p>
+    <p style="margin:18px 0 0;font-size:12px;color:#5B6776">Figures as of ${asOf} ${MONTH}, provisional until the month closes. Prepared by Bpro for ${esc(co.name)}.</p>${ddEmail()}
   </div></div>`;
 }
 function wrapPlain(text,title){
   const body=esc(text).replace(/\*([^*\n]+)\*/g,'<b>$1</b>').replace(/_([^_\n]+)_/g,'<i style="color:#5B6776">$1</i>');
-  return `<div class="mail"><div style="background:#121A26;color:#D6EEF0;padding:16px 22px"><div style="font:bold 18px Georgia,serif;color:#FFFFFF">${esc(title||'Update')}</div></div><div style="padding:18px 22px;white-space:pre-wrap;font:13.5px/1.6 Arial">${body}</div></div>`;
+  return `<div class="mail"><div style="background:#121A26;color:#D6EEF0;padding:16px 22px"><div style="font:bold 18px Georgia,serif;color:#FFFFFF">${esc(title||'Update')}</div></div><div style="padding:18px 22px;white-space:pre-wrap;font:13.5px/1.6 Arial">${body}</div><div style="padding:0 22px 16px">${ddEmail()}</div></div>`;
 }
 /* ---------- the catalogue: every audience × cadence × channel ---------- */
 const AUDIENCES=[{id:'person',name:'Every employee',scope:'person'},{id:'Sales',name:'Sales team',scope:'branch'},{id:'CRE',name:'CRE team',scope:'branch'},{id:'Logistics',name:'Logistics team',scope:'branch'},{id:'Back office',name:'Back office team',scope:'branch'},{id:'SM',name:'Sales Manager',scope:'branch'},{id:'BM',name:'Branch Manager',scope:'branch'},{id:'MD',name:'MD and Directors',scope:'group'},{id:'HR',name:'HR team',scope:'group'}];
@@ -1142,6 +1241,7 @@ function buildMessage(aud,cad,ch,ctx){ // ctx: {b (computed branch), person (com
   else if(aud==='HR'){const w=hrMonthly();text=emailHrText(w,cad);html=emailHrHtml(w,cad);title=`HR ${CADENCE[cad].label} review`;subject=`HR and payroll review · ${MONTH}${w.closed?' (closed)':` to day ${asOf}`} · attendance ${pct(w.att)} · ${w.gated.length} under the gate · payout ${inrL(w.g.payProj)}`}
   else if(aud==='MD'){const w=monthly();text=emailMdText(w);html=emailMdHtml(w);title=`Group ${CADENCE[cad].label} review`;subject=`Group incentive review · ${MONTH}${w.closed?' (closed)':` to day ${asOf}`} · ${pct(w.closed?w.g.achProj:w.g.ach)} of target · outlay ${inrL(w.g.payProj)}`}
   else{const d=teamDigest(b,aud,cad,null);text=digestText(d);html=digestHtml(d);title=`${b.br.name} ${aud} team, ${CADENCE[cad].label} update`;subject=title}
+  if(ch==='email')text+='\n\n'+DD_TEXT; // email gets the footer; WhatsApp stays short
   return {text,html,subject,title};
 }
 function viewMessages(){
@@ -1186,14 +1286,14 @@ function wireWa(){
 
 /* ---------- users, roles, permissions (sample sign-in: no passwords here; production uses the company SSO) ---------- */
 const ROLES={
- superadmin:{name:'Super Admin',cls:'sa',views:['board','sales','total','leaderboard','messages','settings','admin'],settings:'edit',users:true,reset:true,upload:true,scope:'group'},
- admin:{name:'Admin',cls:'ad',views:['board','sales','total','leaderboard','messages','settings','admin'],settings:'edit',users:false,reset:false,upload:true,scope:'group'},
- consultant:{name:'Consultant',cls:'ad',views:['board','sales','total','leaderboard','messages','settings','admin'],settings:'read',users:false,reset:false,upload:false,scope:'group'},
- md:{name:'Managing Director',cls:'cl',views:['board','sales','leaderboard','messages'],settings:'none',users:false,reset:false,upload:false,scope:'group'},
- director:{name:'Director',cls:'cl',views:['board','sales','leaderboard','messages'],settings:'none',users:false,reset:false,upload:false,scope:'group'},
- hr:{name:'HR',cls:'cl',views:['board','sales','leaderboard','messages'],settings:'none',users:false,reset:false,upload:false,scope:'group'},
- bm:{name:'Branch Manager',cls:'cl',views:['board','sales','leaderboard','messages'],settings:'none',users:false,reset:false,upload:false,scope:'branch'},
- sm:{name:'Sales Manager',cls:'cl',views:['board','sales','leaderboard','messages'],settings:'none',users:false,reset:false,upload:false,scope:'team'},
+ superadmin:{name:'Super Admin',cls:'sa',views:['board','sales','reports','total','leaderboard','messages','settings','admin'],settings:'edit',users:true,reset:true,upload:true,scope:'group'},
+ admin:{name:'Admin',cls:'ad',views:['board','sales','reports','total','leaderboard','messages','settings','admin'],settings:'edit',users:false,reset:false,upload:true,scope:'group'},
+ consultant:{name:'Consultant',cls:'ad',views:['board','sales','reports','total','leaderboard','messages','settings','admin'],settings:'read',users:false,reset:false,upload:false,scope:'group'},
+ md:{name:'Managing Director',cls:'cl',views:['board','sales','reports','leaderboard','messages'],settings:'none',users:false,reset:false,upload:false,scope:'group'},
+ director:{name:'Director',cls:'cl',views:['board','sales','reports','leaderboard','messages'],settings:'none',users:false,reset:false,upload:false,scope:'group'},
+ hr:{name:'HR',cls:'cl',views:['board','sales','reports','leaderboard','messages'],settings:'none',users:false,reset:false,upload:false,scope:'group'},
+ bm:{name:'Branch Manager',cls:'cl',views:['board','sales','reports','leaderboard','messages'],settings:'none',users:false,reset:false,upload:false,scope:'branch'},
+ sm:{name:'Sales Manager',cls:'cl',views:['board','sales','reports','leaderboard','messages'],settings:'none',users:false,reset:false,upload:false,scope:'team'},
  employee:{name:'Employee',cls:'cl',views:['board'],settings:'none',users:false,reset:false,upload:false,scope:'person'},
 };
 const USERS=[
@@ -1223,7 +1323,7 @@ function homeState(){const r=role();if(r.scope==='group')return {level:'group'};
   if(r.scope==='branch')return {level:'branch',co:br.company.id,br:br.id};
   if(r.scope==='team')return {level:'team',co:br.company.id,br:br.id,team:'Sales'};
   return {level:'person',co:br.company.id,br:br.id,team:people.find(p=>p.id===ME.person)?.role||'Sales',person:ME.person}}
-const LEVELS=['group','company','branch','team','person','sales','leaderboard','messages','settings','total','admin'],TEAMS=['Sales','CRE','Logistics','Back office','Management'];
+const LEVELS=['group','company','branch','team','person','sales','reports','leaderboard','messages','settings','total','admin'],TEAMS=['Sales','CRE','Logistics','Back office','Management'];
 function sane(st){ // drop whatever a stale saved state or an edited address carries that no longer exists, then fall to the deepest level that still has its ids
   if(st.level==='email')st.level='messages';
   if(!LEVELS.includes(st.level))st.level='group';
@@ -1243,11 +1343,11 @@ function sane(st){ // drop whatever a stale saved state or an edited address car
 function enforce(st){ // clamp a requested state to what the signed-in role may see
   sane(st);
   const r=role();
-  if(!can(st.level==='email'?'messages':['sales','leaderboard','messages','settings','total','admin'].includes(st.level)?st.level:'board')){Object.assign(st,homeState());return st}
+  if(!can(st.level==='email'?'messages':['sales','reports','leaderboard','messages','settings','total','admin'].includes(st.level)?st.level:'board')){Object.assign(st,homeState());return st}
   if(r.scope==='group')return st;
   const br=branches.find(b=>b.id===ME.br);if(!br){Object.assign(st,{level:'group'});return st}
-  if(st.br!==br.id&&!['sales','leaderboard','messages'].includes(st.level)){Object.assign(st,homeState());return st}
-  if(['sales','leaderboard','messages'].includes(st.level)){st.co=br.company.id;st.br=br.id}
+  if(st.br!==br.id&&!['sales','reports','leaderboard','messages'].includes(st.level)){Object.assign(st,homeState());return st}
+  if(['sales','reports','leaderboard','messages'].includes(st.level)){st.co=br.company.id;st.br=br.id}
   if(r.scope==='team'&&st.team&&st.team!=='Sales'&&st.level!=='messages'){Object.assign(st,homeState());return st}
   if(r.scope==='team'&&st.level==='branch'){Object.assign(st,homeState())}
   if(r.scope==='person'&&(st.level!=='person'||st.person!==ME.person)){Object.assign(st,homeState())}
@@ -1355,12 +1455,12 @@ function viewGroup(){
   <div class="grid">
     <div class="card"><h2>Meubel Grande vs Royal Group</h2><div class="body"><div class="tw"><table><thead><tr><th>Company</th><th class="r">Target</th><th class="r">Booked</th><th>Achievement</th><th class="r">Expected</th><th class="r">GP</th><th class="r">Score</th><th class="r">Incentive exp.</th></tr></thead><tbody>
       ${g.companies.map(c=>`<tr class="link" data-co="${c.co.id}"><td><span class="dot" style="background:${c.co.color}"></span> <b>${c.co.name}</b><br><small style="color:var(--muted)">${c.branches.length} branches · ${c.branches.reduce((s,b)=>s+b.members.length,0)} people</small></td><td class="r">${inrL(c.target)}</td><td class="r">${inrL(c.so)}</td><td>${bar(c.ach/100)}<small style="color:var(--muted)">${pct(c.ach)} now · ${pct(c.achProj)} expected</small></td><td class="r">${inrL(c.soProj)}<br><small style="color:var(--muted)">${pct(c.pTarget*100)} chance</small></td><td class="r">${pct(c.gp)}</td><td class="r">${c.score.toFixed(0)}</td><td class="r">${inrL(c.payProj)}</td></tr>`).join('')}
-    </tbody></table></div><p class="note">Click a company to drill down. Achievement is booked SO value against the target pro-rated to day ${asOf}.</p></div></div>
+    </tbody><tfoot><tr class="grand"><td>${footLbl('Group total',plural(bs.length,'branch','branches')+' · '+plural(allMembers(g).length,'person','people'))}</td><td class="r">${inrL(g.target)}</td><td class="r">${inrL(g.so)}</td><td>${bar(g.ach/100)}<small>${pct(g.ach)} now · ${pct(g.achProj)} expected</small></td><td class="r">${inrL(g.soProj)}<br><small>${pct(g.pTarget*100)} chance</small></td><td class="r">${pct(g.gp)}</td><td class="r">${g.score.toFixed(0)}</td><td class="r">${inrL(g.payProj)}</td></tr></tfoot></table></div><p class="note">Click a company to drill down. Achievement is booked SO value against the target pro-rated to day ${asOf}.</p></div></div>
     <div class="card"><h2>Branches, achievement vs pro-rated target</h2><div class="body">${hbarChart(items)}<div class="legend"><span><i class="sw" style="background:var(--c-mg)"></i>Meubel Grande</span><span><i class="sw" style="background:var(--c-rg)"></i>Royal Group</span><span>Dashed line: 100% of pace</span></div></div></div>
   </div>
   <div class="card"><h2>All branches</h2><div class="body"><div class="tw"><table><thead><tr><th>Branch</th><th>Company</th><th class="r">Target</th><th class="r">Booked</th><th>Ach.</th><th class="r">Expected</th><th class="r">GP</th><th class="r">Conv.</th><th class="r">Walk-out</th><th class="r">Google</th><th class="r">Audit</th><th class="r">Score</th><th class="r">Incentive exp.</th></tr></thead><tbody>
     ${bs.slice().sort((a,b)=>b.achProj-a.achProj).map(b=>`<tr class="link" data-co="${b.co.id}" data-br="${b.br.id}"><td><b>${b.br.name}</b></td><td><span class="dot" style="background:${b.co.color}"></span> ${b.co.name}</td><td class="r">${inrL(b.target)}</td><td class="r">${inrL(b.so)}</td><td>${achPill(b.vals.ach)}</td><td class="r">${pct(b.achProj)}</td><td class="r">${pct(b.vals.gp)}</td><td class="r">${pct(b.vals.conv)}</td><td class="r">${pct(b.vals.walkout)}</td><td class="r">${b.vals.grating}</td><td class="r">${b.vals.audit}</td><td class="r"><b>${b.sc.score.toFixed(0)}</b></td><td class="r">${inrL(b.payProj)}</td></tr>`).join('')}
-  </tbody></table></div></div></div>
+  </tbody>${totFoot(groupsOf(bs,b=>b.co.id,b=>b.co.name),branchFoot)}</table></div></div></div>
   <div class="grid"><div class="card"><h2>Further push</h2><div class="body"><ul class="list">${push.join('')}</ul></div></div><div class="card"><h2>What lags</h2><div class="body"><ul class="list">${lag.join('')||'<li class="empty">Every branch is on pace.</li>'}</ul></div></div></div>
   <div class="card"><h2>Leaders this month <small>top three per role across the group</small></h2><div class="body"><div class="tw"><table><thead><tr><th>Role</th><th>1st</th><th>2nd</th><th>3rd</th></tr></thead><tbody>
     ${['Sales','CRE','Logistics','Back office'].map(r=>{const l=allMembers(g).filter(m=>roleKey(m)===r).sort((a,b)=>rankValue(b)-rankValue(a)).slice(0,3);return `<tr><td><b>${r}</b></td>${l.map((m,i)=>`<td class="link" data-co="${m.co.id}" data-br="${m.brc.br.id}" data-team="${r}" data-person="${m.p.id}" style="cursor:pointer"><span class="who-cell"><span class="rank r${i+1}">${i+1}</span><span><b>${m.p.name}</b><br><small style="color:var(--muted)">${m.brc.br.name} · ${m.sc.score.toFixed(0)} · ${inr(m.totalProj)}</small></span></span></td>`).join('')}</tr>`}).join('')}
@@ -1390,11 +1490,11 @@ function viewCompany(){
     <div class="card"><h2>Branches, achievement vs pace</h2><div class="body">${hbarChart(bs.map(b=>({name:b.br.name,v:b.vals.ach,c:co.color})))}</div></div>
     <div class="card"><h2>Branch scorecard summary</h2><div class="body"><div class="tw"><table><thead><tr><th>Branch</th><th class="r">Ach.</th><th class="r">GP</th><th class="r">Conv.</th><th class="r">Google</th><th class="r">Audit</th><th class="r">Activities</th><th class="r">Score</th></tr></thead><tbody>
       ${bs.map(b=>`<tr class="link" data-co="${co.id}" data-br="${b.br.id}"><td><b>${b.br.name}</b></td><td class="r">${achPill(b.vals.ach)}</td><td class="r">${pct(b.vals.gp)}</td><td class="r">${pct(b.vals.conv)}</td><td class="r">${b.vals.grating}</td><td class="r">${b.vals.audit}</td><td class="r">${pct(b.vals.act)}</td><td class="r"><b>${b.sc.score.toFixed(0)}</b></td></tr>`).join('')}
-    </tbody></table></div></div></div>
+    </tbody><tfoot><tr class="grand"><td>${footLbl(co.name,plural(bs.length,'branch','branches'))}</td><td class="r">${achPill(c.ach)}</td><td class="r">${pct(c.gp)}</td><td class="r">${pct(wavgBy(bs,b=>b.vals.conv,b=>b.cust))}</td><td class="r">${c.grating.toFixed(1)}</td><td class="r">${c.audit.toFixed(0)}</td><td class="r">${pct(wavgBy(bs,b=>b.vals.act,()=>1))}</td><td class="r">${c.score.toFixed(0)}</td></tr></tfoot></table></div></div></div>
   </div>
   <div class="card"><h2>Teams across ${co.name}</h2><div class="body"><div class="tw"><table><thead><tr><th>Branch</th><th class="r">Sales score</th><th class="r">Logistics score</th><th class="r">Back office score</th><th class="r">Management</th><th class="r">Team pool</th><th class="r">Incentive exp.</th></tr></thead><tbody>
     ${bs.map(b=>`<tr class="link" data-co="${co.id}" data-br="${b.br.id}"><td><b>${b.br.name}</b></td><td class="r">${b.teams.Sales.score.toFixed(0)}</td><td class="r">${b.teams.Logistics.score.toFixed(0)}</td><td class="r">${b.teams['Back office'].score.toFixed(0)}</td><td class="r">${b.achProj>=GATES.managerAch?'<span class="pill good">Payable</span>':'<span class="pill bad">Below '+GATES.managerAch+'%</span>'}</td><td class="r">${b.teamPoolProj?'<span class="pill good">'+inr(POOL.team)+'</span>':'<span class="pill warn">Not yet</span>'}</td><td class="r">${inrL(b.payProj)}</td></tr>`).join('')}
-  </tbody></table></div></div></div>
+  </tbody><tfoot><tr class="grand"><td>${footLbl(co.name+' total',plural(bs.length,'branch','branches'))}</td>${['Sales','Logistics','Back office'].map(t=>`<td class="r"><small>avg</small> ${wavgBy(bs,b=>b.teams[t].score,b=>b.teams[t].members.length).toFixed(0)}</td>`).join('')}<td class="r">${bs.filter(b=>b.achProj>=GATES.managerAch).length} of ${bs.length} payable</td><td class="r">${inr(POOL.team*bs.filter(b=>b.teamPoolProj).length)}<br><small>${bs.filter(b=>b.teamPoolProj).length} on course</small></td><td class="r">${inrL(c.payProj)}</td></tr></tfoot></table></div></div></div>
   <div class="grid"><div class="card"><h2>Further push</h2><div class="body"><ul class="list">${push.join('')}</ul></div></div><div class="card"><h2>What lags</h2><div class="body"><ul class="list">${lag.join('')||'<li class="empty">Every branch is on pace.</li>'}</ul></div></div></div>`;
   wireRows();
 }
@@ -1421,13 +1521,13 @@ function viewBranch(){
   </div>
   <div class="grid">
     <div class="card"><h2>Sales order value vs target pace</h2><div class="body">${trendChart(cumSO(allBills),b.target,{mean:b.soProj,low:b.so+(b.soProj-b.so)*.6,high:b.soProj*1.12})}</div></div>
-    <div class="card"><h2>Teams <small>click to drill</small></h2><div class="body"><div class="tw"><table><thead><tr><th>Team</th><th class="r">People</th><th class="r">Avg score</th><th class="r">Earned so far</th><th class="r">Expected</th></tr></thead><tbody>${teamRows}</tbody></table></div>
+    <div class="card"><h2>Teams <small>click to drill</small></h2><div class="body"><div class="tw"><table><thead><tr><th>Team</th><th class="r">People</th><th class="r">Avg score</th><th class="r">Earned so far</th><th class="r">Expected</th></tr></thead><tbody>${teamRows}</tbody><tfoot><tr class="grand"><td><b>Branch total</b></td><td class="r">${b.members.length}</td><td class="r"></td><td class="r">${inrL(b.pay)}</td><td class="r"><b>${inrL(b.payProj)}</b></td></tr></tfoot></table></div>
       <p class="note">Management is paid on team achievement: pool × achievement (to 120%) × branch score, only above ${GATES.managerAch}%. Team pool ${inr(POOL.team)} shared by all staff at ${GATES.teamAch}% achievement with audit ≥ ${GATES.teamAudit}: ${b.teamPoolProj?'<b>on course</b>':'<b>not yet</b>'}. The 📣 Messages view drafts every message for this branch, including this week's email to the Branch Manager.</p></div></div>
   </div>
   <div class="card"><h2>Branch scorecard <small>${Object.keys(W.Branch).length} attributes, weights to be confirmed</small></h2><div class="body">${scoreTable(b.sc)}</div></div>
   <div class="card"><h2>Everyone in ${br.name}</h2><div class="body"><div class="tw"><table><thead><tr><th>Person</th><th>Role</th><th class="r">Key measure</th><th class="r">Attendance</th><th class="r">Score</th><th class="r">Scorecard pay</th><th class="r">Per-bill (policy)</th><th class="r">Team share</th><th class="r">Expected total</th></tr></thead><tbody>
     ${b.members.map(m=>personRow(m,co,br)).join('')}
-  </tbody></table></div></div></div>
+  </tbody>${totFoot(groupsOf(b.members,m=>roleKey(m),m=>roleKey(m)),peopleFoot,br.name+' total')}</table></div></div></div>
   <div class="card"><h2>Branch history <small>closed months from the archive · this month running</small></h2><div class="body">${branchHistory(br,b)}</div></div>
   <div class="grid"><div class="card"><h2>Further push</h2><div class="body"><ul class="list">${push.join('')}</ul></div></div><div class="card"><h2>What lags</h2><div class="body"><ul class="list">${lag.join('')||'<li class="empty">Nothing lagging.</li>'}</ul></div></div></div>`;
   wireTrend(cumSO(allBills),b.target,{mean:b.soProj});
@@ -1447,6 +1547,8 @@ function viewTeam(){
   if(role){const keys=Object.keys(W[role]).slice(0,7);cols=keys.map(k=>`<th class="r">${P[k].l.split(' (')[0]}</th>`).join('');
     rows=t.members.map(m=>`<tr class="link" data-co="${co.id}" data-br="${br.id}" data-team="${t.name}" data-person="${m.p.id}"><td><span class="who-cell">${av(m.p.name)}<b>${m.p.name}</b></span></td>${keys.map(k=>`<td class="r">${fmt(P[k].u,m.vals[k]??0)}</td>`).join('')}<td class="r"><b>${m.sc.score.toFixed(0)}</b></td><td class="r"><b>${inr(m.totalProj)}</b></td></tr>`).join('')}
   else rows=t.members.map(m=>`<tr class="link" data-co="${co.id}" data-br="${br.id}" data-team="Management" data-person="${m.p.id}"><td><span class="who-cell">${av(m.p.name)}<b>${m.p.name}</b></span></td><td>${m.p.role==='BM'?'Branch Manager':'Sales Manager'}</td><td class="r">${pct(m.vals.att)}</td><td class="r">${inr(m.pool)}</td><td class="r">${pct(b.achProj)}</td><td class="r">${b.scProj.score.toFixed(0)}</td><td class="r"><b>${inr(m.totalProj)}</b></td></tr>`).join('');
+  const foot=role?`<tfoot><tr class="grand"><td>${footLbl('Team total',plural(t.members.length,'person','people'))}</td>${Object.keys(W[role]).slice(0,7).map(k=>`<td class="r"><small>avg</small> ${fmt(P[k].u,wavgBy(t.members,m=>m.vals[k]??0,()=>1))}</td>`).join('')}<td class="r">${t.score.toFixed(0)}</td><td class="r"><b>${inr(t.payProj)}</b></td></tr></tfoot>`
+    :`<tfoot><tr class="grand"><td>${footLbl('Management total',plural(t.members.length,'person','people'))}</td><td></td><td class="r">${pct(wavgBy(t.members,m=>m.vals.att,()=>1))}</td><td class="r">${inr(sumBy(t.members,m=>m.pool))}</td><td class="r">${pct(b.achProj)}</td><td class="r">${b.scProj.score.toFixed(0)}</td><td class="r"><b>${inr(t.payProj)}</b></td></tr></tfoot>`;
   const rk=rankings(computeGroup());
   const waAll=t.members.map(m=>waText(m,b,rk)).join('\n\n— — —\n\n');
   // team-level push/lags: average attainment per attribute across members
@@ -1463,7 +1565,7 @@ function viewTeam(){
     ${tile('People',t.members.length,t.members.filter(m=>m.gate).length?`${t.members.filter(m=>m.gate).length} gated on attendance`:'All above the attendance gate','',t.members.some(m=>m.gate)?'bad':'good')}
     ${tile('Team pool share',inr(b.teamPoolProj/b.members.length),b.teamPoolProj?'On course':'Unlocks at '+GATES.teamAch+'% branch achievement','',b.teamPoolProj?'good':'warn')}
   </div>
-  <div class="card"><h2>${t.name} in ${br.name} <small>click a person</small></h2><div class="body"><div class="tw"><table><thead><tr><th>Person</th>${role?cols+'<th class="r">Score</th>':'<th>Role</th><th class="r">Attendance</th><th class="r">Pool</th><th class="r">Branch ach. exp.</th><th class="r">Branch score exp.</th>'}<th class="r">Expected</th></tr></thead><tbody>${rows}</tbody></table></div></div></div>
+  <div class="card"><h2>${t.name} in ${br.name} <small>click a person</small></h2><div class="body"><div class="tw"><table><thead><tr><th>Person</th>${role?cols+'<th class="r">Score</th>':'<th>Role</th><th class="r">Attendance</th><th class="r">Pool</th><th class="r">Branch ach. exp.</th><th class="r">Branch score exp.</th>'}<th class="r">Expected</th></tr></thead><tbody>${rows}</tbody>${t.members.length?foot:''}</table></div></div></div>
   <div class="grid"><div class="card"><h2>Further push</h2><div class="body"><ul class="list">${push.join('')||'<li class="empty">Team is on target everywhere.</li>'}</ul></div></div><div class="card"><h2>What lags</h2><div class="body"><ul class="list">${lag.join('')||'<li class="empty">Nothing lagging.</li>'}</ul></div></div></div>
   ${t.name==='Management'?`<div class="card"><h2>Daily WhatsApp to the Branch Manager <small>the branch's day in one message, after close on ${asOf} ${MON}</small></h2><div class="body">${waBlock(waBmDailyText(dailyBM(b)),'dbm-'+br.id)}</div></div>`:''}
   ${t.name==='Sales'?`<div class="card"><h2>Weekly WhatsApp to the sales team <small>sent to the team group every Saturday evening</small></h2><div class="body">${waBlock(waSalesText(weeklySales(b)),'wsales-'+br.id)}</div></div>`:''}
@@ -1599,7 +1701,7 @@ function viewSales(){
   const pipeline=[{l:'Paid',v:sum(paid),c:'var(--s3)'},{l:'Delivered, payment due',v:sum(delivered),c:'var(--s1)'},{l:'Booked, to deliver',v:sum(booked),c:'var(--s4)'},{l:'Cancelled',v:sum(canc),c:'var(--s2)'}];
   const funnel=[{l:'Walk-ins',v:walk},{l:'Customers attended',v:cust},{l:'Bills',v:live.length},{l:'Delivered',v:delivered.length+paid.length},{l:'Paid',v:paid.length}].map((s,i,a)=>({...s,note:i?pct(a[i-1].v?s.v/a[i-1].v*100:0)+' of previous':''}));
   // sellers table
-  const rows=sellers.map(p=>{const mine=live.filter(b=>b.seller===p),soP=sum(mine),cu=p.cust.slice(0,asOf).reduce((a,b)=>a+b,0);return {p,so:soP,n:mine.length,avg:mine.length?soP/mine.length:0,conv:cu?mine.length/cu*100:0,disc:mine.length?mine.reduce((s,b)=>s+b.disc,0)/mine.length:0,margin:soP?mine.reduce((s,b)=>s+b.margin*b.bill,0)/soP:0,up:rate(mine,b=>b.upsell),cross:rate(mine,b=>b.cross),canc:canc.filter(b=>b.seller===p).length,ach:p.target?soP/(p.target*asOf/DAYS)*100:0}}).sort((a,b)=>b.so-a.so);
+  const rows=sellers.map(p=>{const mine=live.filter(b=>b.seller===p),soP=sum(mine),cu=p.cust.slice(0,asOf).reduce((a,b)=>a+b,0);return {p,so:soP,n:mine.length,cu,avg:mine.length?soP/mine.length:0,conv:cu?mine.length/cu*100:0,disc:mine.length?mine.reduce((s,b)=>s+b.disc,0)/mine.length:0,margin:soP?mine.reduce((s,b)=>s+b.margin*b.bill,0)/soP:0,up:rate(mine,b=>b.upsell),cross:rate(mine,b=>b.cross),canc:canc.filter(b=>b.seller===p).length,ach:p.target?soP/(p.target*asOf/DAYS)*100:0}}).sort((a,b)=>b.so-a.so);
   const upRate=rate(live,b=>b.upsell),crossRate=rate(live,b=>b.cross);
   $('#view').innerHTML=`
   <div class="tiles">
@@ -1632,10 +1734,10 @@ function viewSales(){
   </div>
   <div class="card"><h2>Salespeople <small>${sellers.length} in ${name} · sorted by SO value</small></h2><div class="body"><div class="tw"><table><thead><tr><th>#</th><th>Person</th><th>Branch</th><th class="r">SO value</th><th class="r">Pace</th><th class="r">Bills</th><th class="r">Avg ticket</th><th class="r">Conversion</th><th class="r">Avg discount</th><th class="r">Margin</th><th class="r">Upsell</th><th class="r">Cross-sell</th><th class="r">Cancelled</th></tr></thead><tbody>
     ${rows.map((r,i)=>`<tr class="link" data-co="${r.p.branch.company.id}" data-br="${r.p.branch.id}" data-team="Sales" data-person="${r.p.id}"><td><span class="rank r${i+1}">${i+1}</span></td><td><span class="who-cell">${av(r.p.name)}<b>${r.p.name}</b></span></td><td><span class="dot" style="background:${r.p.branch.company.color}"></span> ${r.p.branch.name}</td><td class="r"><b>${inrL(r.so)}</b></td><td class="r">${achPill(r.ach)}</td><td class="r">${r.n}</td><td class="r">${inrL(r.avg)}</td><td class="r">${pct(r.conv)}</td><td class="r">${pct(r.disc)}</td><td class="r">${pct(r.margin)}</td><td class="r">${pct(r.up)}</td><td class="r">${pct(r.cross)}</td><td class="r">${r.canc||'—'}</td></tr>`).join('')}
-  </tbody></table></div><div class="wa-bar"><button class="btn" id="salesCsv">⬇ Export this table (CSV)</button><span class="note" style="margin:0">Open a row for the person's own page. Figures are month to date as of ${asOf} October; the board's incentive views use the same bills.</span></div></div></div>`;
+  </tbody>${totFoot(state.br?[{label:name,items:rows}]:state.co?groupsOf(rows,r=>r.p.branch.id,r=>r.p.branch.name):groupsOf(rows,r=>r.p.branch.company.id,r=>r.p.branch.company.name),salesFoot,state.br?name+' total':undefined)}</table></div><div class="wa-bar"><button class="btn" id="salesCsv">⬇ Export this table (CSV)</button><span class="note" style="margin:0">Open a row for the person's own page. Figures are month to date as of ${asOf} ${MONTH}; the board's incentive views use the same bills.</span></div></div></div>`;
   wireRows();
   $('#view').querySelectorAll('tr.link').forEach(tr=>tr.addEventListener('click',()=>{const d=tr.dataset;go({level:'person',co:d.co,br:d.br,team:d.team,person:d.person})}));
-  const sc=$('#salesCsv');if(sc)sc.addEventListener('click',()=>{const t=$('#view').querySelector('.tw table');if(t)downloadText(`sales-analytics-${name.replace(/\s/g,'-')}-asof-${asOf}-oct-2026.csv`,tableToCSV(t))});
+  const sc=$('#salesCsv');if(sc)sc.addEventListener('click',()=>{const t=$('#view').querySelector('.tw table');if(t)downloadText(`sales-analytics-${name.replace(/\s/g,'-')}-${CAL.key}-asof-${asOf}.csv`,tableToCSV(t))});
 }
 function viewLeaderboard(){
   const g=computeGroup(), scopeName=state.br?branches.find(b=>b.id===state.br).name:state.co?GROUP.companies.find(c=>c.id===state.co).name:'the group';
@@ -1652,7 +1754,7 @@ function viewLeaderboard(){
     const bs=g.companies.flatMap(c=>c.branches.filter(b=>!state.co||c.co.id===state.co).map(b=>({...b,co:c.co}))).sort((a,b)=>(b.sc.score*1000+b.achProj)-(a.sc.score*1000+a.achProj));
     if(prevG){g.companies.flatMap(c=>c.branches).forEach(()=>{});const pb=prevG.companies.flatMap(c=>c.branches.filter(b=>!state.co||c.co.id===state.co)).sort((a,b)=>(b.sc.score*1000+b.achProj)-(a.sc.score*1000+a.achProj));pb.forEach((b,i)=>prevRank[b.br.id]=i+1)}
     table=`<table><thead><tr><th>#</th><th>Branch</th><th>Company</th><th class="r">Score</th><th class="r">Achievement</th><th class="r">Expected</th><th class="r">GP</th><th class="r">Conv.</th><th class="r">Google</th><th class="r">Audit</th><th class="r">Team pool</th><th>Badges</th></tr></thead><tbody>
-      ${bs.map((b,i)=>`<tr class="link" data-co="${b.co.id}" data-br="${b.br.id}"><td><span class="rank r${i+1}">${i+1}</span>${mv(i+1,prevRank[b.br.id])}</td><td><b>${b.br.name}</b></td><td><span class="dot" style="background:${b.co.color}"></span> ${b.co.name}</td><td class="r"><b>${b.sc.score.toFixed(0)}</b></td><td class="r">${achPill(b.vals.ach)}</td><td class="r">${pct(b.achProj)}</td><td class="r">${pct(b.vals.gp)}</td><td class="r">${pct(b.vals.conv)}</td><td class="r">${b.vals.grating}</td><td class="r">${b.vals.audit}</td><td class="r">${b.teamPoolProj?'<span class="pill good">Unlocked</span>':'<span class="pill warn">Locked</span>'}</td><td>${branchBadges(b).filter(x=>x.earned).map(badgeChip).join('')||'<span style="color:var(--muted)">—</span>'}</td></tr>`).join('')}</tbody></table>`;
+      ${bs.map((b,i)=>`<tr class="link" data-co="${b.co.id}" data-br="${b.br.id}"><td><span class="rank r${i+1}">${i+1}</span>${mv(i+1,prevRank[b.br.id])}</td><td><b>${b.br.name}</b></td><td><span class="dot" style="background:${b.co.color}"></span> ${b.co.name}</td><td class="r"><b>${b.sc.score.toFixed(0)}</b></td><td class="r">${achPill(b.vals.ach)}</td><td class="r">${pct(b.achProj)}</td><td class="r">${pct(b.vals.gp)}</td><td class="r">${pct(b.vals.conv)}</td><td class="r">${b.vals.grating}</td><td class="r">${b.vals.audit}</td><td class="r">${b.teamPoolProj?'<span class="pill good">Unlocked</span>':'<span class="pill warn">Locked</span>'}</td><td>${branchBadges(b).filter(x=>x.earned).map(badgeChip).join('')||'<span style="color:var(--muted)">—</span>'}</td></tr>`).join('')}</tbody>${bs.length?`<tfoot><tr class="grand"><td colspan="3">${footLbl('Total',plural(bs.length,'branch','branches'))}</td><td class="r">${wavgBy(bs,b=>b.sc.score,b=>b.target).toFixed(0)}</td><td class="r">${achPill(dv(sumBy(bs,b=>b.so),sumBy(bs,b=>b.target)*asOf/DAYS)*100)}</td><td class="r">${pct(dv(sumBy(bs,b=>b.soProj),sumBy(bs,b=>b.target))*100)}</td><td class="r">${pct(wavgBy(bs,b=>b.vals.gp,b=>b.so))}</td><td class="r">${pct(wavgBy(bs,b=>b.vals.conv,b=>b.cust))}</td><td class="r">${wavgBy(bs,b=>b.vals.grating,b=>b.target).toFixed(1)}</td><td class="r">${wavgBy(bs,b=>b.vals.audit,()=>1).toFixed(0)}</td><td class="r">${bs.filter(b=>b.teamPoolProj).length} unlocked</td><td></td></tr></tfoot>`:''}</table>`;
   } else {
     const list=ms.filter(m=>roleKey(m)===tab).sort((a,b)=>rankValue(b)-rankValue(a));
     if(prevG){allMembers(prevG).filter(inScope).filter(m=>roleKey(m)===tab).sort((a,b)=>rankValue(b)-rankValue(a)).forEach((m,i)=>prevRank[m.p.id]=i+1)}
@@ -1662,7 +1764,7 @@ function viewLeaderboard(){
       :tab==='Back office'?[['Collection',m=>pct(m.vals.coll)],['Documents',m=>pct(m.vals.docs)],['Calls on time',m=>pct(m.vals.calls)],['Neatness',m=>fmt('r5',m.vals.neat)]]
       :[['Role',m=>m.p.role==='BM'?'Branch Manager':'Sales Manager'],['Branch ach. exp.',m=>pct(m.brc.achProj)],['Branch score',m=>m.brc.sc.score.toFixed(0)],['Gate',m=>m.brc.achProj>=GATES.managerAch?'<span class="pill good">Open</span>':'<span class="pill bad">Closed</span>']];
     table=`<table><thead><tr><th>#</th><th>Person</th><th>Branch</th><th>Badges</th>${key.map(k=>`<th class="r">${k[0]}</th>`).join('')}<th class="r">Attendance</th>${tab==='Management'?'':'<th class="r">Score</th>'}<th class="r">Expected incentive</th></tr></thead><tbody>
-      ${list.map((m,i)=>`<tr class="link ${m.gate?'off':''}" data-co="${m.co.id}" data-br="${m.brc.br.id}" data-team="${roleKey(m)}" data-person="${m.p.id}"><td><span class="rank r${i+1}">${i+1}</span>${mv(i+1,prevRank[m.p.id])}</td><td><span class="who-cell">${av(m.p.name)}<b>${m.p.name}</b></span></td><td><span class="dot" style="background:${m.co.color}"></span> ${m.brc.br.name}</td><td>${badgesFor(m,m.brc,rk).filter(x=>x.earned).map(badgeChip).join('')||'<span style="color:var(--muted)">—</span>'}</td>${key.map(k=>`<td class="r">${k[1](m)}</td>`).join('')}<td class="r">${pct(m.vals.att)}${m.gate?' <span class="pill bad">gated</span>':''}</td>${tab==='Management'?'':`<td class="r"><b>${m.sc.score.toFixed(0)}</b></td>`}<td class="r"><b>${inr(m.totalProj)}</b></td></tr>`).join('')}</tbody></table>`;
+      ${list.map((m,i)=>`<tr class="link ${m.gate?'off':''}" data-co="${m.co.id}" data-br="${m.brc.br.id}" data-team="${roleKey(m)}" data-person="${m.p.id}"><td><span class="rank r${i+1}">${i+1}</span>${mv(i+1,prevRank[m.p.id])}</td><td><span class="who-cell">${av(m.p.name)}<b>${m.p.name}</b></span></td><td><span class="dot" style="background:${m.co.color}"></span> ${m.brc.br.name}</td><td>${badgesFor(m,m.brc,rk).filter(x=>x.earned).map(badgeChip).join('')||'<span style="color:var(--muted)">—</span>'}</td>${key.map(k=>`<td class="r">${k[1](m)}</td>`).join('')}<td class="r">${pct(m.vals.att)}${m.gate?' <span class="pill bad">gated</span>':''}</td>${tab==='Management'?'':`<td class="r"><b>${m.sc.score.toFixed(0)}</b></td>`}<td class="r"><b>${inr(m.totalProj)}</b></td></tr>`).join('')}</tbody>${list.length?`<tfoot><tr class="grand"><td colspan="4">${footLbl('Total',plural(list.length,'person','people'))}</td>${key.map(k=>`<td class="r">${lbTot(k[0],list)}</td>`).join('')}<td class="r">${pct(wavgBy(list,m=>m.vals.att,()=>1))}</td>${tab==='Management'?'':`<td class="r">${wavgBy(list,m=>m.sc.score,()=>1).toFixed(0)}</td>`}<td class="r"><b>${inr(sumBy(list,m=>m.totalProj))}</b></td></tr></tfoot>`:''}</table>`;
   }
   const top=['Sales','CRE','Logistics','Back office'].map(r=>{const l=ms.filter(m=>roleKey(m)===r).sort((a,b)=>rankValue(b)-rankValue(a))[0];return l?tile(`Top ${r}`,l.p.name,`${l.brc.br.name} · score ${l.sc.score.toFixed(0)} · ${inr(l.totalProj)}`,'','brass'):''}).join('');
   const topBr=g.companies.flatMap(c=>c.branches.filter(b=>!state.co||c.co.id===state.co)).sort((a,b)=>b.sc.score-a.sc.score)[0];
@@ -1674,7 +1776,7 @@ function viewLeaderboard(){
     <div class="wa-bar"><button class="btn" id="lbCsv">⬇ Export this table (CSV)</button><button class="btn" id="lbTv">${state.tv?'✕ Exit TV mode (Esc)':'📺 TV mode'}</button><span class="note" style="margin:0">${state.tv?'Tabs rotate every 20 seconds; figures refresh with every render.':'TV mode hides the header and controls, enlarges the table and rotates the tabs, for a screen in the branch.'}</span></div>
     <p class="note">Rank uses the month so far. Open any row for the person’s own page and WhatsApp summary. Drill into a company or branch first to see its own leaderboard.</p>
   </div></div>`;
-  const lc=$('#lbCsv');if(lc)lc.addEventListener('click',()=>{const t=$('#view').querySelector('.tw table');if(t)downloadText(`leaderboard-${tab.toLowerCase().replace(/\s/g,'-')}-${scopeName.replace(/\s/g,'-')}-asof-${asOf}-oct-2026.csv`,tableToCSV(t))});
+  const lc=$('#lbCsv');if(lc)lc.addEventListener('click',()=>{const t=$('#view').querySelector('.tw table');if(t)downloadText(`leaderboard-${tab.toLowerCase().replace(/\s/g,'-')}-${scopeName.replace(/\s/g,'-')}-${CAL.key}-asof-${asOf}.csv`,tableToCSV(t))});
   const lt=$('#lbTv');if(lt)lt.addEventListener('click',()=>setTv(!state.tv));
   $('#view').querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',()=>{state.lbTab=b.dataset.tab;try{localStorage.setItem('mr-state',JSON.stringify(state))}catch(_){}render()}));
   wireRows();
@@ -1740,7 +1842,7 @@ function emailHtml(w){
     <div style="margin-top:20px;padding:12px 14px;background:#F8FAFC;border:1px solid #DCE2EA;font-size:12.5px">
       <b>Your payout position.</b> Management pool ${inr(bm?bm.pool:POOL.BM)}: ${now.achProj>=GATES.managerAch?`open, expected ${inr(bm?bm.payProj:0)} at the current pace`:`closed until the branch reaches ${GATES.managerAch}% (heading ${pct(now.achProj)})`}. Team pool ${inr(POOL.team)}: ${now.teamPoolProj?'on course to unlock':`unlocks at ${GATES.teamAch}% with audit ≥ ${GATES.teamAudit} (audit now ${br.auditScore})`}.
     </div>
-    <p style="margin:18px 0 0;font-size:12px;color:#5B6776">Figures as of ${asOf} October, provisional until orders are delivered and paid. Open the incentive board for the live view and each person's own page. Prepared by Bpro for ${esc(co.name)}.</p>
+    <p style="margin:18px 0 0;font-size:12px;color:#5B6776">Figures as of ${asOf} ${MONTH}, provisional until orders are delivered and paid. Open the incentive board for the live view and each person's own page. Prepared by Bpro for ${esc(co.name)}.</p>${ddEmail()}
   </div></div>`;
 }
 function emailText(w){
@@ -1757,7 +1859,7 @@ function emailText(w){
   L.push('','SCORECARD MOVERS');up.forEach(m=>L.push(`+ ${m.l.split(' (')[0]}: ${fmt(m.u,m.pv)} → ${fmt(m.u,m.v)} (+${m.d.toFixed(1)} pts)`));down.forEach(m=>L.push(`− ${m.l.split(' (')[0]}: ${fmt(m.u,m.pv)} → ${fmt(m.u,m.v)} (${m.d.toFixed(1)} pts)`));if(!up.length&&!down.length)L.push(`No attribute moved by more than 0.3 points this ${w.word}.`);
   L.push('',`FOR NEXT ${w.word.toUpperCase()}`);actions.forEach((a,i)=>L.push(`${i+1}. ${a}`));
   L.push('',`Your payout position: management pool ${inr(bm?bm.pool:POOL.BM)} ${now.achProj>=GATES.managerAch?`open, expected ${inr(bm?bm.payProj:0)}`:`closed until ${GATES.managerAch}% (heading ${pct(now.achProj)})`}; team pool ${inr(POOL.team)} ${now.teamPoolProj?'on course':`unlocks at ${GATES.teamAch}% with audit ≥ ${GATES.teamAudit}`}.`,
-    '',`Figures as of ${asOf} October, provisional until orders are delivered and paid. Prepared by Bpro for ${co.name}.`);
+    '',`Figures as of ${asOf} ${MONTH}, provisional until orders are delivered and paid. Prepared by Bpro for ${co.name}.`,'',DD_TEXT);
   return L.join('\n');
 }
 /* ---------- monthly email for the MD ---------- */
@@ -1829,7 +1931,7 @@ function emailMdHtml(w){
     </ul>
     ${eh2(closed?'For your approval':'Decisions building up')}
     <ol style="margin:0;padding-left:20px">${decisions.map(d=>`<li style="margin:5px 0">${esc(d)}</li>`).join('')}</ol>
-    <p style="margin:18px 0 0;font-size:12px;color:#5B6776">Figures as of ${asOf} October${closed?'':', projected to month end at the current pace'}. Statements go to each employee for confirmation before payout; disputes within 7 days. Prepared by Bpro for Meubel Grande and Royal Group.</p>
+    <p style="margin:18px 0 0;font-size:12px;color:#5B6776">Figures as of ${asOf} ${MONTH}${closed?'':', projected to month end at the current pace'}. Statements go to each employee for confirmation before payout; disputes within 7 days. Prepared by Bpro for ${esc(GROUP.companies.map(c=>c.name).join(' and '))}.</p>${ddEmail()}
   </div></div>`;
 }
 function emailMdText(w){
@@ -1848,7 +1950,7 @@ function emailMdText(w){
   L.push('','POLICY HEALTH',`Cancellations after advance: ${cancelled.length} orders, ${inrL(cancelled.reduce((s,b)=>s+b.bill,0))}`,`Billed above 30% discount: ${over30.length} bills, ${inrL(over30.reduce((s,b)=>s+b.bill,0))}, incentive forfeited ${inr(over30.reduce((s,b)=>s+b.base,0))}`,`Attendance gate: ${gated} staff under ${GATES.attendance}%`);
   if(watch.length)L.push(`Watch list: ${watch.map(b=>`${b.br.name} ${pct(b.achProj)}`).join(', ')}`);
   L.push('',closed?'FOR YOUR APPROVAL':'DECISIONS BUILDING UP');decisions.forEach((d,i)=>L.push(`${i+1}. ${d}`));
-  L.push('',`Figures as of ${asOf} October${closed?'':', projected to month end at the current pace'}. Prepared by Bpro for Meubel Grande and Royal Group.`);
+  L.push('',`Figures as of ${asOf} ${MONTH}${closed?'':', projected to month end at the current pace'}. Prepared by Bpro for ${GROUP.companies.map(c=>c.name).join(' and ')}.`,'',DD_TEXT);
   return L.join('\n');
 }
 /* ---------- monthly email for the HR team ---------- */
@@ -1907,7 +2009,7 @@ function emailHrHtml(w,cad){
       <tr>${etd('Total',0,1)}${etd(ms.length,1,1)}${etd(pct(att),1,1)}${etd(tot.late,1,1)}${etd(inrL(g.payProj),1,1)}${etd(inr(g.payProj/ms.length),1,1)}</tr></table>
     ${eh2(closed?'For action':'Building up for month end')}
     <ol style="margin:0;padding-left:20px">${actions.map(a=>`<li style="margin:5px 0">${esc(a)}</li>`).join('')}</ol>
-    <p style="margin:18px 0 0;font-size:12px;color:#5B6776">Attendance from the biometric feed, grooming from the branch audit, payouts from the incentive board as of ${asOf} October${closed?'':', projected to month end'}. Prepared by Bpro for Meubel Grande and Royal Group.</p>
+    <p style="margin:18px 0 0;font-size:12px;color:#5B6776">Attendance from the biometric feed, grooming from the branch audit, payouts from the incentive board as of ${asOf} ${MONTH}${closed?'':', projected to month end'}. Prepared by Bpro for ${esc(GROUP.companies.map(c=>c.name).join(' and '))}.</p>${ddEmail()}
   </div></div>`;
 }
 function emailHrText(w,cad){
@@ -1922,7 +2024,7 @@ function emailHrText(w,cad){
   L.push('','LEDGER');const led=regs.concat(disputes);if(led.length)led.forEach(a=>{const p=people.find(x=>x.id===a.person);L.push(`${a.date} · ${a.type} · ${p?p.name+' · '+p.branch.name:''} · ${a.ref||''} · ${a.status}`)});else L.push('No regularisations or disputes logged this month');
   L.push('','PAYROLL INPUT BY ROLE');Object.entries(byRole).forEach(([k,r])=>L.push(`${k}: ${r.n} people · attendance ${pct(r.days?r.present/r.days*100:100)} · ${inrL(r.payout)} (${inr(r.payout/r.n)} per head)`));L.push(`Total: ${ms.length} people · ${inrL(g.payProj)}`);
   L.push('',closed?'FOR ACTION':'BUILDING UP FOR MONTH END');actions.forEach((a,i)=>L.push(`${i+1}. ${a}`));
-  L.push('',`As of ${asOf} October${closed?'':', projected to month end'}. Prepared by Bpro for Meubel Grande and Royal Group.`);
+  L.push('',`As of ${asOf} ${MONTH}${closed?'':', projected to month end'}. Prepared by Bpro for ${GROUP.companies.map(c=>c.name).join(' and ')}.`,'',DD_TEXT);
   return L.join('\n');
 }
 function viewEmail(){
@@ -2113,16 +2215,14 @@ function viewTotal(){
   <div class="grid">
     <div class="card"><h2>Companies</h2><div class="body"><div class="tw"><table><thead><tr><th>Company</th><th class="r">Target</th><th class="r">Booked</th><th>Ach.</th><th class="r">Expected</th><th class="r">GP</th><th class="r">Score</th><th class="r">Outlay</th><th class="r">People</th></tr></thead><tbody>
       ${g.companies.map(c=>`<tr class="link" data-co="${c.co.id}"><td><span class="dot" style="background:${c.co.color}"></span> <b>${c.co.name}</b></td><td class="r">${inrL(c.target)}</td><td class="r">${inrL(c.so)}</td><td>${achPill(c.ach)}</td><td class="r">${pct(c.achProj)}</td><td class="r">${pct(c.gp)}</td><td class="r">${c.score.toFixed(0)}</td><td class="r">${inrL(c.payProj)}</td><td class="r">${c.branches.reduce((s,b)=>s+b.members.length,0)}</td></tr>`).join('')}
-      <tr><td><b>Group</b></td><td class="r">${inrL(g.target)}</td><td class="r">${inrL(g.so)}</td><td>${achPill(g.ach)}</td><td class="r">${pct(g.achProj)}</td><td class="r">${pct(g.gp)}</td><td class="r">${g.score.toFixed(0)}</td><td class="r"><b>${inrL(g.payProj)}</b></td><td class="r">${people.length}</td></tr>
-    </tbody></table></div></div></div>
+      </tbody><tfoot><tr class="grand"><td><b>Group total</b></td><td class="r">${inrL(g.target)}</td><td class="r">${inrL(g.so)}</td><td>${achPill(g.ach)}</td><td class="r">${pct(g.achProj)}</td><td class="r">${pct(g.gp)}</td><td class="r">${g.score.toFixed(0)}</td><td class="r"><b>${inrL(g.payProj)}</b></td><td class="r">${people.length}</td></tr></tfoot></table></div></div></div>
     <div class="card"><h2>Outlay by role and by company</h2><div class="body"><div class="tw"><table><thead><tr><th>Role</th><th class="r">Expected</th><th class="r">Share</th><th class="r">Per head</th></tr></thead><tbody>
       ${Object.entries(w.outlayRole).map(([k,v])=>`<tr><td>${k}</td><td class="r">${inrL(v)}</td><td class="r">${pct(v/Math.max(g.payProj,1)*100)}</td><td class="r">${inr(v/Math.max(1,ms.filter(m=>roleKey(m)===k).length))}</td></tr>`).join('')}
-      <tr><td><b>Total</b></td><td class="r"><b>${inrL(g.payProj)}</b></td><td class="r">100%</td><td class="r">${inr(g.payProj/people.length)}</td></tr>
-    </tbody></table></div><p class="note">Management = BMs and SMs on team achievement; ${w.mgmtOpen} of ${bs.length} pools open. Team pools ${w.teamPools} of ${bs.length} on course.</p></div></div>
+    </tbody><tfoot><tr class="grand"><td>${footLbl('Total',plural(people.length,'person','people'))}</td><td class="r"><b>${inrL(g.payProj)}</b></td><td class="r">100%</td><td class="r">${inr(dv(g.payProj,people.length))}</td></tr></tfoot></table></div><p class="note">Management = BMs and SMs on team achievement; ${w.mgmtOpen} of ${bs.length} pools open. Team pools ${w.teamPools} of ${bs.length} on course.</p></div></div>
   </div>
   <div class="card"><h2>All branches with risk flags</h2><div class="body"><div class="tw"><table><thead><tr><th>#</th><th>Branch</th><th>Company</th><th>Ach.</th><th class="r">Expected</th><th class="r">Score</th><th class="r">GP</th><th class="r">Conv.</th><th class="r">Google</th><th class="r">Audit</th><th class="r">Outlay</th><th>Flags</th></tr></thead><tbody>
     ${bs.map((b,i)=>`<tr class="link" data-co="${b.co.id}" data-br="${b.br.id}"><td>${i+1}</td><td><b>${b.br.name}</b></td><td><span class="dot" style="background:${b.co.color}"></span> ${b.co.name}</td><td>${achPill(b.vals.ach)}</td><td class="r">${pct(b.achProj)}</td><td class="r"><b>${b.sc.score.toFixed(0)}</b></td><td class="r">${pct(b.vals.gp)}</td><td class="r">${pct(b.vals.conv)}</td><td class="r">${b.vals.grating}</td><td class="r">${b.vals.audit}</td><td class="r">${inrL(b.payProj)}</td><td class="flags" style="white-space:normal;min-width:160px">${flags(b)}</td></tr>`).join('')}
-  </tbody></table></div></div></div>
+  </tbody>${totFoot(groupsOf(bs,b=>b.co.id,b=>b.co.name),riskFoot)}</table></div></div></div>
   <div class="grid">
     <div class="card"><h2>Policy compliance this month</h2><div class="body"><ul class="list">
       ${li(w.over30.length?'warn':'good','%',`${w.over30.length} bills above 30% discount`,`${inrL(w.over30.reduce((s,b)=>s+b.bill,0))} · incentive forfeited ${inr(w.over30.reduce((s,b)=>s+b.base,0))} · written BM approval required on each`,'')}
@@ -2137,7 +2237,7 @@ function viewTotal(){
   <div class="grid">
     <div class="card"><h2>Message schedule</h2><div class="body"><div class="tw"><table><thead><tr><th>Audience</th><th>Cadence</th><th>Channel</th><th>When</th><th class="r">Recipients</th></tr></thead><tbody>
       ${sched.map(x=>`<tr><td>${x[0]}</td><td>${x[1]}</td><td>${x[2]}</td><td>${x[3]}</td><td class="r">${x[4]}</td></tr>`).join('')}
-    </tbody></table></div><p class="note">Every other audience × cadence × channel is available on demand in 📣 Messages.</p></div></div>
+    </tbody><tfoot><tr class="grand"><td colspan="4"><b>Total recipients per round</b></td><td class="r">${sumBy(sched,x=>x[4])}</td></tr></tfoot></table></div><p class="note">Every other audience × cadence × channel is available on demand in 📣 Messages.</p></div></div>
     <div class="card"><h2>Users and roles</h2><div class="body"><div class="tw"><table><thead><tr><th>User</th><th>Role</th><th>Scope</th></tr></thead><tbody>
       ${USERS.map(u=>`<tr><td><b>${u.name}</b><br><small style="color:var(--muted)">${u.email}${u.team?' · '+u.team:''}</small></td><td><span class="role ${ROLES[u.role].cls}">${ROLES[u.role].name}</span></td><td>${ROLES[u.role].scope==='group'?'Whole group':u.br?branches.find(b=>b.id===u.br)?.name:'—'}</td></tr>`).join('')}
       <tr><td><b>Client users</b><br><small style="color:var(--muted)">${clientUsers().length} generated from the roster: a BM, an SM and a salesperson per branch</small></td><td><span class="role cl">BM · SM · Employee</span></td><td>Own branch, team or page</td></tr>
@@ -2145,6 +2245,244 @@ function viewTotal(){
   </div>
   <div class="card"><h2>Consultant actions <small>what Bpro should do next</small></h2><div class="body"><ul class="list">${actions.join('')}</ul></div></div>`;
   wireRows();
+}
+/* =========================================================
+   Reports: measures across periods and years in one output, grouped rows with subtotals and a grand total.
+   The same model feeds the screen, Excel (.xlsx), PDF (print) and CSV.
+   ========================================================= */
+const RPT_TYPES=[
+ {id:'branch',l:'Branches, by company',row:'Branch',grp:'Company'},
+ {id:'seller',l:'Salespeople, by branch',row:'Salesperson',grp:'Branch'},
+ {id:'product',l:'Products, by category',row:'Product',grp:'Category'},
+ {id:'role',l:'Incentive by role, by company',row:'Role',grp:'Company'},
+ {id:'person',l:'Everyone, by branch',row:'Person',grp:'Branch'},
+];
+const RPT_MEASURES=[
+ {id:'qty',l:'Qty',f:'int',tip:'Units sold: bills booked in the period, cancellations excluded.'},
+ {id:'value',l:'Value',f:'inrL',tip:'Sales order value booked, net of discount, cancellations excluded.'},
+ {id:'avg',l:'Avg ticket',f:'inr',tip:'Value ÷ Qty: the average bill.'},
+ {id:'target',l:'Target',f:'inrL',tip:'Sales target; the running month is pro-rated to the day.'},
+ {id:'ach',l:'Achievement',f:'pct',tip:'Value ÷ Target, over the whole period.'},
+ {id:'inc',l:'Incentive',f:'inr',tip:'Incentive: closed months as closed, the running month as standing today.'},
+ {id:'score',l:'Score',f:'dec',tip:'Average scorecard over the people (or branches) and months in the cell.'},
+ {id:'att',l:'Attendance',f:'pct',tip:'Average attendance over the people and months in the cell.'},
+ {id:'heads',l:'People',f:'int',tip:'Distinct people in the cell.'},
+];
+const RPT_PRODUCT=['qty','value','avg'];
+const RPT_GRANS=[['month','Month'],['quarter','Quarter'],['year','Calendar year'],['fy','Financial year (Apr–Mar)']];
+const RPT_CATS={A:'Category A · ₹60,000 and above',B:'Category B · ₹25,000 to ₹60,000',C:'Category C · offer or under ₹25,000'};
+const RPT_ROLES={Sales:'Sales',CRE:'CRE','Back office':'Back office',Logistics:'Logistics',BM:'Branch Manager',SM:'Sales Manager'};
+function rptTypes(){return role().scope==='team'?RPT_TYPES.filter(t=>['branch','seller','product'].includes(t.id)):RPT_TYPES}
+function rptRecords(){ // closed months (archived, or the generated sample) then the running month as of the slider
+  const cur={...monthRecord(computeGroup()),key:CAL.key,month:MONTH,sample:CAL.sample,running:asOf<DAYS};
+  return [...history().filter(h=>h.key&&h.key!==CAL.key),cur];
+}
+const yearOf=(k,gran)=>{const y=+k.slice(0,4);return gran==='fy'&&+k.slice(5,7)<4?y-1:y}; // with financial-year columns the year chips are financial years (April to March)
+const yearLbl=(y,gran)=>gran==='fy'?`FY ${y}-${String((y+1)%100).padStart(2,'0')}`:String(y);
+function rptYears(gran){return [...new Set([...history().map(h=>h.key),CAL.key].filter(Boolean).map(k=>yearOf(k,gran)))].sort()}
+function rptSpec(){ // the saved choices, cleaned against what exists now
+  const s=state.rpt||{}, types=rptTypes(), gran=RPT_GRANS.some(g=>g[0]===s.gran)?s.gran:'year', yrs=rptYears(gran);
+  const type=types.some(t=>t.id===s.type)?s.type:types[0].id;
+  let ms=Array.isArray(s.ms)?s.ms.filter(id=>RPT_MEASURES.some(m=>m.id===id)):[];
+  if(type==='product')ms=ms.filter(id=>RPT_PRODUCT.includes(id));
+  if(!ms.length)ms=type==='role'||type==='person'?['heads','inc']:['qty','value'];
+  const years=Array.isArray(s.years)?s.years.map(Number).filter(y=>yrs.includes(y)):yrs.slice(-2);
+  const months=Array.isArray(s.months)?s.months.map(Number).filter(m=>m>=1&&m<=12):[1,2,3,4,5,6,7,8,9,10,11,12];
+  return {type,ms,years:years.length||Array.isArray(s.years)?years:yrs.slice(-2),months,gran,total:s.total!==false};
+}
+function periodOf(key,gran){const y=+key.slice(0,4),m=+key.slice(5,7);
+  if(gran==='quarter'){const q=Math.ceil(m/3);return {id:y+'-Q'+q,l:MNAMES[(q-1)*3].slice(0,3)+'–'+MNAMES[q*3-1].slice(0,3)+' '+y}}
+  if(gran==='year')return {id:String(y),l:String(y)};
+  if(gran==='fy'){const s=m>=4?y:y-1;return {id:'FY'+s,l:'FY '+s+'-'+String((s+1)%100).padStart(2,'0')}}
+  return {id:key,l:MNAMES[m-1].slice(0,3)+' '+y};
+}
+const rptFmt=(f,v)=>v==null||!isFinite(v)?'—':f==='inrL'?inrL(v):f==='inr'?inr(v):f==='int'?Math.round(v).toLocaleString('en-IN'):f==='pct'?pct(v):f==='dec'?v.toFixed(1):String(v);
+function rptScopeName(){return state.br?(branches.find(b=>b.id===state.br)||{name:state.br}).name:state.co?(GROUP.companies.find(c=>c.id===state.co)||{name:state.co}).name:'the whole group'}
+function buildReport(spec,recs){
+  const T=RPT_TYPES.find(t=>t.id===spec.type)||RPT_TYPES[0], MS=RPT_MEASURES.filter(m=>spec.ms.includes(m.id)), prod=T.id==='product';
+  const brOf=(id,name)=>id&&branches.some(b=>b.id===id)?id:((branches.find(b=>b.name===name)||{}).id||id||name);
+  const coOf=br=>{const b=branches.find(x=>x.id===br);return b?b.company:null};
+  const inScope=br=>(!state.br||br===state.br)&&(!state.co||(coOf(br)||{}).id===state.co);
+  const sel=recs.filter(r=>spec.years.includes(yearOf(r.key,spec.gran))&&spec.months.includes(+r.key.slice(5,7)));
+  const periods=[],pIdx=new Map();
+  sel.forEach(r=>{const p=periodOf(r.key,spec.gran);if(!pIdx.has(p.id)){pIdx.set(p.id,{...p,keys:[],sample:false,running:false});periods.push(pIdx.get(p.id))}const P=pIdx.get(p.id);P.keys.push(r.key);if(r.sample)P.sample=true;if(r.running)P.running=true});
+  const B=new Map(),rows=new Map(),groups=new Map();
+  const put=(kind,f,rowId,rowL,rowSub,grpId,grpL,per)=>{if(!rows.has(rowId))rows.set(rowId,{id:rowId,l:rowL,sub:rowSub,g:grpId});if(!groups.has(grpId))groups.set(grpId,{id:grpId,l:grpL});
+    for(const k of [rowId+'|'+per,rowId+'|*','G:'+grpId+'|'+per,'G:'+grpId+'|*','ALL|'+per,'ALL|*']){let x=B.get(k);if(!x){x={p:[],b:[],i:[]};B.set(k,x)}x[kind].push(f)}};
+  sel.forEach(r=>{const per=periodOf(r.key,spec.gran).id;
+    if(prod){(r.products||[]).forEach(x=>{const br=brOf(x.br);if(inScope(br))put('i',x,'i:'+x.item,x.item,'','c:'+(x.cat||'?'),RPT_CATS[x.cat]||'Uncategorised',per)});return}
+    (r.people||[]).forEach(x=>{const br=brOf(x.br,x.branch);if(!inScope(br))return;if(T.id==='seller'&&x.role!=='Sales')return;
+      const co=coOf(br),coId=co?co.id:(x.coId||x.co||'?'),coName=co?co.name:(x.co||'Company'),brName=(branches.find(b=>b.id===br)||{name:x.branch||br}).name;
+      if(T.id==='branch')put('p',x,'b:'+br,brName,'','co:'+coId,coName,per);
+      else if(T.id==='role')put('p',x,'r:'+coId+':'+x.role,RPT_ROLES[x.role]||x.role,'','co:'+coId,coName,per);
+      else put('p',x,'p:'+x.id,x.name,T.id==='person'?(RPT_ROLES[x.role]||x.role):'','b:'+br,brName+(state.co?'':' · '+coName),per)});
+    if(T.id==='branch')(r.branches||[]).forEach(x=>{const br=brOf(x.id,x.name);if(!inScope(br))return;const co=coOf(br);put('b',x,'b:'+br,x.name,'','co:'+(co?co.id:x.coId||x.co),co?co.name:x.co,per)});
+  });
+  const sum=(a,k)=>a.reduce((s,x)=>s+(+x[k]||0),0), mean=(a,k)=>a.length?sum(a,k)/a.length:null;
+  const val=(m,c)=>{if(!c)return null;const P=c.p;
+    switch(m){
+      case 'qty':return prod?sum(c.i,'qty'):sum(P,'qty');
+      case 'value':return prod?sum(c.i,'value'):sum(P,'so');
+      case 'avg':{const q=val('qty',c);return q?val('value',c)/q:null}
+      case 'target':return prod?null:sum(P,'target');
+      case 'ach':{if(prod)return null;const t=sum(P,'target');return t>0?sum(P,'so')/t*100:null}
+      case 'inc':return prod?null:sum(P,'total');
+      case 'score':return prod?null:T.id==='branch'?mean(c.b,'score'):mean(P.filter(x=>x.score>0),'score');
+      case 'att':return prod?null:mean(P,'att');
+      case 'heads':return prod?null:new Set(P.map(x=>x.id)).size;
+    }return null};
+  const total=spec.total&&periods.length>1;
+  const line=k=>({cells:periods.flatMap(p=>MS.map(m=>val(m.id,B.get(k+'|'+p.id)))),tot:MS.map(m=>val(m.id,B.get(k+'|*')))});
+  const lead=r=>{const v=r.tot[0];return v==null?-Infinity:v};
+  const sections=[...groups.values()].sort((a,b)=>String(a.l).localeCompare(String(b.l))).map(g=>{
+    const rs=[...rows.values()].filter(r=>r.g===g.id).map(r=>({...r,...line(r.id)})).sort((a,b)=>lead(b)-lead(a)||String(a.l).localeCompare(String(b.l)));
+    return {id:g.id,l:g.l,rows:rs,...line('G:'+g.id)}});
+  const scope=rptScopeName(), yrs=spec.years.slice().sort();
+  const monthsTxt=spec.months.length===12?'All months':spec.months.slice().sort((a,b)=>a-b).map(m=>MNAMES[m-1].slice(0,3)).join(', ');
+  const params=[['Rows',T.l],['Measures',MS.map(m=>m.l).join(', ')||'—'],['Years',yrs.map(y=>yearLbl(y,spec.gran)).join(', ')||'—'],['Months',monthsTxt||'—'],['Columns',(RPT_GRANS.find(g=>g[0]===spec.gran)||[])[1]+(total?', with a total column':'')],['Scope',scope[0].toUpperCase()+scope.slice(1)],['Prepared',`${nowStr()} by ${ME.name||ME.email}`]];
+  const notes=[];
+  if(periods.some(p=>p.sample))notes.push(LIVE?'':'Months marked sample are generated from this month with season and growth, so the report can be tried before real months are archived; archived closes replace them.');
+  if(periods.some(p=>p.running))notes.push(`${MONTH} is running: figures to day ${asOf}, target pro-rated to the day, incentive as standing today.`);
+  notes.push('Subtotals and the grand total are computed from the underlying figures: sums for Qty, Value, Target, Incentive and People; ratios (Avg ticket, Achievement) from those sums; Score and Attendance as averages.');
+  const slug=s=>String(s).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+  const title=`${T.l.split(',')[0]} report · ${scope[0].toUpperCase()+scope.slice(1)}`;
+  return {T,MS,periods,sections,grand:line('ALL'),total,title,params,notes:notes.filter(Boolean),empty:!sel.length,
+    file:`report-${slug(T.row)}-${slug(scope)}-${yrs.length?yrs[0]+(yrs.length>1?'-'+yrs[yrs.length-1]:''):'none'}-${spec.gran}`};
+}
+function reportTable(R){
+  const M=R.MS.length,per=R.periods,tot=R.total,span=1+(per.length+(tot?1:0))*M;
+  const head1=`<tr><th rowspan="2">${esc(R.T.row)}</th>${per.map(p=>`<th class="pc" colspan="${M}">${esc(p.l)}${p.running?' <span class="pill info">running</span>':p.sample&&!LIVE?' <small>sample</small>':''}</th>`).join('')}${tot?`<th class="pc tc" colspan="${M}">Total</th>`:''}</tr>`;
+  const head2=`<tr>${Array.from({length:per.length+(tot?1:0)},()=>R.MS.map((m,i)=>`<th class="r${i?'':' b0'}" data-tip="${esc(m.tip)}">${m.l}</th>`).join('')).join('')}</tr>`;
+  const cells=x=>[...x.cells,...(tot?x.tot:[])].map((v,i)=>`<td class="r${i%M?'':' b0'}${tot&&i>=x.cells.length?' tc':''}">${rptFmt(R.MS[i%M].f,v)}</td>`).join('');
+  const body=R.sections.map(s=>`<tr class="grp"><td colspan="${span}">${esc(s.l)} <small>${s.rows.length}</small></td></tr>${s.rows.map(r=>`<tr><td class="ind">${esc(r.l)}${r.sub?` <small>${esc(r.sub)}</small>`:''}</td>${cells(r)}</tr>`).join('')}<tr class="sub"><td>Subtotal · ${esc(s.l)}</td>${cells(s)}</tr>`).join('');
+  return `<table class="rp"><thead>${head1}${head2}</thead><tbody>${body}</tbody><tfoot><tr class="grand"><td>Grand total</td>${cells(R.grand)}</tr></tfoot></table>`;
+}
+function reportCSV(R){
+  const M=R.MS.length,tot=R.total;
+  const num=(f,v)=>v==null||!isFinite(v)?'':f==='pct'||f==='dec'?(+v).toFixed(1):Math.round(v);
+  const vals=x=>[...x.cells,...(tot?x.tot:[])].map((v,i)=>num(R.MS[i%M].f,v));
+  const head=[R.T.grp,R.T.row,...R.periods.flatMap(p=>R.MS.map(m=>p.l+(p.running?' (running)':'')+' · '+m.l)),...(tot?R.MS.map(m=>'Total · '+m.l):[])];
+  const rows=[];R.sections.forEach(s=>{s.rows.forEach(r=>rows.push([s.l,r.l+(r.sub?' ('+r.sub+')':''),...vals(r)]));rows.push(['Subtotal · '+s.l,'',...vals(s)])});rows.push(['Grand total','',...vals(R.grand)]);
+  return csvText([R.title],[...R.params.map(p=>[p[0],p[1]]),[],head,...rows,...(R.notes.length?[[],...R.notes.map(n=>[n])]:[])]);
+}
+function reportXLSX(R){
+  const M=R.MS.length,tot=R.total,nb=R.periods.length+(tot?1:0),nc=1+nb*M,S=(v,s)=>({v,s});
+  const rows=[[S(R.title,'title')]],merges=[];
+  R.params.forEach(p=>rows.push([S(p[0],'metaK'),S(p[1],'meta')]));
+  rows.push([]);
+  const h1=rows.length+1;
+  rows.push([S(R.T.row,'hdrL'),...[...R.periods.map(p=>p.l+(p.running?' (running)':p.sample&&!LIVE?' (sample)':'')),...(tot?['Total']:[])].flatMap(l=>[S(l,'hdr'),...Array(M-1).fill(S('','hdr'))])]);
+  rows.push([S('','hdrL'),...Array.from({length:nb},()=>R.MS.map(m=>S(m.l,'hdr'))).flat()]);
+  merges.push(`A${h1}:A${h1+1}`);if(M>1)for(let i=0;i<nb;i++)merges.push(`${xlCol(2+i*M)}${h1}:${xlCol(1+(i+1)*M)}${h1}`);
+  const nf={inrL:'inr',inr:'inr',int:'int',pct:'pct',dec:'dec'};
+  const nums=(x,k)=>[...x.cells,...(tot?x.tot:[])].map((v,i)=>{const f=R.MS[i%M].f;return v==null||!isFinite(v)?S('',k+'_txt'):S(f==='pct'||f==='dec'?Math.round(v*100)/100:Math.round(v),k+'_'+nf[f])}); // whole rupees and units; ratios to two places
+  R.sections.forEach(s=>{rows.push([S(s.l,'grp'),...Array(nc-1).fill(S('','grp'))]);s.rows.forEach(r=>rows.push([S(r.l+(r.sub?' · '+r.sub:''),'row_lbl'),...nums(r,'row')]));rows.push([S('Subtotal · '+s.l,'sub_lbl'),...nums(s,'sub')])});
+  rows.push([S('Grand total','grand_lbl'),...nums(R.grand,'grand')]);
+  rows.push([]);R.notes.forEach(n=>rows.push([S(n,'note')]));rows.push([]);
+  rows.push([S(DD.text,'foot')]);const fr=rows.length+1;rows.push([S(DD.links[0][0],'link'),S(DD.links[1][0],'link')]);
+  return xlsxBook([{name:'Report',rows,merges,links:[{ref:'A'+fr,url:DD.links[0][1]},{ref:'B'+fr,url:DD.links[1][1]}],cols:[36,...Array(nc-1).fill(14)],freeze:{row:h1+1,col:1},titles:[h1,h1+1],footer:DD.text+' · '+DD.links.map(l=>l[0]).join(' | ')}],{title:R.title});
+}
+function printReport(R){const box=$('#print');if(!box)return;
+  const cols=1+(R.periods.length+(R.total?1:0))*R.MS.length;
+  box.innerHTML=printWrap(`<div class="rpt" style="font-size:${cols>26?7:cols>16?8.5:10}px"><h1>${esc(R.title)}</h1><p class="sub">${R.params.map(p=>`<b>${esc(p[0])}:</b> ${esc(p[1])}`).join(' · ')}</p>${reportTable(R)}${R.notes.map(n=>`<p class="note">${esc(n)}</p>`).join('')}</div>`,'land');
+  const t=document.title;document.title=R.file;const back=()=>{document.title=t;window.removeEventListener('afterprint',back)};if(typeof window.addEventListener==='function')window.addEventListener('afterprint',back);
+  if(typeof window.print==='function')window.print()}
+
+/* ---------- Excel (.xlsx) writer: Office Open XML in a stored zip, no library ---------- */
+const CRC_T=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
+function crc32(u8){let c=0xFFFFFFFF;for(let i=0;i<u8.length;i++)c=CRC_T[(c^u8[i])&255]^(c>>>8);return (c^0xFFFFFFFF)>>>0}
+function zipStore(files){ // [{name,data}] → Uint8Array; method 0 (stored), UTF-8 names
+  const enc=new TextEncoder(),u16=n=>[n&255,(n>>>8)&255],u32=n=>[n&255,(n>>>8)&255,(n>>>16)&255,(n>>>24)&255];
+  const d=new Date(),tm=(d.getHours()<<11)|(d.getMinutes()<<5)|(d.getSeconds()>>1),dt=((d.getFullYear()-1980)<<9)|((d.getMonth()+1)<<5)|d.getDate();
+  const parts=[],central=[];let off=0;
+  files.forEach(f=>{const name=enc.encode(f.name),data=typeof f.data==='string'?enc.encode(f.data):f.data,crc=crc32(data);
+    const head=new Uint8Array([...u32(0x04034b50),...u16(20),...u16(0x0800),...u16(0),...u16(tm),...u16(dt),...u32(crc),...u32(data.length),...u32(data.length),...u16(name.length),...u16(0)]);
+    parts.push(head,name,data);
+    central.push(new Uint8Array([...u32(0x02014b50),...u16(20),...u16(20),...u16(0x0800),...u16(0),...u16(tm),...u16(dt),...u32(crc),...u32(data.length),...u32(data.length),...u16(name.length),...u16(0),...u16(0),...u16(0),...u16(0),...u32(0),...u32(off)]),name);
+    off+=head.length+name.length+data.length});
+  const cd=central.reduce((s,a)=>s+a.length,0);
+  const all=[...parts,...central,new Uint8Array([...u32(0x06054b50),...u16(0),...u16(0),...u16(files.length),...u16(files.length),...u32(cd),...u32(off),...u16(0)])];
+  const out=new Uint8Array(all.reduce((s,a)=>s+a.length,0));let p=0;all.forEach(a=>{out.set(a,p);p+=a.length});return out;
+}
+const xlCol=n=>{let s='';while(n>0){const m=(n-1)%26;s=String.fromCharCode(65+m)+s;n=Math.floor((n-1)/26)}return s};
+function xlsxBook(sheets,meta){ // sheets: [{name,rows:[[{v,s}]],merges,links:[{ref,url}],cols,freeze:{row,col},titles:[r1,r2],footer}]
+  const X=s=>String(s).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g,'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  const NS='http://schemas.openxmlformats.org/spreadsheetml/2006/main',RNS='http://schemas.openxmlformats.org/officeDocument/2006/relationships',HEAD='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n';
+  const font=(o={})=>`<font>${o.b?'<b/>':''}${o.i?'<i/>':''}${o.u?'<u/>':''}<sz val="${o.sz||10}"/>${o.c?`<color rgb="FF${o.c}"/>`:''}<name val="Calibri"/><family val="2"/></font>`;
+  const fonts=[font(),font({b:1}),font({b:1,c:'FFFFFF'}),font({u:1,c:'0A5E66'}),font({i:1,sz:9,c:'5B6776'}),font({b:1,sz:14,c:'1F2D44'}),font({sz:9,c:'5B6776'}),font({b:1,c:'0A5E66'})];
+  const fill=c=>`<fill><patternFill patternType="solid"><fgColor rgb="FF${c}"/><bgColor indexed="64"/></patternFill></fill>`;
+  const fills=['<fill><patternFill patternType="none"/></fill>','<fill><patternFill patternType="gray125"/></fill>',fill('1F2D44'),fill('EEF2F6'),fill('D6EEF0'),fill('F5F7FA')];
+  const side=(k,st,c)=>`<${k} style="${st}"><color rgb="FF${c}"/></${k}>`;
+  const borders=['<border><left/><right/><top/><bottom/><diagonal/></border>',`<border><left/><right/><top/>${side('bottom','thin','DCE2EA')}<diagonal/></border>`,`<border><left/><right/>${side('top','medium','0E7C86')}${side('bottom','thin','0E7C86')}<diagonal/></border>`,`<border><left/><right/>${side('top','thin','DCE2EA')}${side('bottom','thin','DCE2EA')}<diagonal/></border>`];
+  const numFmts=[[164,'[>=10000000]"₹"##\\,##\\,##\\,##0;[>=100000]"₹"##\\,##\\,##0;"₹"#,##0'],[165,'#,##0'],[166,'0.0"%"'],[167,'0.0']];
+  const XF={txt:[0,0,0,0],title:[0,5,0,0],meta:[0,6,0,0],metaK:[0,1,0,0],note:[0,4,0,0],foot:[0,6,0,0],link:[0,3,0,0],hdr:[0,2,2,0,'center'],hdrL:[0,2,2,0,'left'],grp:[0,7,5,3]};
+  const nf={txt:0,inr:164,int:165,pct:166,dec:167};
+  [['row',0,0,1],['sub',1,3,1],['grand',1,4,2]].forEach(([k,fo,fi,bo])=>{XF[k+'_lbl']=[0,fo,fi,bo,k==='row'?'indent':null];Object.entries(nf).forEach(([n,id])=>{XF[k+'_'+n]=[id,fo,fi,bo,n==='txt'?'right':null]})});
+  const names=Object.keys(XF),sIdx=Object.fromEntries(names.map((n,i)=>[n,i]));
+  const xfs=names.map(n=>{const [id,fo,fi,bo,al]=XF[n],a=al==='indent'?'<alignment indent="1"/>':al?`<alignment horizontal="${al}" vertical="center"/>`:'';return `<xf numFmtId="${id}" fontId="${fo}" fillId="${fi}" borderId="${bo}" xfId="0"${id?' applyNumberFormat="1"':''} applyFont="1" applyFill="1" applyBorder="1"${a?` applyAlignment="1">${a}</xf>`:'/>'}`}).join('');
+  const styles=`${HEAD}<styleSheet xmlns="${NS}"><numFmts count="${numFmts.length}">${numFmts.map(([i,c])=>`<numFmt numFmtId="${i}" formatCode="${X(c)}"/>`).join('')}</numFmts><fonts count="${fonts.length}">${fonts.join('')}</fonts><fills count="${fills.length}">${fills.join('')}</fills><borders count="${borders.length}">${borders.join('')}</borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="${names.length}">${xfs}</cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>`;
+  const sheetXml=sh=>{
+    const width=Math.max(1,...sh.rows.map(r=>r.length));
+    const data=sh.rows.map((r,i)=>`<row r="${i+1}">${r.map((c,j)=>{if(c==null)return '';const ref=xlCol(j+1)+(i+1),s=sIdx[c.s||'txt']||0;
+      if(c.v===''||c.v==null)return `<c r="${ref}" s="${s}"/>`;
+      return typeof c.v==='number'?`<c r="${ref}" s="${s}"><v>${+c.v.toFixed(4)}</v></c>`:`<c r="${ref}" s="${s}" t="inlineStr"><is><t xml:space="preserve">${X(c.v)}</t></is></c>`}).join('')}</row>`).join('');
+    const f=sh.freeze,pane=f?`<pane xSplit="${f.col}" ySplit="${f.row}" topLeftCell="${xlCol(f.col+1)}${f.row+1}" activePane="bottomRight" state="frozen"/><selection pane="bottomRight" activeCell="${xlCol(f.col+1)}${f.row+1}" sqref="${xlCol(f.col+1)}${f.row+1}"/>`:'';
+    const foot=X('&L&8'+String(sh.footer||'').replace(/&/g,'&&')+'&R&8Page &P of &N');
+    return `${HEAD}<worksheet xmlns="${NS}" xmlns:r="${RNS}"><sheetPr><pageSetUpPr fitToPage="1"/></sheetPr><dimension ref="A1:${xlCol(width)}${Math.max(1,sh.rows.length)}"/><sheetViews><sheetView workbookViewId="0" showGridLines="0">${pane}</sheetView></sheetViews><sheetFormatPr defaultRowHeight="15"/><cols>${(sh.cols||[]).map((w,i)=>`<col min="${i+1}" max="${i+1}" width="${w}" customWidth="1"/>`).join('')}</cols><sheetData>${data}</sheetData>${sh.merges&&sh.merges.length?`<mergeCells count="${sh.merges.length}">${sh.merges.map(m=>`<mergeCell ref="${m}"/>`).join('')}</mergeCells>`:''}${sh.links&&sh.links.length?`<hyperlinks>${sh.links.map((l,i)=>`<hyperlink ref="${l.ref}" r:id="rId${i+1}" display="${X(l.url)}"/>`).join('')}</hyperlinks>`:''}<pageMargins left="0.4" right="0.4" top="0.5" bottom="0.6" header="0.25" footer="0.3"/><pageSetup paperSize="9" orientation="landscape" fitToWidth="1" fitToHeight="0"/><headerFooter><oddFooter>${foot}</oddFooter></headerFooter></worksheet>`};
+  const rel=(id,type,target,ext)=>`<Relationship Id="${id}" Type="${type}" Target="${X(target)}"${ext?' TargetMode="External"':''}/>`;
+  const RT='http://schemas.openxmlformats.org/officeDocument/2006/relationships/',sname=n=>String(n).replace(/[\[\]:*?\/\\]/g,' ').slice(0,31);
+  const files=[
+    {name:'[Content_Types].xml',data:`${HEAD}<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>${sheets.map((_,i)=>`<Override PartName="/xl/worksheets/sheet${i+1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join('')}<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/><Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/></Types>`},
+    {name:'_rels/.rels',data:`${HEAD}<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${rel('rId1',RT+'officeDocument','xl/workbook.xml')}${rel('rId2','http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties','docProps/core.xml')}</Relationships>`},
+    {name:'docProps/core.xml',data:`${HEAD}<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><dc:title>${X(meta.title||'Report')}</dc:title><dc:creator>${X(DD.text)}</dc:creator><dcterms:created xsi:type="dcterms:W3CDTF">${new Date().toISOString().slice(0,19)}Z</dcterms:created></cp:coreProperties>`},
+    {name:'xl/workbook.xml',data:`${HEAD}<workbook xmlns="${NS}" xmlns:r="${RNS}"><bookViews><workbookView/></bookViews><sheets>${sheets.map((s,i)=>`<sheet name="${X(sname(s.name))}" sheetId="${i+1}" r:id="rId${i+1}"/>`).join('')}</sheets>${sheets.some(s=>s.titles)?`<definedNames>${sheets.map((s,i)=>s.titles?`<definedName name="_xlnm.Print_Titles" localSheetId="${i}">'${X(sname(s.name))}'!$${s.titles[0]}:$${s.titles[1]}</definedName>`:'').join('')}</definedNames>`:''}</workbook>`},
+    {name:'xl/_rels/workbook.xml.rels',data:`${HEAD}<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${sheets.map((_,i)=>rel('rId'+(i+1),RT+'worksheet',`worksheets/sheet${i+1}.xml`)).join('')}${rel('rId'+(sheets.length+1),RT+'styles','styles.xml')}</Relationships>`},
+    {name:'xl/styles.xml',data:styles},
+    ...sheets.flatMap((s,i)=>[{name:`xl/worksheets/sheet${i+1}.xml`,data:sheetXml(s)},...(s.links&&s.links.length?[{name:`xl/worksheets/_rels/sheet${i+1}.xml.rels`,data:`${HEAD}<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${s.links.map((l,j)=>rel('rId'+(j+1),RT+'hyperlink',l.url,true)).join('')}</Relationships>`}]:[])]),
+  ];
+  return zipStore(files);
+}
+function viewReports(){
+  const sp=rptSpec(), recs=rptRecords(), R=buildReport(sp,recs), yrs=rptYears(sp.gran), types=rptTypes();
+  $('#h1').textContent='Reports';
+  const chip=(name,val,on,l,dis,tip)=>`<label class="${on?'on':''}${dis?' dis':''}"${tip?` data-tip="${esc(tip)}"`:''}><input type="checkbox" data-r="${name}" value="${val}" ${on?'checked':''} ${dis?'disabled':''}>${l}</label>`;
+  const nRows=R.sections.reduce((s,x)=>s+x.rows.length,0), first=R.MS[0];
+  const src=recs.filter(r=>sp.years.includes(yearOf(r.key,sp.gran))&&sp.months.includes(+r.key.slice(5,7)));
+  const presets=[['ytd','This year by month, Qty and Value'],['yoy','Year on year, Qty and Value'],['fy','Financial years, Value and Achievement'],['inc','Incentive by role, by quarter'],['prod','Product mix by year']];
+  $('#view').innerHTML=`
+  <div class="tiles">
+    ${tile('Months in the report',src.length,src.length?`${keyLabel(src[0].key)} to ${keyLabel(src[src.length-1].key)}`:'none chosen','hero')}
+    ${tile('Columns',R.periods.length+(R.total?' + total':''),`${R.MS.length} measure${R.MS.length===1?'':'s'} each · ${(RPT_GRANS.find(g=>g[0]===sp.gran)||[])[1].toLowerCase()}`,'','info')}
+    ${tile('Rows',nRows,`in ${R.sections.length} group${R.sections.length===1?'':'s'} with subtotals`,'','brass')}
+    ${first?tile('Grand total · '+first.l,rptFmt(first.f,R.grand.tot[0]),rptScopeName(),'','good'):''}
+  </div>
+  <div class="card"><h2>Report builder <small>rows, measures and periods across years, in one output</small></h2><div class="body rpt-form">
+    <div class="rf"><span class="rl">Quick start</span><span class="chips">${presets.map(([id,l])=>`<button class="btn small" data-preset="${id}">${l}</button>`).join('')}</span></div>
+    <div class="rf"><span class="rl">Rows</span><select id="rType" aria-label="Report rows">${types.map(t=>`<option value="${t.id}" ${t.id===sp.type?'selected':''}>${t.l}</option>`).join('')}</select><span class="note" style="margin:0">Scope follows the Company and Branch selectors above: <b>${esc(rptScopeName())}</b>.</span></div>
+    <div class="rf"><span class="rl">Measures</span><span class="chips">${RPT_MEASURES.map(m=>chip('m',m.id,sp.ms.includes(m.id),m.l,sp.type==='product'&&!RPT_PRODUCT.includes(m.id),m.tip)).join('')}</span></div>
+    <div class="rf"><span class="rl">Years</span><span class="chips">${yrs.map(y=>chip('y',y,sp.years.includes(y),yearLbl(y,sp.gran))).join('')}</span></div>
+    <div class="rf"><span class="rl">Months</span><span class="chips">${MNAMES.map((n,i)=>chip('mo',i+1,sp.months.includes(i+1),n.slice(0,3))).join('')}<button class="btn small" data-mo="all">All</button><button class="btn small" data-mo="none">Clear</button></span></div>
+    <div class="rf"><span class="rl">Columns</span><select id="rGran" aria-label="Period columns">${RPT_GRANS.map(([id,l])=>`<option value="${id}" ${id===sp.gran?'selected':''}>${l}</option>`).join('')}</select><label class="chk"><input type="checkbox" id="rTot" ${sp.total?'checked':''}> Total column across the periods</label></div>
+    <div class="wa-bar"><button class="btn primary" id="rXlsx" ${R.empty?'disabled':''}>⬇ Excel (.xlsx)</button><button class="btn" id="rPdf" ${R.empty?'disabled':''}>🖨 PDF (print or save)</button><button class="btn" id="rCsv" ${R.empty?'disabled':''}>⬇ CSV</button><span class="note" style="margin:0">Every output carries the parameters above, subtotals, the grand total and the D&amp;D footer with its links.</span></div>
+  </div></div>
+  <div class="card"><h2>Report output <small>${esc(R.title)}</small></h2><div class="body">
+    ${R.empty?'<p class="empty">No month matches the years and months chosen.</p>':`<div class="tw-r">${reportTable(R)}</div>`}
+    ${R.notes.map(n=>`<p class="note">${esc(n)}</p>`).join('')}
+    <p class="note">${ddHtml()}</p>
+  </div></div>`;
+  const upd=o=>{state.rpt={...sp,...o};saveState();render()};
+  const on=(id,ev,fn)=>{const el=$(id);if(el&&el.addEventListener)el.addEventListener(ev,fn)};
+  on('#rType','change',e=>upd({type:e.target.value}));
+  on('#rGran','change',e=>upd({gran:e.target.value}));
+  on('#rTot','change',e=>upd({total:!!e.target.checked}));
+  const view=$('#view');
+  view.querySelectorAll('input[data-r]').forEach(i=>i.addEventListener('change',()=>{const n=i.dataset.r,vals=[...view.querySelectorAll(`input[data-r="${n}"]:checked`)].map(x=>n==='m'?x.value:+x.value);upd(n==='m'?{ms:vals}:n==='y'?{years:vals}:{months:vals})}));
+  view.querySelectorAll('[data-mo]').forEach(b=>b.addEventListener('click',()=>upd({months:b.dataset.mo==='all'?[1,2,3,4,5,6,7,8,9,10,11,12]:[]})));
+  const all12=[1,2,3,4,5,6,7,8,9,10,11,12], P={ytd:{type:'branch',ms:['qty','value'],years:[CAL.year],months:all12,gran:'month',total:true},yoy:{type:'branch',ms:['qty','value'],years:rptYears(),months:all12,gran:'year',total:true},fy:{type:'branch',ms:['value','target','ach'],years:rptYears('fy'),months:all12,gran:'fy',total:true},inc:{type:'role',ms:['heads','inc'],years:rptYears().slice(-2),months:all12,gran:'quarter',total:true},prod:{type:'product',ms:['qty','value','avg'],years:rptYears(),months:all12,gran:'year',total:true}};
+  view.querySelectorAll('[data-preset]').forEach(b=>b.addEventListener('click',()=>{const p=P[b.dataset.preset];if(p&&rptTypes().some(t=>t.id===p.type))upd(p)}));
+  on('#rXlsx','click',()=>{downloadBlob(R.file+'.xlsx',new Blob([reportXLSX(R)],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}));audit('Report exported',R.title+' · Excel')});
+  on('#rCsv','click',()=>{downloadText(R.file+'.csv',reportCSV(R));audit('Report exported',R.title+' · CSV')});
+  on('#rPdf','click',()=>{printReport(R);audit('Report printed',R.title)});
 }
 /* ---------- back-end administration: policy versions, adjustments, wirings, jobs, month close, audit ---------- */
 const loadLS=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k)||'null');return v==null?d:v}catch(_){return d}};
@@ -2195,7 +2533,7 @@ function viewAdmin(){
       <div class="wa-bar" style="margin-top:12px"><button class="btn" id="ledgerCsv">⬇ Export ledger (CSV)</button><span class="note" style="margin:0">${ADJ.length} entr${ADJ.length===1?'y':'ies'} · ${ADJ.filter(a=>a.status==='Pending').length} pending</span></div>
       <div class="tw" style="margin-top:12px"><table><thead><tr><th>Date</th><th>Type</th><th>Employee</th><th class="r">Amount</th><th>Ref</th><th>Reason</th><th>Requested by</th><th>Status</th><th>Approver</th><th></th></tr></thead><tbody>
       ${ADJ.length?ADJ.slice().reverse().map(a=>{const p=people.find(x=>x.id===a.person);return `<tr><td>${a.date}</td><td>${a.type}</td><td>${p?p.name+' · '+p.branch.name:a.person}</td><td class="r">${a.amount?inr(a.type==='Manual deduction'?-a.amount:a.amount):'—'}</td><td>${esc(a.ref||'')}</td><td style="white-space:normal;min-width:160px">${esc(a.reason||'')}</td><td>${esc(a.by||'')}</td><td><span class="st ${stcls(a.status)}">${a.status}</span></td><td>${esc(a.approver||'')}</td><td>${edit&&a.status==='Pending'?`<button class="btn small" data-adj="Approved" data-id="${a.id}">Approve</button> <button class="btn small" data-adj="Rejected" data-id="${a.id}">Reject</button>`:''}</td></tr>`}).join(''):'<tr><td colspan="10" class="empty">No adjustments yet. Clawback exemptions, written discount approvals, disputes and manual corrections all belong here so the statement is auditable.</td></tr>'}
-      </tbody></table></div>
+      </tbody>${ADJ.length?`<tfoot><tr class="grand"><td colspan="3">${footLbl('Net effect on pay',plural(ADJ.length,'entry','entries'))}</td><td class="r">${inr(adjNet(ADJ.filter(a=>a.status==='Approved')))}<br><small>approved · ${inr(adjNet(ADJ.filter(a=>a.status==='Pending')))} pending</small></td><td colspan="6"></td></tr></tfoot>`:''}</table></div>
       <p class="note">Approved manual additions and deductions flow straight into the person's expected total on the board and in their messages. A clawback exemption or a discount approval records the Branch Manager's written sign-off the policy asks for; an attendance regularisation marks the day present once approved. Pending items block month close.</p>
     </div></div>`;
   }
@@ -2272,7 +2610,7 @@ function viewAdmin(){
   $('#view').querySelectorAll('[data-close]').forEach(c=>c.addEventListener('change',()=>{const k=c.dataset.close;CLOSE[k]=c.checked?{done:true,on:nowStr(),by:ME.email}:{done:false};saveLS('mr-close',CLOSE);audit('Month close step '+(c.checked?'done':'reopened'),k);render()}));
   const cr=$('#closeReset');if(cr)cr.addEventListener('click',()=>{Object.keys(CLOSE).forEach(k=>delete CLOSE[k]);saveLS('mr-close',CLOSE);audit('Month close checklist reset');render()});
   const sa=$('#stmtAll');if(sa)sa.addEventListener('click',()=>{const g=computeGroup();printStatements(allMembers(g).map(m=>({m,b:m.brc})));audit('Statements generated',allMembers(g).length+' employees')});
-  const pc=$('#payoutCsv');if(pc)pc.addEventListener('click',()=>{const g=computeGroup();downloadText(`payout-october-2026-asof-${asOf}.csv`,csvText(PAYOUT_HEADER,payoutRows(g)));audit('Payout file exported','as of '+asOf)});
+  const pc=$('#payoutCsv');if(pc)pc.addEventListener('click',()=>{const g=computeGroup();downloadText(`payout-${CAL.key}-asof-${asOf}.csv`,csvText(PAYOUT_HEADER,payoutRows(g)));audit('Payout file exported','as of '+asOf)});
   const am=$('#archiveMonth');if(am)am.addEventListener('click',()=>{const snap=snapshotMonth(MONTH);const i=HIST.findIndex(x=>x.month===MONTH);if(i>=0)HIST[i]=snap;else HIST.push(snap);saveLS('mr-hist',HIST);audit('Month archived',MONTH+' · '+snap.people.length+' people, '+snap.branches.length+' branches');render()});
   const le=$('#ledgerCsv');if(le)le.addEventListener('click',()=>downloadText('adjustments-ledger.csv',csvText(['date','type','employee_id','employee','branch','amount','ref','reason','requested_by','status','approver'],ADJ.map(a=>{const p=people.find(x=>x.id===a.person);return [a.date,a.type,a.person,p?p.name:'',p?p.branch.name:'',a.amount||'',a.ref||'',a.reason||'',a.by||'',a.status,a.approver||'']}))));
   // audit
@@ -2291,8 +2629,8 @@ function crumbs(){
   if(state.br){const br=branches.find(x=>x.id===state.br);c.push({l:br.name,s:{level:'branch',co:state.co,br:br.id}})}
   if(state.team)c.push({l:state.team,s:{level:'team',co:state.co,br:state.br,team:state.team}});
   if(state.person){const p=people.find(x=>x.id===state.person);c.push({l:p.name,s:{...state}})}
-  const special=['sales','leaderboard','email','messages','settings','total','admin'].includes(state.level);
-  $('#crumbs').innerHTML=c.map((x,i)=>`${i?'<span class="sep">›</span>':''}<button class="${i===c.length-1&&!special?'on':''}" data-i="${i}">${x.l}</button>`).join('')+(special?`<span class="sep">›</span><button class="on">${{sales:'📊 Sales analytics',leaderboard:'🏆 Leaderboard',email:'📣 Messages',messages:'📣 Messages',settings:'⚙️ Settings',total:'🧭 Total view',admin:'🛠 Admin'}[state.level]}</button>`:'');
+  const special=['sales','reports','leaderboard','email','messages','settings','total','admin'].includes(state.level);
+  $('#crumbs').innerHTML=c.map((x,i)=>`${i?'<span class="sep">›</span>':''}<button class="${i===c.length-1&&!special?'on':''}" data-i="${i}">${x.l}</button>`).join('')+(special?`<span class="sep">›</span><button class="on">${{sales:'📊 Sales analytics',reports:'📑 Reports',leaderboard:'🏆 Leaderboard',email:'📣 Messages',messages:'📣 Messages',settings:'⚙️ Settings',total:'🧭 Total view',admin:'🛠 Admin'}[state.level]}</button>`:'');
   $('#crumbs').querySelectorAll('button[data-i]').forEach(b=>b.addEventListener('click',()=>go(c[+b.dataset.i].s)));
   toolbar();
 }
@@ -2300,7 +2638,7 @@ function toolbar(){
   const cos=GROUP.companies, brs=branches.filter(b=>!state.co||b.company.id===state.co), br=branches.find(b=>b.id===state.br);
   const teams=['Sales','CRE','Logistics','Back office','Management'];
   const ppl=br?br.people.filter(p=>!state.team||(state.team==='Management'?(p.role==='BM'||p.role==='SM'):p.role===state.team)):[];
-  const view=['sales','leaderboard','messages','settings','total','admin'].includes(state.level)?state.level:state.level==='email'?'messages':'board';
+  const view=['sales','reports','leaderboard','messages','settings','total','admin'].includes(state.level)?state.level:state.level==='email'?'messages':'board';
   const r=role(), grp=r.scope==='group', brLock=r.scope!=='group', teamLock=r.scope==='team'||r.scope==='person', personLock=r.scope==='person';
   const vb=(v,l)=>can(v)?`<button data-v="${v}" class="${view===v?'on':''}" aria-current="${view===v?'page':'false'}">${l}</button>`:'';
   const findOpts=findIndex();
@@ -2310,7 +2648,7 @@ function toolbar(){
     <label>Team<select id="selTeam" ${br&&!teamLock?'':'disabled'}><option value="">Whole branch</option>${teams.map(t=>`<option value="${t}" ${state.team===t?'selected':''}>${t}</option>`).join('')}</select></label>
     <label>Person<select id="selPerson" ${br&&!personLock?'':'disabled'}><option value="">Everyone</option>${ppl.map(p=>`<option value="${p.id}" ${state.person===p.id?'selected':''}>${p.name} · ${p.role}</option>`).join('')}</select></label>
     ${findOpts.length?`<label>Find<input list="findList" id="find" placeholder="Branch or person…" autocomplete="off" aria-label="Find a branch or person"><datalist id="findList">${findOpts.map(o=>`<option value="${esc(o.l)}"></option>`).join('')}</datalist></label>`:''}
-    <span class="views">${vb('board','Board')}${vb('sales','📊 Sales analytics')}${vb('total','🧭 Total view')}${vb('leaderboard','🏆 Leaderboard')}${vb('messages','📣 Messages')}${vb('settings','⚙️ Settings')}${vb('admin','🛠 Admin')}</span>
+    <span class="views">${vb('board','Board')}${vb('sales','📊 Sales analytics')}${vb('reports','📑 Reports')}${vb('total','🧭 Total view')}${vb('leaderboard','🏆 Leaderboard')}${vb('messages','📣 Messages')}${vb('settings','⚙️ Settings')}${vb('admin','🛠 Admin')}</span>
     <button class="navflip" id="navFlip" title="Move the menu between the top bar and a side bar">${(document.body&&document.body.classList&&document.body.classList.contains('sidenav'))?'⇆ Top bar':'⇆ Side bar'}</button>`;
   $('#roleLbl').innerHTML=`<span class="role ${r.cls}">${r.name}</span>`;
   const us=allUsers();$('#selUser').innerHTML=us.map(u=>`<option value="${u.email}" ${u.email===ME.email?'selected':''}>${u.name} · ${u.email}</option>`).join('');
@@ -2343,7 +2681,7 @@ function toast(msg){const t=$('#toast');if(!t||!t.classList)return;t.textContent
 function introCard(){const el=$('#intro');if(!el)return;let seen=false;try{seen=localStorage.getItem('mr-intro')==='1'}catch(_){}
   if(seen||state.tv){el.hidden=true;return}el.hidden=false;const r=role();
   el.innerHTML=`<div><h3>Welcome, ${esc(ME.name.split(' (')[0])}</h3><p>${$('#lede').textContent||'Drill from the group to a company, a branch, a team and a person. Every level is scored on the same attributes, every rupee is traceable to a value against a target, and the month-end figure is predicted from the pace so far.'} Every card is coloured by what it does: green for what to push, red for what lags, gold for recognition.</p>
-    <div class="acts"><button class="btn primary" data-act="home">${r.scope==='person'?'Open my page':r.scope==='group'?'Open the group board':'Open my branch'}</button>${can('sales')?'<button class="btn" data-act="sales">📊 Sales analytics</button>':''}${can('leaderboard')?'<button class="btn" data-act="lb">🏆 Leaderboard</button>':''}<a class="btn" href="https://github.com/BABUKOLLAM/meubel-Incentive-Suite/blob/main/docs/manual/Incentive-Board-Manual-v1.2.pdf" target="_blank" rel="noopener">📘 Manual</a></div></div><button class="x" aria-label="Dismiss" data-act="x">×</button>`;
+    <div class="acts"><button class="btn primary" data-act="home">${r.scope==='person'?'Open my page':r.scope==='group'?'Open the group board':'Open my branch'}</button>${can('sales')?'<button class="btn" data-act="sales">📊 Sales analytics</button>':''}${can('leaderboard')?'<button class="btn" data-act="lb">🏆 Leaderboard</button>':''}<a class="btn" href="https://github.com/BABUKOLLAM/meubel-Incentive-Suite/blob/main/docs/manual/Incentive-Board-Manual-v1.3.pdf" target="_blank" rel="noopener">📘 Manual</a></div></div><button class="x" aria-label="Dismiss" data-act="x">×</button>`;
   el.querySelectorAll('[data-act]').forEach(b=>b.addEventListener('click',()=>{const a=b.dataset.act;if(a==='x'){try{localStorage.setItem('mr-intro','1')}catch(_){}el.hidden=true;return}if(a==='home')go(homeState());if(a==='sales')go({...homeState(),level:'sales'});if(a==='lb')go({...homeState(),level:'leaderboard'})}));
 }
 function setNav(mode){try{localStorage.setItem('mr-nav',mode)}catch(_){}if(document.body&&document.body.classList)document.body.classList.toggle('sidenav',mode==='side');render()}
@@ -2512,7 +2850,7 @@ function render(){
   crumbs();
   if(state.level==='email'){state.level='messages'}
   enforce(state);
-  ({group:viewGroup,company:viewCompany,branch:viewBranch,team:viewTeam,person:viewPerson,sales:viewSales,leaderboard:viewLeaderboard,messages:viewMessages,settings:viewSettings,total:viewTotal,admin:viewAdmin})[state.level]();
+  ({group:viewGroup,company:viewCompany,branch:viewBranch,team:viewTeam,person:viewPerson,sales:viewSales,reports:viewReports,leaderboard:viewLeaderboard,messages:viewMessages,settings:viewSettings,total:viewTotal,admin:viewAdmin})[state.level]();
   paintBlocks();
   paginate();
   introCard();
