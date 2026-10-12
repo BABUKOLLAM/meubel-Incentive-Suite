@@ -395,20 +395,26 @@ own node; managers open at their branch.
 `backend/` turns the single page into a hosted system; `deploy/README.md` walks through a VPS install in about
 thirty minutes with Docker Compose (Postgres, the Node back end, Caddy for HTTPS).
 
-- **Sign-in** through Google Workspace or Microsoft 365 (OpenID Connect). Only emails on the `profiles` table
-  may enter; the role, branch and person come from that table, so scope is decided on the server.
+- **Sign-in** through Google Workspace or Microsoft 365 (OpenID Connect with PKCE). Only emails on the `profiles`
+  table may enter; the role, branch and person come from that table, so scope is decided on the server. Microsoft
+  is limited to the company's tenant and Google to verified addresses. Sign out ends that person's sessions on
+  every device. Sign-in routes and the API are rate-limited, and a write from another site is refused.
 - **Shared state** (settings, policy versions, ledger, wirings, month close, audit log, archive, users) lives in
   Postgres as JSON documents. The page caches it in the browser and writes through on every save; client roles
   receive the ledger filtered to their scope and never the audit log or user list. Every change is also appended
-  to an immutable `audit_events` table.
+  to an immutable `audit_events` table. Each document carries a version: a save made on a stale copy is refused,
+  merged three ways in the browser (each person's changes kept) and saved again, and other people's saves show up
+  within a minute. Branch Managers, Sales Managers and employees receive only their own branch's roster and data rows.
 - **Data feeds**: one table per data input, keyed by month, with views the page reads as its link mode. Adapters
   in `backend/jobs/adapters` pull from the ERP, CRM, biometric, delivery, accounts and Google systems; a CSV inbox
   adapter works on day one with scheduled exports. The sync runs every 15 minutes.
 - **Scheduled messages** are built on the server with the board's own engine (the same script, run against a
   stub DOM with the live data loaded), then sent through the WhatsApp Business API and SMTP, with every send
   logged. `DRY_RUN=1` logs without sending.
-- **Operations**: health endpoint, jobs and messages logs, nightly `pg_dump` script, idempotent schema applied
-  on start, `git pull && docker compose up -d --build` to update.
+- **Operations**: health endpoint, jobs and messages logs, nightly `pg_dump` script; versioned migrations
+  (`backend/db/migrations`, each applied once) run by a one-shot `migrate` service as the database owner, while
+  the app connects as a restricted role that cannot change the schema or the audit trail;
+  `git pull && docker compose up -d --build` to update.
 
 - **Live roster**: hosted, the board builds companies, branches and people from the `roster` table instead of the
   generated sample, each starting empty (nothing booked, no punches, nothing audited); the feeds fill them. A
@@ -430,6 +436,8 @@ backend/                   hosted back end: server.js, lib (db, auth, kv, source
 deploy/                    VPS guide, one-command installer, go-live checklist, WhatsApp template, CSV templates, Caddyfile, backup
 docker-compose.yml         Postgres + back end + Caddy
 test/browser.test.js       headless Chromium walk: no page errors, no bad text, no phone overflow
+test/backend.test.js       back-end security regressions on a stubbed database
+test/db.test.js            migrations, app role, versioned saves, branch scope, sign-out, PKCE, limits on a real Postgres
 CLAUDE.md                  conventions for anyone (or any agent) working on the repo
 test/render.test.js        renders every view under every role with a stub DOM; fails on any exception, NaN or undefined
 .github/workflows/check.yml  runs the render test and a secret scan on every push and pull request

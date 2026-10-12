@@ -14,20 +14,41 @@ services:
       timeout: 5s
       retries: 10
 
+  # One-shot: schema, versioned migrations and the restricted application role, as the database owner. The app
+  # below never sees the owner's password.
+  migrate:
+    image: incentive-app:latest
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    restart: "no"
+    command: ["node", "db/migrate.js"]
+    environment:
+      MIGRATE_DATABASE_URL: postgres://incentive:${DB_PASSWORD}@db:5432/incentive
+      DB_APP_PASSWORD: ${DB_APP_PASSWORD:?add DB_APP_PASSWORD to .env (openssl rand -hex 24)}
+    depends_on:
+      db:
+        condition: service_healthy
+
   app:
+    image: incentive-app:latest
     build:
       context: .
       dockerfile: backend/Dockerfile
     restart: unless-stopped
     env_file: .env
     environment:
-      DATABASE_URL: postgres://incentive:${DB_PASSWORD}@db:5432/incentive
+      DATABASE_URL: postgres://incentive_app:${DB_APP_PASSWORD:?add DB_APP_PASSWORD to .env (openssl rand -hex 24)}@db:5432/incentive
+      DB_PASSWORD: ""           # the owner's password stays out of the app container
+      MIGRATE_ON_START: "0"     # the migrate service has done it
       BASE_URL: https://${DOMAIN}
     volumes:
       - ./data:/data            # /data/inbox/<source>.csv for the csv-inbox adapter
     depends_on:
       db:
         condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
     expose:
       - "8080"
 

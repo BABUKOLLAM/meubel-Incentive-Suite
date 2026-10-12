@@ -27,7 +27,7 @@ async function client(p) {
 }
 function providers() { return Object.entries(PROVIDERS).filter(([, d]) => d.id).map(([id, d]) => ({ id, name: d.name })); }
 async function profileFor(email) {
-  const r = await q('select email,name,role,branch_id,person_id,phone from profiles where lower(email)=lower($1) and active', [email]);
+  const r = await q('select email,name,role,branch_id,person_id,phone,session_epoch from profiles where lower(email)=lower($1) and active', [email]);
   return r.rows[0] || null;
 }
 const page = (res, status, text) => res.status(status).type('text/plain').send(text); // never echo request data as HTML
@@ -41,20 +41,26 @@ function trustedEmail(p, claims) {
   return email;
 }
 function setSession(res, profile) {
-  const token = jwt.sign({ email: profile.email }, SECRET, { expiresIn: '12h' });
+  const token = jwt.sign({ email: profile.email, ep: profile.session_epoch || 0 }, SECRET, { expiresIn: '12h' });
   res.cookie(COOKIE, token, { httpOnly: true, sameSite: 'lax', secure: BASE.startsWith('https'), maxAge: 12 * 3600 * 1000, path: '/' });
 }
 async function current(req) {
-  try { const t = req.cookies[COOKIE]; if (!t) return null; const { email } = jwt.verify(t, SECRET); return await profileFor(email); } catch (_) { return null; }
+  try {
+    const t = req.cookies[COOKIE]; if (!t) return null;
+    const { email, ep } = jwt.verify(t, SECRET);
+    const prof = await profileFor(email); if (!prof) return null;
+    if ((ep || 0) !== (prof.session_epoch || 0)) return null; // signed out since this cookie was issued
+    const { session_epoch, ...me } = prof; return me;
+  } catch (_) { return null; }
 }
 function mount(app) {
   app.get('/api/config', (req, res) => res.json({ providers: providers(), devLogin: process.env.DEV_LOGIN === '1' }));
   app.get('/api/auth/login', async (req, res) => {
     try {
       const p = req.query.provider; const c = await client(p);
-      const nonce = generators.nonce(), state = generators.state();
-      res.cookie('mr_oidc', jwt.sign({ nonce, state, p }, SECRET, { expiresIn: '10m' }), { httpOnly: true, sameSite: 'lax', secure: BASE.startsWith('https'), path: '/' });
-      res.redirect(c.authorizationUrl({ scope: 'openid email profile', nonce, state, prompt: 'select_account' }));
+      const nonce = generators.nonce(), state = generators.state(), cv = generators.codeVerifier(); // PKCE: the code is useless without the verifier kept here
+      res.cookie('mr_oidc', jwt.sign({ nonce, state, p, cv }, SECRET, { expiresIn: '10m' }), { httpOnly: true, sameSite: 'lax', secure: BASE.startsWith('https'), path: '/' });
+      res.redirect(c.authorizationUrl({ scope: 'openid email profile', nonce, state, prompt: 'select_account', code_challenge: generators.codeChallenge(cv), code_challenge_method: 'S256' }));
     } catch (e) { console.warn('login:', e.message); page(res, 400, 'Sign-in with this provider is not configured.'); }
   });
   app.get('/api/auth/callback/:provider', async (req, res) => {
@@ -63,7 +69,7 @@ function mount(app) {
       const saved = jwt.verify(req.cookies.mr_oidc || '', SECRET);
       if (saved.p !== p) throw new Error('provider mismatch');
       const params = c.callbackParams(req);
-      const tokens = await c.callback(`${BASE}/api/auth/callback/${p}`, params, { nonce: saved.nonce, state: saved.state });
+      const tokens = await c.callback(`${BASE}/api/auth/callback/${p}`, params, { nonce: saved.nonce, state: saved.state, code_verifier: saved.cv });
       const claims = tokens.claims();
       const email = trustedEmail(p, claims);
       const prof = email ? await profileFor(email) : null;
@@ -78,6 +84,14 @@ function mount(app) {
     const prof = await profileFor(String(req.query.as || '')); if (!prof) return page(res, 403, 'not on the profiles table');
     setSession(res, prof); res.redirect('/');
   });
-  app.get('/api/auth/logout', (req, res) => { res.clearCookie(COOKIE, { path: '/' }); res.clearCookie('mr_oidc', { path: '/' }); res.redirect('/'); });
+  // Sign out is a POST (a link elsewhere cannot sign anyone out) and ends every session of that person, on every device
+  app.post('/api/auth/logout', async (req, res) => {
+    const me = await current(req);
+    if (me) { await q('update profiles set session_epoch = session_epoch + 1 where lower(email)=lower($1)', [me.email]); await q('insert into audit_events(who,action,detail) values($1,$2,$3)', [me.email, 'Signed out', 'all sessions']); }
+    res.clearCookie(COOKIE, { path: '/' }); res.clearCookie('mr_oidc', { path: '/' });
+    if ((req.get('accept') || '').includes('application/json')) return res.json({ ok: true });
+    res.redirect(303, '/');
+  });
+  app.get('/api/auth/logout', (req, res) => res.type('html').send('<!doctype html><meta charset="utf-8"><title>Sign out</title><form method="post" action="/api/auth/logout" style="font:15px system-ui;margin:40px"><p>Sign out of the incentive board on every device?</p><button>Sign out</button> <a href="/">Back</a></form>'));
 }
 module.exports = { mount, current, providers };

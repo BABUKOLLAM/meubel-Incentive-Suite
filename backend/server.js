@@ -18,7 +18,29 @@ for (const m of ['get', 'put', 'post', 'delete']) {
   app[m] = (route, ...hs) => (typeof route === 'string' && hs.length ? orig(route, ...hs.map(h => (req, res, next) => { try { const r = h(req, res, next); if (r && r.catch) r.catch(next); } catch (e) { next(e); } })) : orig(route, ...hs));
 }
 app.disable('x-powered-by');
+app.set('trust proxy', 1); // Caddy in front: the client address comes from X-Forwarded-For
 app.use(cookieParser());
+
+// ---- abuse limits: a fixed window per client address, in memory (one process)
+function limiter(windowMs, max, name) {
+  const hits = new Map(); setInterval(() => hits.clear(), windowMs).unref();
+  return (req, res, next) => {
+    const k = name + '|' + req.ip, n = (hits.get(k) || 0) + 1; hits.set(k, n);
+    if (n > max) { res.set('Retry-After', String(Math.ceil(windowMs / 1000))); return res.status(429).json({ error: 'too many requests, try again shortly' }); }
+    next();
+  };
+}
+app.use('/api/auth', limiter(60 * 1000, Number(process.env.RATE_AUTH_PER_MIN || 30), 'auth'));
+app.use('/api/jobs', (req, res, next) => (req.method === 'POST' ? limiter(60 * 1000, 6, 'jobs')(req, res, next) : next()));
+app.use('/api', limiter(60 * 1000, Number(process.env.RATE_API_PER_MIN || 600), 'api'));
+
+// ---- a state-changing request must come from the board's own pages (cookies are SameSite=Lax as a second wall)
+const ORIGIN = (() => { try { return new URL(process.env.BASE_URL || 'http://localhost:8080').origin; } catch (_) { return null; } })();
+app.use((req, res, next) => {
+  if (['GET', 'HEAD', 'OPTIONS'].includes(req.method)) return next();
+  const o = req.get('origin'); if (!o || !ORIGIN || o === ORIGIN) return next();
+  res.status(403).json({ error: 'cross-site request refused' });
+});
 app.use(express.json({ limit: '4mb' }));
 app.use(express.text({ type: ['text/*', 'application/octet-stream'], limit: '4mb' }));
 
@@ -30,21 +52,37 @@ app.get('/api/health', async (req, res) => { try { await q('select 1'); res.json
 app.get('/api/me', requireUser, (req, res) => res.json(req.me));
 
 // ---- shared state
-app.get('/api/kv', requireUser, async (req, res) => res.json(await kv.readAll(req.me)));
+app.get('/api/kv', requireUser, async (req, res) => res.json(await kv.readAll(req.me, req.query.v === '1')));
+app.get('/api/kv-versions', requireUser, async (req, res) => res.json(await kv.versions()));
 app.put('/api/kv/:key', requireUser, async (req, res) => {
-  try { const value = typeof req.body === 'string' ? JSON.parse(req.body) : req.body; await kv.write(req.me, req.params.key, value); res.json({ ok: true }); }
-  catch (e) { res.status(e.status || 400).json({ error: e.message }); }
+  try {
+    const value = typeof req.body === 'string' ? JSON.parse(req.body) : req.body, im = req.get('if-match');
+    const version = await kv.write(req.me, req.params.key, value, im != null && /^\d+$/.test(im) ? Number(im) : null);
+    res.json({ ok: true, version });
+  } catch (e) { if (e.status === 409) return res.status(409).json({ error: 'conflict', ...e.current }); res.status(e.status || 400).json({ error: e.message }); }
 });
 app.delete('/api/kv/:key', requireUser, async (req, res) => { try { await kv.remove(req.me, req.params.key); res.json({ ok: true }); } catch (e) { res.status(e.status || 400).json({ error: e.message }); } });
 
 // ---- data inputs (the board fetches these as its link mode)
-app.get('/api/source/:id', requireUser, async (req, res) => { const rows = await sources.read(req.params.id); if (!rows) return res.status(404).json({ error: 'unknown source' }); res.json(rows); });
+// Client roles (BM, SM, employee) receive their own branch only: the rows naming its people or the branch itself
+const WIDE = ['superadmin', 'admin', 'consultant', 'md', 'director', 'hr'];
+async function branchScope(me) {
+  if (WIDE.includes(me.role)) return null;
+  const r = (await q('select id, name, branch from roster where branch_id=$1', [me.branch_id || ''])).rows;
+  return { ids: new Set(r.map(x => x.id)), names: new Set(r.map(x => x.name)), branches: new Set([...r.map(x => x.branch), me.branch_id].filter(Boolean)) };
+}
+const rowInScope = (s, row) => ['employee', 'cre'].some(k => row[k] != null && row[k] !== '' && (s.ids.has(String(row[k])) || s.names.has(String(row[k])))) || (row.branch != null && s.branches.has(String(row.branch)));
+app.get('/api/source/:id', requireUser, async (req, res) => {
+  const rows = await sources.read(req.params.id); if (!rows) return res.status(404).json({ error: 'unknown source' });
+  const s = await branchScope(req.me); res.json(s ? rows.filter(r => rowInScope(s, r)) : rows);
+});
 
 // ---- admin: roster and profiles management (CSV or JSON body)
 const requireAdmin = (req, res, next) => (['superadmin', 'admin'].includes(req.me.role) ? next() : res.status(403).json({ error: 'admin only' }));
 app.get('/api/roster', requireUser, async (req, res) => { // contact details only for administrators
   const admin = ['superadmin', 'admin'].includes(req.me.role);
   const cols = admin ? '*' : "id,name,role,branch,branch_id,company,to_char(joined,'YYYY-MM-DD') as joined,to_char(left_on,'YYYY-MM-DD') as left_on";
+  if (!WIDE.includes(req.me.role)) return res.json((await q(`select ${cols} from roster where branch_id=$1 order by company,branch,name`, [req.me.branch_id || ''])).rows); // own branch only
   res.json((await q(`select ${cols} from roster order by company,branch,name`)).rows);
 });
 app.put('/api/roster', requireUser, requireAdmin, async (req, res) => {
@@ -92,7 +130,7 @@ function schedule() {
 }
 
 const PORT = process.env.PORT || 8080;
-migrate().then(() => {
+(process.env.MIGRATE_ON_START === '0' ? Promise.resolve() : migrate()).then(() => {
   if (process.env.JOBS !== '0') schedule();
   app.listen(PORT, () => console.log('incentive board back end on :' + PORT));
 }).catch(e => { console.error('migration failed', e); process.exit(1); });

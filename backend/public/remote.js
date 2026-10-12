@@ -3,13 +3,43 @@
      ledger, wirings, month close, audit, archive, users) into browser storage as a cache, then lets the board start.
    - write-through: every save of a shared key goes to the server as well, so all browsers see one truth.
    - afterBoot(): pulls every data source from the server and re-renders; shows who is signed in; refreshes the session.
+   - versions: every shared document carries a version; a save names the version it started from. If another person
+     saved in between, the server refuses (409) and this file merges three ways (what the page started from, what is
+     on the server now, what this person changed), saves the merge and reloads, so neither change is lost.
    Per-person preferences (theme, menu position, welcome card, last view) stay in the browser. */
 (function () {
   const cfg = window.BPRO_CONFIG || {}; if (!cfg.api) return;
   const SHARED = ['mr-cfg', 'mr-src', 'mr-users', 'mr-policy', 'mr-adj', 'mr-wire', 'mr-close', 'mr-audit', 'mr-hist'];
   const BUILT_IN = ['tech@bpropms.com', 'process@bpropms.com', 'drbabu@bpropms.com'];
   const api = (p, o = {}) => fetch(cfg.api + p, { credentials: 'same-origin', ...o, headers: { 'Content-Type': 'application/json', ...(o.headers || {}) } });
-  let me = null; const timers = {};
+  let me = null; const timers = {}, ver = {}, base = {}, pending = {};
+  const LABEL = { 'mr-cfg': 'Settings', 'mr-src': 'Data inputs', 'mr-users': 'Users', 'mr-policy': 'Policy versions', 'mr-adj': 'Adjustments', 'mr-wire': 'Wirings', 'mr-close': 'Month close', 'mr-audit': 'Audit log', 'mr-hist': 'History' };
+  const ID = { 'mr-adj': x => x.id, 'mr-audit': x => [x.t, x.who, x.action, x.detail].join('|'), 'mr-hist': x => x.key || x.month, 'mr-users': x => x.email, 'mr-policy': x => x.v, 'mr-wire': x => x.id };
+  const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+  // Three-way merge: an item this person did not change takes the server's copy; an item they changed keeps theirs;
+  // new items from both sides are kept; an item deleted on the server and untouched here stays deleted
+  function merge3(b, theirs, mine, idf) {
+    if (Array.isArray(mine) && Array.isArray(theirs) && idf) {
+      const B = new Map((b || []).map(x => [idf(x), x])), M = new Map(mine.map(x => [idf(x), x])), seen = new Set(), out = [];
+      for (const t of theirs) { const id = idf(t); seen.add(id); const m = M.get(id); out.push(m !== undefined && !same(m, B.get(id)) ? m : t); }
+      for (const m of mine) { const id = idf(m); if (!seen.has(id) && !B.has(id)) out.push(m); }
+      return out;
+    }
+    if (mine && theirs && typeof mine === 'object' && typeof theirs === 'object' && !Array.isArray(mine) && !Array.isArray(theirs)) {
+      const bb = b || {}, out = { ...theirs };
+      for (const k of Object.keys(mine)) if (!same(mine[k], bb[k])) out[k] = (bb[k] && typeof mine[k] === 'object' && typeof theirs[k] === 'object') ? merge3(bb[k], theirs[k], mine[k]) : mine[k];
+      for (const k of Object.keys(bb)) if (!(k in mine) && same(theirs[k], bb[k])) delete out[k];
+      return out;
+    }
+    return mine;
+  }
+  function notice(text, reload) {
+    let el = document.getElementById('kvNotice');
+    if (!el) { el = document.createElement('div'); el.id = 'kvNotice'; el.setAttribute('role', 'status'); el.setAttribute('style', 'position:fixed;left:50%;top:14px;transform:translateX(-50%);z-index:90;max-width:min(560px,92vw);background:#1F2D44;color:#fff;padding:10px 14px;border-radius:12px;font:13px/1.45 Inter,system-ui,sans-serif;box-shadow:0 12px 30px -12px rgba(0,0,0,.5)'); document.body.appendChild(el); }
+    el.textContent = text + ' ';
+    const b = document.createElement('button'); b.textContent = 'Reload now'; b.setAttribute('style', 'margin-left:8px;border:0;border-radius:8px;padding:4px 10px;background:#D6EEF0;color:#0A5E66;font-weight:600;cursor:pointer'); b.onclick = () => location.reload(); el.appendChild(b);
+    if (reload) setTimeout(() => location.reload(), 2500);
+  }
 
   function signInScreen(conf) {
     const el = document.createElement('div');
@@ -36,7 +66,8 @@
     }
     if (!r.ok) throw new Error('me: HTTP ' + r.status);
     me = await r.json();
-    const kv = await (await api('/kv')).json();
+    const kvr = await (await api('/kv?v=1')).json(), kv = kvr.values || {};
+    Object.assign(ver, kvr.versions || {}); Object.keys(kv).forEach(k => { base[k] = kv[k]; });
     const roster = await (await api('/roster')).json();
     try { if (Array.isArray(roster) && roster.length) localStorage.setItem('mr-roster', JSON.stringify(roster)); else localStorage.removeItem('mr-roster'); } catch (_) {}
     Object.keys(kv).forEach(k => { try { localStorage.setItem(k, JSON.stringify(kv[k])); } catch (_) {} });
@@ -49,8 +80,27 @@
     } catch (_) {}
     try { localStorage.setItem('mr-user', me.email); } catch (_) {}
     const origSet = localStorage.setItem.bind(localStorage), origDel = localStorage.removeItem.bind(localStorage);
-    localStorage.setItem = (k, v) => { origSet(k, v); if (SHARED.includes(k)) { clearTimeout(timers[k]); timers[k] = setTimeout(() => api('/kv/' + k, { method: 'PUT', body: v }).then(res => { if (!res.ok) console.warn('save refused', k, res.status); }).catch(e => console.warn('save failed', k, e)), 400); } };
-    localStorage.removeItem = k => { origDel(k); if (SHARED.includes(k)) api('/kv/' + k, { method: 'DELETE' }).catch(() => {}); };
+    const save = async (k, body, tries = 0) => {
+      pending[k] = true;
+      try {
+        const res = await api('/kv/' + k, { method: 'PUT', body, headers: { 'If-Match': String(ver[k] || 0) } });
+        if (res.ok) { const j = await res.json(); ver[k] = j.version; base[k] = JSON.parse(body); return; }
+        if (res.status === 409 && tries < 3) { // someone saved in between: merge and save again
+          const cur = await res.json(), mine = JSON.parse(body), merged = merge3(base[k], cur.value, mine, ID[k]);
+          ver[k] = cur.version; base[k] = cur.value;
+          if (k === 'mr-audit' && Array.isArray(merged)) merged.sort((a, b) => String(b.t).localeCompare(String(a.t))).splice(300);
+          const mb = JSON.stringify(merged); origSet(k, mb);
+          await save(k, mb, tries + 1);
+          notice(`${LABEL[k] || k} was also changed by ${cur.by || 'another user'} a moment ago. Both changes are kept; the board reloads to show them.`, true);
+          return;
+        }
+        console.warn('save refused', k, res.status);
+        if (res.status === 409) notice(`${LABEL[k] || k} keeps changing on another screen; your last change was not saved. Reload and make it again.`, false);
+      } catch (e) { console.warn('save failed', k, e); notice('A change could not be saved: the connection to the server dropped. It will be retried with your next change.', false); }
+      finally { pending[k] = false; }
+    };
+    localStorage.setItem = (k, v) => { origSet(k, v); if (SHARED.includes(k)) { clearTimeout(timers[k]); timers[k] = setTimeout(() => save(k, v), 400); } };
+    localStorage.removeItem = k => { origDel(k); if (SHARED.includes(k)) api('/kv/' + k, { method: 'DELETE' }).then(() => { ver[k] = 0; delete base[k]; }).catch(() => {}); };
   }
 
   async function afterBoot(B) {
@@ -67,7 +117,16 @@
     }
     if (n) { B.render(); if (B.toast) B.toast(n + ' data source' + (n > 1 ? 's' : '') + ' loaded from the server'); }
     setInterval(() => api('/me').then(r => { if (r.status === 401) location.reload(); }).catch(() => {}), 5 * 60 * 1000);
+    // someone else's save shows up here within a minute, before this person edits a stale copy
+    setInterval(() => api('/kv-versions').then(r => r.ok ? r.json() : {}).then(v => {
+      const changed = SHARED.filter(k => k in v && (ver[k] || 0) < v[k] && !pending[k] && !timers[k + ':seen']);
+      if (changed.length) { changed.forEach(k => { timers[k + ':seen'] = 1; }); notice(`${changed.map(k => LABEL[k] || k).join(', ')} ${changed.length > 1 ? 'were' : 'was'} updated by another user.`, false); }
+    }).catch(() => {}), 60 * 1000);
   }
 
-  window.BPRO_REMOTE = { preload, afterBoot, me: () => me };
+  async function signOut() { // ends this person's sessions on every device
+    try { await api('/auth/logout', { method: 'POST', headers: { Accept: 'application/json' } }); } catch (_) {}
+    location.href = '/';
+  }
+  window.BPRO_REMOTE = { preload, afterBoot, signOut, me: () => me, _merge3: merge3 };
 })();

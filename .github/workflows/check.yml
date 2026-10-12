@@ -49,6 +49,32 @@ jobs:
       - name: Schema parses
         run: node -e "const s=require('fs').readFileSync('backend/db/schema.sql','utf8');if(!/create table if not exists kv/.test(s))process.exit(1)"
 
+  database:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: incentive
+          POSTGRES_USER: incentive
+          POSTGRES_PASSWORD: ownertest
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U incentive -d incentive" --health-interval 5s --health-timeout 5s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: cd backend && npm ci --omit=dev --no-audit --no-fund
+      - name: Migrations, app role, versions, scope, sign-out, PKCE, limits on a real Postgres
+        env:
+          DB_APP_PASSWORD: apptest
+          OWNER_URL: postgres://incentive:ownertest@localhost:5432/incentive
+          APP_URL: postgres://incentive_app:apptest@localhost:5432/incentive
+        run: node test/db.test.js
+
   browser:
     runs-on: ubuntu-latest
     timeout-minutes: 15

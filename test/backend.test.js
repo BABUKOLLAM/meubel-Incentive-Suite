@@ -10,8 +10,8 @@ const kv = { 'mr-hist': [{ month: 'September 2026', key: '2026-09', people: [{ i
 const audit = [], logs = []; let srcMonth = null, failRoster = false;
 require.cache[dbPath] = { id: dbPath, filename: dbPath, loaded: true, exports: { pool: { end: async () => {} }, tx: async fn => fn({ query: async () => ({ rows: [] }) }), q: async (sql, p) => {
   if (/from profiles/.test(sql)) return { rows: profiles.filter(x => !p || x.email === String(p[0]).toLowerCase()) };
-  if (/^select key, value from kv/.test(sql)) return { rows: Object.entries(kv).map(([key, value]) => ({ key, value })) };
-  if (/insert into kv/.test(sql)) { kv[p[0]] = JSON.parse(p[1]); return { rows: [] }; }
+  if (/^select key, value/.test(sql)) return { rows: Object.entries(kv).map(([key, value]) => ({ key, value })) };
+  if (/insert into kv|update kv/.test(sql)) { kv[p[0]] = JSON.parse(p[1]); return { rows: [{ version: 1 }] }; }
   if (/select id, name from roster where branch_id/.test(sql)) return { rows: [{ id: 'MG1', name: 'E' }] };
   if (/from roster/.test(sql)) { if (failRoster) throw new Error('db down'); return { rows: [] }; }
   if (/insert into audit_events/.test(sql)) { audit.push(p); return { rows: [] }; }
@@ -19,7 +19,7 @@ require.cache[dbPath] = { id: dbPath, filename: dbPath, loaded: true, exports: {
   if (/from src_/.test(sql)) { srcMonth = p && p[0]; return { rows: [] }; }
   return { rows: [] };
 } } };
-Object.assign(process.env, { PORT: '8095', JOBS: '0', DEV_LOGIN: '1', SESSION_SECRET: 'test', BASE_URL: 'http://localhost:8095' });
+Object.assign(process.env, { MIGRATE_ON_START: '0', PORT: '8095', JOBS: '0', DEV_LOGIN: '1', SESSION_SECRET: 'test', BASE_URL: 'http://localhost:8095' });
 delete process.env.DRY_RUN; delete process.env.OIDC_GOOGLE_CLIENT_ID;
 const quiet = console.error; console.error = () => {}; console.warn = () => {};
 process.chdir(root); require(root + '/server.js');
@@ -42,7 +42,7 @@ setTimeout(async () => {
     await require(root + '/jobs/messages.js').run('monthly');
     ok(/^\d{4}-\d{2}$/.test(srcMonth || '') && srcMonth < new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Kolkata' }).slice(0, 7), 'monthly round did not read the month just ended: ' + srcMonth);
     ok(logs.every(l => l[5] !== 'sent'), 'messages sent with DRY_RUN unset');
-  } catch (e) { bad.push('threw ' + e.message); }
+  } catch (e) { bad.push('threw ' + e.stack.split('\n').slice(0, 3).join(' | ')); }
   console.error = quiet;
   if (bad.length) { console.log(bad.join('\n')); process.exit(1); }
   console.log('backend test: sign-in errors plain text, routes survive bad input and database errors, scoped state, honest audit, monthly dry run on the closed month');

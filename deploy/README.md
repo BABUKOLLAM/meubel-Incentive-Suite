@@ -33,6 +33,7 @@ cd /opt/incentive
 cp .env.example .env
 openssl rand -hex 32          # paste as SESSION_SECRET
 openssl rand -hex 24          # paste as DB_PASSWORD
+openssl rand -hex 24          # paste as DB_APP_PASSWORD (the app's restricted database login)
 nano .env                     # DOMAIN, ACME_EMAIL, the two secrets, and at least one sign-in provider
 ```
 
@@ -127,6 +128,18 @@ Restore: `gunzip -c deploy/backups/incentive-YYYY-MM-DD.sql.gz | docker compose 
 
 Monitoring: `https://DOMAIN/api/health` for an uptime check; the Total view shows feed freshness; `jobs_log`
 records every scheduled run and failure.
+
+## Upgrading an existing server
+
+`git pull && sudo deploy/install.sh <domain> <email>` adds what a newer release needs to `.env` and restarts. By hand:
+
+1. Add `DB_APP_PASSWORD=$(openssl rand -hex 24)` to `.env`: the app now connects as a restricted database role,
+   created by the one-shot `migrate` service, and never sees the owner's password.
+2. Microsoft sign-in: put the tenant id in `OIDC_MICROSOFT_TENANT` (`common` is refused).
+3. `chown -R 1000:1000 data` (the app container runs as the unprivileged node user).
+4. `docker compose up -d --build`. Migrations in `backend/db/migrations` are applied once each and recorded in
+   `schema_migrations`; `docker compose logs migrate` shows which ran.
+
 
 ## What is still sample until the feeds arrive
 

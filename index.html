@@ -826,7 +826,7 @@ function statementHtml(m,b){const p=m.p,br=b.br,co=br.company,isMgmt=p.role==='B
   ${earned.length?`<p class="note">Recognition this month: ${earned.map(x=>x.icon+' '+x.name).join(', ')} (no rupee value).</p>`:''}
   <p class="note">Please check this statement and confirm it. Disputes within 7 days of issue through your Branch Manager or HR, quoting the order number or day concerned. Rules: Corporate Incentive Structure in force for ${MONTH}.</p>
   <div class="sig"><div>Employee</div><div>Branch Manager</div><div>HR / Accounts</div></div></div>`}
-function printStatements(items){const box=$('#print');if(!box)return;box.innerHTML=printWrap(items.map(x=>statementHtml(x.m,x.b).replace(/<\/div>$/,`<p class="ddline">${esc(DD.text)} · ${ddLinks()}</p></div>`)).join(''),'inline');if(typeof window.print==='function')window.print()}
+function printStatements(items){const box=$('#print');if(!box)return;box.innerHTML=printWrap(items.map(x=>statementHtml(x.m,x.b).replace(/<\/div>$/,`<p class="ddline">${esc(DD.text)} · ${ddLinks()}</p></div>`)).join(''),'inline');printNow(`statements-${CAL.key}-asof-${asOf}`)}
 
 /* ---------- Footer on every report output: designed and developed by ---------- */
 const DD={text:'D&D by Dr.Babu.B. Bpro Consulting & Technologies',links:[['www.drbabu.in','https://www.drbabu.in'],['www.bpropms.com','https://www.bpropms.com']]};
@@ -836,6 +836,16 @@ const ddHtml=()=>`<span class="dd">${esc(DD.text)} · ${ddLinks()}</span>`;
 const ddEmail=()=>`<p style="margin:12px 0 0;padding-top:10px;border-top:1px solid #DCE2EA;font-size:11.5px;color:#5B6776">${esc(DD.text)} · ${ddLinks('color:#0A5E66')}</p>`;
 const ddPrint=()=>`<div class="ddfoot">${esc(DD.text)} · ${ddLinks()}</div>`;
 const ddCsvRows=()=>[[],[DD.text,...DD.links.map(([t,u])=>`=HYPERLINK("${u}","${t}")`)]]; // Excel, LibreOffice and Google Sheets open these as links
+// Print what #print holds. Inside the claude.ai viewer the frame may not open a print dialog, so a print-ready copy
+// (the same content with the board's print styles, opening its own print dialog) is also offered as a file to save.
+function printNow(name){
+  try{if(typeof window.print==='function')window.print()}catch(_){}
+  if(!(window.claude&&typeof window.claude.use==='function'))return;
+  const css=[...document.querySelectorAll('style')].map(x=>x.textContent).join('\n'),i=css.indexOf('@media print{');let pr='';
+  if(i>=0){let d=0,j=i+13;for(;j<css.length;j++){if(css[j]==='{')d++;else if(css[j]==='}'){if(!d)break;d--}}pr=css.slice(i+13,j)}
+  const doc=`<!doctype html><html><head><meta charset="utf-8"><title>${esc(name)}</title><style>${pr.replace('body>*:not(#print){display:none!important}','')}</style><style>${(document.getElementById('pgsize')||{}).textContent||''}</style></head><body><div id="print">${$('#print').innerHTML}</div><script>addEventListener('load',function(){setTimeout(function(){print()},400)})<\/script></body></html>`;
+  downloadBlob(name+'.html',new Blob([doc],{type:'text/html;charset=utf-8'}));
+}
 const printWrap=(html,cls)=>{const pg=document.getElementById('pgsize');if(pg)pg.textContent=cls==='land'?'@page{size:A4 landscape;margin:9mm 9mm 8mm}':'@page{size:A4;margin:12mm 12mm 10mm}';if(cls==='inline')return html;return `<table class="pwrap"><tfoot><tr><td><div class="ddspace"></div></td></tr></tfoot><tbody><tr><td>${html}</td></tr></tbody></table>${ddPrint()}`}; // the footer repeats on every printed page; the empty table footer keeps room for it
 
 /* ---------- Subtotals and grand totals: table-footer rows, so paging never moves them and the CSV export carries them ---------- */
@@ -2409,7 +2419,7 @@ function printReport(R){const box=$('#print');if(!box)return;
   const bands=rptBands(R,14),cols=1+Math.max(...bands.map(b=>(b.periods.length+(b.total?1:0))*b.MS.length));
   box.innerHTML=printWrap(`<div class="rpt" style="font-size:${cols>12?8.5:10}px"><h1>${esc(R.title)}</h1><p class="sub">${R.params.map(p=>`<b>${esc(p[0])}:</b> ${esc(p[1])}`).join(' · ')}</p>${bands.map((b,i)=>`${bands.length>1?`<p class="band">Columns ${esc(b.periods[0]?b.periods[0].l:'')} to ${esc(b.periods.length?b.periods[b.periods.length-1].l:'')}${b.total?' and the total':''} · part ${i+1} of ${bands.length}</p>`:''}<div class="${i?'nb':''}">${reportTable(b)}</div>`).join('')}${R.notes.map(n=>`<p class="note">${esc(n)}</p>`).join('')}</div>`,'land');
   const t=document.title;document.title=R.file;const back=()=>{document.title=t;window.removeEventListener('afterprint',back)};if(typeof window.addEventListener==='function')window.addEventListener('afterprint',back);
-  if(typeof window.print==='function')window.print()}
+  printNow(R.file)}
 
 /* ---------- Excel (.xlsx) writer: Office Open XML in a stored zip, no library ---------- */
 const CRC_T=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
@@ -2678,8 +2688,9 @@ function toolbar(){
     <button class="navflip" id="navFlip" title="Move the menu between the top bar and a side bar">${(document.body&&document.body.classList&&document.body.classList.contains('sidenav'))?'⇆ Top bar':'⇆ Side bar'}</button>`;
   $('#roleLbl').innerHTML=`<span class="role ${r.cls}">${r.name}</span>`;
   const us=allUsers();$('#selUser').innerHTML=us.map(u=>`<option value="${u.email}" ${u.email===ME.email?'selected':''}>${u.name} · ${u.email}</option>`).join('');
-  $('#userNote').innerHTML=(window.BPRO_REMOTE&&BPRO_REMOTE.me&&BPRO_REMOTE.me()?`${esc(BPRO_REMOTE.me().email)} · <a href="${(window.BPRO_CONFIG||{}).api||'/api'}/auth/logout">Sign out</a><br>`:'')+esc(r.scope==='group'?`Sees the whole group${r.settings==='edit'?', edits settings':r.settings==='read'?', settings read-only':''}.`:r.scope==='branch'?'Sees own branch, its teams and people.':r.scope==='team'?'Sees own branch sales team and people.':'Sees own page and messages only.');
+  $('#userNote').innerHTML=(window.BPRO_REMOTE&&BPRO_REMOTE.me&&BPRO_REMOTE.me()?`${esc(BPRO_REMOTE.me().email)} · <a href="${(window.BPRO_CONFIG||{}).api||'/api'}/auth/logout" id="signOut">Sign out</a><br>`:'')+esc(r.scope==='group'?`Sees the whole group${r.settings==='edit'?', edits settings':r.settings==='read'?', settings read-only':''}.`:r.scope==='branch'?'Sees own branch, its teams and people.':r.scope==='team'?'Sees own branch sales team and people.':'Sees own page and messages only.');
   $('#selUser').onchange=()=>{setUser($('#selUser').value);go(homeState())};
+  const so=$('#signOut');if(so&&so.addEventListener&&window.BPRO_REMOTE&&BPRO_REMOTE.signOut)so.addEventListener('click',e=>{e.preventDefault();BPRO_REMOTE.signOut()});
   const jump=(over)=>{const st={co:$('#selCo').value||null,br:$('#selBr').value||null,team:$('#selTeam').value||null,person:$('#selPerson').value||null,...over};
     if(st.br){const b=branches.find(x=>x.id===st.br);if(b)st.co=b.company.id}else{st.team=null;st.person=null}
     if(st.person){const p=people.find(x=>x.id===st.person);if(p){st.br=p.branch.id;st.co=p.branch.company.id;st.team=p.role==='BM'||p.role==='SM'?'Management':p.role}}

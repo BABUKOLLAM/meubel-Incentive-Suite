@@ -35,11 +35,14 @@ echo "== 4/6 settings"
 if [ ! -f .env ]; then
   cp .env.example .env
   sed -i "s|^DOMAIN=.*|DOMAIN=$DOMAIN|; s|^ACME_EMAIL=.*|ACME_EMAIL=$ACME|" .env
-  sed -i "s|^DB_PASSWORD=.*|DB_PASSWORD=$(openssl rand -hex 24)|; s|^SESSION_SECRET=.*|SESSION_SECRET=$(openssl rand -hex 32)|" .env
+  sed -i "s|^DB_PASSWORD=.*|DB_PASSWORD=$(openssl rand -hex 24)|; s|^DB_APP_PASSWORD=.*|DB_APP_PASSWORD=$(openssl rand -hex 24)|; s|^SESSION_SECRET=.*|SESSION_SECRET=$(openssl rand -hex 32)|" .env
   chmod 600 .env
   echo "   wrote .env (secrets generated). Add a sign-in provider next: nano $DIR/.env"
 else
   echo "   .env exists, left as it is"
+  if ! grep -q '^DB_APP_PASSWORD=.\+' .env; then   # upgrade: the app's own restricted database login
+    sed -i '/^DB_APP_PASSWORD=/d' .env; echo "DB_APP_PASSWORD=$(openssl rand -hex 24)" >> .env; echo "   added DB_APP_PASSWORD"
+  fi
 fi
 
 echo "== 5/6 starting (dry run: messages are logged, not sent)"
