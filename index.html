@@ -862,7 +862,11 @@ const adjNet=a=>sumBy(a,x=>(x.type==='Manual deduction'?-1:x.type==='Manual addi
 /* ---------- CSV exports ---------- */
 const csvCell=v=>{const s=v==null?'':String(v);return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s};
 function csvText(header,rows,foot=true){return [header,...rows,...(foot?ddCsvRows():[])].map(r=>r.map(csvCell).join(',')).join('\n')}
-function downloadBlob(name,blob){try{const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();toast('Downloading '+name);setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}catch(e){alertNote('Download failed: '+e.message)}}
+function downloadBlob(name,blob){ // inside a claude.ai artifact the host's save dialog, elsewhere a plain browser download
+  const anchor=()=>{try{const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();toast('Downloading '+name);setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}catch(e){alertNote('Download failed: '+e.message)}};
+  const host=window.claude&&typeof window.claude.use==='function'?Promise.resolve(window.claude.use('downloads')).catch(()=>null):Promise.resolve(null);
+  host.then(dl=>{if(!dl)return anchor();dl.save({filename:name,data:blob}).then(()=>toast('Saved '+name),e=>{if(e&&e.code!=='declined')alertNote('Download not available here: '+(e.message||e.code))})});
+}
 function downloadText(name,text,type){downloadBlob(name,new Blob(['\ufeff'+text],{type:type||'text/csv;charset=utf-8'}))}
 function payoutRows(g){const rk=rankings(g);return allMembers(g).map(m=>[m.p.id,m.p.name,m.p.role,m.brc.br.name,m.co.name,m.vals.att.toFixed(1),m.gate?'yes':'no',m.sc.rows.length?m.sc.score.toFixed(1):'',Math.round(m.pay||0),m.perBill?Math.round(m.perBill.confirmed):0,m.perBill?Math.round(m.perBill.provF):0,m.cre?Math.round(m.cre.overrideEarned):0,m.cre?Math.round(m.cre.followBonus):0,Math.round(m.teamShareNow||0),Math.round(m.adj||0),Math.round(m.total),Math.round(m.totalProj),rk[m.p.id]?rk[m.p.id].group.rank:'',badgesFor(m,m.brc,rk).filter(x=>x.earned).map(x=>x.name).join('; ')])}
 const PAYOUT_HEADER=['employee_id','name','role','branch','company','attendance_pct','gated','score','scorecard_pay','per_bill_confirmed','per_bill_provisional','cre_override','follow_up_bonus','team_pool_share','adjustments','total_confirmed','total_expected','group_rank','badges'];
