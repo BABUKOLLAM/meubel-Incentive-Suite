@@ -367,7 +367,7 @@ td.attr[data-tip]{text-decoration:underline dotted;text-decoration-color:var(--l
     </div>
     <div class="hbtns">
       <button class="hbtn" id="themeBtn" title="Theme: follows the device, or light, or dark">◐ Auto</button>
-      <a class="hbtn" id="manualLink" href="https://github.com/BABUKOLLAM/meubel-Incentive-Suite/blob/main/docs/manual/Incentive-Board-Manual-v1.3.pdf" target="_blank" rel="noopener" title="Open the manual (PDF)">📘 Manual</a>
+      <a class="hbtn" id="manualLink" href="https://github.com/BABUKOLLAM/meubel-Incentive-Suite/blob/main/docs/manual/Incentive-Board-Manual-v1.4.pdf" target="_blank" rel="noopener" title="Open the manual (PDF)">📘 Manual</a>
     </div>
     </div>
   </header>
@@ -2718,7 +2718,7 @@ function toast(msg){const t=$('#toast');if(!t||!t.classList)return;t.textContent
 function introCard(){const el=$('#intro');if(!el)return;let seen=false;try{seen=localStorage.getItem('mr-intro')==='1'}catch(_){}
   if(seen||state.tv){el.hidden=true;return}el.hidden=false;const r=role();
   el.innerHTML=`<div><h3>Welcome, ${esc(ME.name.split(' (')[0])}</h3><p>${$('#lede').textContent||'Drill from the group to a company, a branch, a team and a person. Every level is scored on the same attributes, every rupee is traceable to a value against a target, and the month-end figure is predicted from the pace so far.'} Every card is coloured by what it does: green for what to push, red for what lags, gold for recognition.</p>
-    <div class="acts"><button class="btn primary" data-act="home">${r.scope==='person'?'Open my page':r.scope==='group'?'Open the group board':'Open my branch'}</button>${can('sales')?'<button class="btn" data-act="sales">📊 Sales analytics</button>':''}${can('leaderboard')?'<button class="btn" data-act="lb">🏆 Leaderboard</button>':''}<a class="btn" href="https://github.com/BABUKOLLAM/meubel-Incentive-Suite/blob/main/docs/manual/Incentive-Board-Manual-v1.3.pdf" target="_blank" rel="noopener">📘 Manual</a></div></div><button class="x" aria-label="Dismiss" data-act="x">×</button>`;
+    <div class="acts"><button class="btn primary" data-act="home">${r.scope==='person'?'Open my page':r.scope==='group'?'Open the group board':'Open my branch'}</button>${can('sales')?'<button class="btn" data-act="sales">📊 Sales analytics</button>':''}${can('leaderboard')?'<button class="btn" data-act="lb">🏆 Leaderboard</button>':''}<a class="btn" href="https://github.com/BABUKOLLAM/meubel-Incentive-Suite/blob/main/docs/manual/Incentive-Board-Manual-v1.4.pdf" target="_blank" rel="noopener">📘 Manual</a></div></div><button class="x" aria-label="Dismiss" data-act="x">×</button>`;
   el.querySelectorAll('[data-act]').forEach(b=>b.addEventListener('click',()=>{const a=b.dataset.act;if(a==='x'){try{localStorage.setItem('mr-intro','1')}catch(_){}el.hidden=true;return}if(a==='home')go(homeState());if(a==='sales')go({...homeState(),level:'sales'});if(a==='lb')go({...homeState(),level:'leaderboard'})}));
 }
 function setNav(mode){try{localStorage.setItem('mr-nav',mode)}catch(_){}if(document.body&&document.body.classList)document.body.classList.toggle('sidenav',mode==='side');render()}

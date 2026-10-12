@@ -13,7 +13,7 @@ const path = require('path');
     path: pdf, format: 'A4', printBackground: true, preferCSSPageSize: false,
     margin: header === '1' ? { top: '18mm', bottom: '17mm', left: '16mm', right: '16mm' } : { top: 0, bottom: 0, left: 0, right: 0 },
     displayHeaderFooter: header === '1',
-    headerTemplate: `<div style="${font}border-bottom:0.6pt solid #DCE2EA;padding-bottom:3pt;margin-top:6mm"><span style="font-weight:700;color:#1F2D44;letter-spacing:.08em;text-transform:uppercase">Incentive Board Manual</span><span>Meubel Grande · Royal Group · release 1.3</span></div>`,
+    headerTemplate: `<div style="${font}border-bottom:0.6pt solid #DCE2EA;padding-bottom:3pt;margin-top:6mm"><span style="font-weight:700;color:#1F2D44;letter-spacing:.08em;text-transform:uppercase">Incentive Board Manual</span><span>Meubel Grande · Royal Group · release 1.4</span></div>`,
     footerTemplate: `<div style="${font}border-top:0.6pt solid #DCE2EA;padding-top:3pt;margin-bottom:6mm"><span>D&amp;D by Dr.Babu.B. Bpro Consulting &amp; Technologies · www.drbabu.in | www.bpropms.com</span><span style="font-weight:700;color:#1F2D44">Page <span class="pageNumber"></span> of <span class="totalPages"></span></span></div>`,
   });
   await b.close();

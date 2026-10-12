@@ -6,7 +6,7 @@ Oct 3, 2026 · @BABU
 
 &#91;image: Bpro\]
 
-**Settings manual and user manual** for administrators and top management, release 1.3, October 2026.
+**Settings manual and user manual** for administrators and top management, release 1.4, October 2026.
 
 One board pays every role from the same written policy, shows each person their incentive as it builds through the month, and sends the right summary to the right person on WhatsApp or email. This manual explains the whole programme, then walks through every screen: the lenses for leadership, the settings and data inputs for administrators, and the back-end console for the Bpro team.
 
@@ -140,7 +140,11 @@ Settings and the Admin console sit above the engine: they change the rules, neve
 
 **What to look at.** One report that combines what used to need several exports. Choose the **rows** (branches by company, salespeople by branch, products by category, incentive by role by company, or everyone by branch), tick any **measures** (Qty, Value, Avg ticket, Target, Achievement, Incentive, Score, Attendance, People), tick one or more **years** and **months**, and choose the **columns**: month, quarter, calendar year or the Indian financial year (April to March). Each period becomes a column group with every measure under it, followed by a **Total** column group across the periods. Rows sit under their group with a **subtotal** after each group and a **grand total** at the foot. Five quick starts set common reports in one click: this year by month, year on year, financial years with achievement, incentive by role by quarter, and the product mix by year.
 
-**Outputs.** ⬇ **Excel (.xlsx)** keeps the numbers as numbers in Indian rupee and quantity formats, with the period headers merged, the first column and the headers frozen, the headers repeated on every printed page, landscape printing fitted to the page width and the footer on every page. 🖨 **PDF** prints the same report landscape, with the footer and its links on every page. ⬇ **CSV** carries the parameters, the subtotals and the grand total. All three list the parameters used, so a printed report explains itself.
+**Outputs.** ⬇ **Excel (.xlsx)** keeps the numbers as numbers in Indian rupee and quantity formats, with the period headers merged, the first column and the headers frozen, the headers repeated on every printed page, landscape printing fitted to the page width and the footer on every page. 🖨 **PDF** prints the same report on A4 landscape, with the footer and its links on every page; a report with many periods prints in column sections (for example January to March, then April to June), each repeating the row names, with the total in the last section. ⬇ **CSV** carries the parameters, the subtotals and the grand total. All three list the parameters used and the time prepared (India time), so a printed report explains itself.
+
+**Years and financial years.** With *Calendar year*, *Month* or *Quarter* columns the year chips are calendar years; with *Financial year* columns they become financial years (FY 2025-26 is April 2025 to March 2026). Switching between the two keeps the months already covered. Untick every measure and the board asks for one rather than guessing. On the keyboard, Tab moves through the builder and the table scrolls sideways with the arrow keys once it has focus; the row names stay in view while it scrolls.
+
+**Months archived before release 1.3** carry sales volumes per branch only. Branch reports show their value and target; salesperson quantities and the product mix are blank for those months, and the report says so in a note. Products are grouped by item within its price category, because the same item can sell in more than one category.
 
 > 📌 **Sticky note.** Subtotals and grand totals are computed from the underlying figures, not by adding the cells above: Qty, Value, Target, Incentive and People are sums; Avg ticket and Achievement are worked out from those sums; Score and Attendance are averages. The running month is to the day on the slider, with its target pro-rated to the day.
 
@@ -166,16 +170,18 @@ Settings and the Admin console sit above the engine: they change the rules, neve
 
 **Sign-in.** In production every user signs in through the group's single sign-on (configured in 🛠 Admin → Wirings → Single sign-on); no password lives in the page. In the sample build the *Signed in as* switch at the top left stands in for the login so that every role can be rehearsed.
 
+**What production adds.** Microsoft 365 sign-in accepts only the company's own tenant, and Google sign-in only verified Workspace addresses; the server can further be limited to the company's email domains. **Sign out** (next to your email under the role badge) ends your sessions on every device, so a shared or lost phone is closed from any screen. Repeated sign-in attempts are slowed down, and a change sent from any other website is refused. Branch Managers, Sales Managers and employees receive only their own branch's roster and figures; the group, every company and every branch reach only the roles that see the whole group.
+
 | Role | Sample users | Home page | Can open | Settings |
 | --- | --- | --- | --- | --- |
-| 🛡 Super Admin | tech@bpropms.com | Group | Board, 🧭 Total, 🏆, 📣, ⚙️, 🛠 Admin, Users, Reset | Edit |
-| 🔧 Admin | process@bpropms.com | Group | Board, 🧭 Total, 🏆, 📣, ⚙️, 🛠 Admin | Edit |
-| 🧭 Consultant | drbabu@bpropms.com and the Bpro consultant team | Group | Board, 🧭 Total, 🏆, 📣, ⚙️, 🛠 Admin | Read only |
-| 👑 Managing Director | md@ | Group | Board, 🏆, 📣 | None |
-| 👑 Director | one per company | Group | Board, 🏆, 📣 | None |
-| 🫶 HR | hr@ | Group | Board, 🏆, 📣 (HR audience) | None |
-| 🏬 Branch Manager | one per branch | Own branch | Own branch, its teams and people, 🏆, 📣 for the branch | None |
-| 👥 Sales Manager | one per branch | Own Sales team | Own Sales team and its people, 🏆, 📣 for the team | None |
+| 🛡 Super Admin | tech@bpropms.com | Group | Board, 📊, 📑, 🧭 Total, 🏆, 📣, ⚙️, 🛠 Admin, Users, Reset | Edit |
+| 🔧 Admin | process@bpropms.com | Group | Board, 📊, 📑, 🧭 Total, 🏆, 📣, ⚙️, 🛠 Admin | Edit |
+| 🧭 Consultant | drbabu@bpropms.com and the Bpro consultant team | Group | Board, 📊, 📑, 🧭 Total, 🏆, 📣, ⚙️, 🛠 Admin | Read only |
+| 👑 Managing Director | md@ | Group | Board, 📊, 📑, 🏆, 📣 | None |
+| 👑 Director | one per company | Group | Board, 📊, 📑, 🏆, 📣 | None |
+| 🫶 HR | hr@ | Group | Board, 📊, 📑, 🏆, 📣 (HR audience) | None |
+| 🏬 Branch Manager | one per branch | Own branch | Own branch, its teams and people; 📊, 📑, 🏆, 📣 for the branch | None |
+| 👥 Sales Manager | one per branch | Own Sales team | Own Sales team and its people; 📊, 📑 (sales reports), 🏆, 📣 for the team | None |
 | 🧑 Employee | every staff member | Own page | Own page and own message only | None |
 
 &#91;image: A Branch Manager's view: the selector bar offers only the branch, its teams and its people\]
@@ -440,6 +446,8 @@ Each cell is available as WhatsApp text (bold and italic in WhatsApp markup) and
 2. In 🛠 Admin → Jobs and status check that each send job shows the schedule above and press **Run now** on one to confirm delivery to a test number.
 3. Switch the channel to **live**. The jobs then run on schedule; every run is written to the audit log.
 
+On the server, nothing goes out until the operator sets `DRY_RUN=0` on purpose; until then every message is written to the messages log only. Each message goes to each person once per run, so a re-run or a restart never sends twice, and a send that fails is retried on the next run. The monthly round on the 1st reports the month that has just ended, scored to its last day, not the new month.
+
 > 🔍 **Lens.** The daily SM and BM messages are the programme's heartbeat. If the branch does not read them in the evening, the weekly and monthly messages arrive too late to change the month.
 
 ## ⚙️ 8. Settings manual for administrators
@@ -487,7 +495,11 @@ Super Admin and Admin edit. Consultants see every value read-only. Client roles 
 - **Paste** or **Upload** restores a configuration from that JSON. Use it to move a tested configuration from the sandbox to the live server.
 - **Reset to policy defaults** returns every value to the 19 September 2026 draft. Super Admin only; the reset is written to the audit log.
 
-### 8.6 Procedure: rehearse a month
+### 8.6 Two administrators at the same time
+
+Every shared setting, the adjustments ledger, the users list, policy versions, wirings, the month close and the archive carry a version. When you save, the board names the version your screen started from. If someone else saved in between, nothing is overwritten: the board merges the two (what you changed and what they changed are both kept; if you both changed the same item, your change wins), saves the result and reloads with a short notice naming who else saved. When another person saves while your screen is open, a notice appears within a minute with a **Reload now** button, so you do not keep working on an old copy.
+
+### 8.7 Procedure: rehearse a month
 
 1. Set *as of* to 1 and read the group lens: chance near 50% everywhere, wide bands.
 2. Step to 10, 20 and 31 and watch the bands narrow and the pools open or close.
@@ -541,6 +553,8 @@ When the board is hosted, its branches and people are built from the roster load
 1. Set the mode to **link** and paste the URL that returns the same columns (CSV or a JSON array of objects).
 2. Press **Fetch now**. On the hosted board the fetch runs and the status line shows the row count; in the artifact sandbox outside calls are blocked, so fetch only works once the page is on the group's server.
 3. For a scheduled feed, add the system in 🛠 Admin → Wirings with its auth and schedule (section 10.3). The schedule is every 15 minutes for orders and walk-ins, hourly for attendance and deliveries, nightly for the rest.
+
+**Scheduled CSV exports on the server.** Files dropped into the server's inbox as `<source>.csv` load into the current month every 15 minutes and are then moved aside, so a file is never imported twice or into the next month. Name a file `<source>-YYYY-MM.csv` to load a particular month, for example a late correction to last month. An empty or half-written file is refused and the month keeps its rows.
 
 ### 9.5 Procedure: return a source to sample
 
@@ -636,7 +650,7 @@ Each tick records who and when. The HR monthly email and the MD monthly email ar
 
 The bar under the checklist carries the three outputs of a close:
 
-1. **Statements for every employee** fills a print view with one page per person (every component with the rule behind it, the 7-day dispute window, signature lines) and opens the browser's print dialog. Choose *Save as PDF* for the files that go out, or print. **Statement** on any person's page prints that one person's.
+1. **Statements for every employee** fills a print view with one A4 page per person (every component with the rule behind it, the 7-day dispute window, signature lines, and the D&D line with its links at the foot) and opens the browser's print dialog. Choose *Save as PDF* for the files that go out, or print. **Statement** on any person's page prints that one person's. Inside the claude.ai viewer, where the frame may not open a print dialog, the board also offers a print-ready copy to save; open it and it prints itself.
 2. **Payout file (CSV)** downloads one row per employee with employee id, role, branch, attendance, gate, score, scorecard pay, per-bill confirmed and provisional, CRE override, follow-up bonus, team pool share, adjustments, total confirmed, total expected, group rank and badges. This is the hand-over to payroll in step 8.
 3. **Archive into history** opens on the last day of the month. It snapshots every branch and every person, including each branch's mid-month projection, so that ⚙️ Settings → Prediction constants can show the spread observed between projection and outcome. After three real closes, set the spread constant from that figure.
 
@@ -644,7 +658,7 @@ The **Export ledger (CSV)** button on the Adjustments tab gives the auditor the 
 
 &#91;image: A printed statement: components with their rules, the dispute note and signature lines\]
 
-**History cards.** The group lens, every branch lens and every person's page carry a history card with the archived months and the running month marked. Until the first real close the cards show three generated sample months, flagged *sample*.
+**History cards.** The group lens, every branch lens and every person's page carry a history card with the last five months and the running month marked, and a total across them. Until real closes exist the sample build shows generated months, flagged *sample*; each archived close replaces its sample month, and a board on the live roster shows only real months. For longer spans use 📑 Reports.
 
 &#91;image: A person's history card: score, achievement, incentive and badges by month\]
 
@@ -652,7 +666,7 @@ The **Export ledger (CSV)** button on the Adjustments tab gives the auditor the 
 
 &#91;image: Audit log: every save, upload, user change, policy move, adjustment, wiring change, job run and close-step tick\]
 
-Newest first, with a copy button for the auditor. In this preview the console keeps its state in the browser so the flows can be rehearsed end to end; in production it is the server-side admin app over the same tables, and the log is append-only.
+Newest first, with a copy button for the auditor. In this preview the console keeps its state in the browser so the flows can be rehearsed end to end; in production it is the server-side admin app over the same tables, and the log is append-only: every entry records the signed-in person, and the application's own database login cannot edit, delete or empty it.
 
 > 🔍 **Lens.** Before any client review open Jobs and status: if the tiles are green and the pending count is zero, the numbers on every other page can be trusted.
 
@@ -826,6 +840,12 @@ Newest first, with a copy button for the auditor. In this preview the console ke
 | A message shows yesterday's figures | the send ran before the last sync | check the job order in Jobs and status; the sync runs first |
 | The board looks empty after a reset | the browser state was cleared | Super Admin resets to policy defaults; re-upload or re-fetch sources |
 | Figures look odd after a settings change | a draft value is being tried | load the live policy version to compare; the audit log shows what changed |
+| A notice says a setting *was also changed by* someone | two people saved within moments of each other | nothing is lost: both changes were merged; check the result after the reload |
+| *Updated by another user* appears | someone else saved while your screen was open | press **Reload now** before editing further |
+| Microsoft sign-in is refused | the account is outside the company's tenant, or not on the profiles table | sign in with the company account; ask the administrator to add the email |
+| *Too many requests* | many sign-in attempts or refreshes from one address in a minute | wait a minute and try again |
+| PDF does nothing inside the claude.ai viewer | the viewer's frame blocks the print dialog | save the print-ready copy the board offers, open it, and print or save as PDF |
+| A Branch Manager sees only one branch in rankings | client roles receive their own branch only | expected; group-wide ranks are in the messages and on the leadership views |
 
 ### Glossary
 
@@ -857,6 +877,7 @@ Newest first, with a copy button for the auditor. In this preview the console ke
 | 1.0 | 3 October 2026 | first release of the manual, matching the sample build with roles, Total view, Admin console, messages matrix and data inputs |
 | 1.1 | 3 October 2026 | board audit fixes (document skeleton, stale-state sanitiser, labels, workflow); badge ladder and badge wall built in; manual section 6.3 updated |
 | 1.2 | 3 October 2026 | month history and archive, printable statements, payout file and ledger exports, leaderboard export and TV mode; manual sections 5.3, 6.2 and 10.7 |
+| 1.4 | 12 October 2026 | audit release: production sign-in hardening (company tenant, verified email, sign out on every device, rate limits), branch-scoped data for client roles, versioned saves that merge two people's changes, a restricted database login, messages once per run and the monthly round on the closed month, inbox safeguards; report fixes (products by category, months archived before 1.3, people who moved branch, years in financial-year mode), PDF reports in column sections, A4 statements with the footer, keyboard focus kept in the builder; manual sections 2, 3, 7, 8.6, 9, 10 and troubleshooting |
 | 1.3 | 12 October 2026 | Reports window (measures across months, quarters, calendar and financial years in one Excel, PDF or CSV output); subtotals and grand totals on the board's tables; the D&D footer with its links on every report, statement, export and email; manual section 2 |
 
 ### Colophon
