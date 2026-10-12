@@ -11,7 +11,7 @@ const run=tag=>{setUser('tech@bpropms.com');
   for(const t of ['Branches','Sales','CRE','Logistics','Back office','Management']){Object.assign(state,{level:'leaderboard',co:null,br:null,team:null,person:null,lbTab:t});try{render();if(BAD.test(nodes['#view'].innerHTML)){__e++;console.log('live '+tag+' lb',t,where(nodes['#view'].innerHTML))}}catch(ex){__e++;console.log('live lb ERR',t,ex.message)}}
   for(const a of AUDIENCES)for(const c of CADS)for(const [ch] of CHANNELS){Object.assign(state,{level:'messages',co:co0,br:'klm',team:null,person:null,msg:{aud:a.id,cad:c,ch}});try{render();if(BAD.test(nodes['#view'].innerHTML)){__e++;console.log('live '+tag+' msg',a.id,c,ch,where(nodes['#view'].innerHTML))}}catch(ex){__e++;console.log('live msg ERR',a.id,c,ch,ex.message)}}
   const s=allMembers(computeGroup()).map(m=>statementHtml(m,m.brc)).join('');if(BAD.test(s)){__e++;console.log('live '+tag+' statement',where(s))}
-  const csv=csvText(PAYOUT_HEADER,payoutRows(computeGroup()));if(BAD.test(csv)){__e++;console.log('live '+tag+' payout csv',where(csv))}};
+  const csv=payoutCSV(computeGroup());if(BAD.test(csv)){__e++;console.log('live '+tag+' payout csv',where(csv))}};
 run('empty');
 if(history().length||rptYears().length!==1){__e++;console.log('live roster shows sample history',history().length,rptYears())}
 const NL=String.fromCharCode(10);

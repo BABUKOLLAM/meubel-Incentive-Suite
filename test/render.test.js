@@ -42,7 +42,7 @@ asOf=31;const __snapM=snapshotMonth(MONTH);if(__snapM.people.length!==people.len
 if(__snapM.people.some(x=>!isFinite(x.total)||!isFinite(x.score))||__snapM.branches.some(x=>!isFinite(x.payout)||!isFinite(x.midProj))){__errs++;console.log('snapshot has non-finite numbers')}
 HIST.push(__snapM);if(history().length!==25||history()[24].sample||history()[0].key!==keyShift(CAL.key,-24)||observedSpread(history())==null){__errs++;console.log('history or spread failed',history().length)}HIST.pop();
 let __sn=0;allMembers(computeGroup()).forEach(m=>{const s=statementHtml(m,m.brc);__sn++;if(!/Total payable/.test(s)||/NaN|undefined/.test(s)){__errs++;console.log('statement problem for',m.p.name,(s.match(/.{30}(NaN|undefined).{20}/)||[''])[0])}});
-const __csv=csvText(PAYOUT_HEADER,payoutRows(computeGroup()));if(__csv.split('\\n').length!==people.length+3||/NaN|undefined/.test(__csv)||!__csv.endsWith('=HYPERLINK(""https://www.bpropms.com"",""www.bpropms.com"")"')){__errs++;console.log('payout csv problem')}
+const __csv=payoutCSV(computeGroup());if(__csv.split('\\n').length!==people.length+1||/NaN|undefined|HYPERLINK|D&D/.test(__csv)){__errs++;console.log('payout csv problem')}
 if(csvText(['a'],[['x,"y"']],false)!=='a\\n"x,""y"""'){__errs++;console.log('csv quoting wrong')}
 // reports: every row type × period grouping renders clean; subtotals add up to the grand total; the outputs carry the footer
 asOf=18;const __recs=rptRecords(),__yrs=rptYears();if(__yrs.length!==3){__errs++;console.log('report years',__yrs)}
