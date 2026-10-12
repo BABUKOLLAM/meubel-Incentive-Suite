@@ -4,6 +4,7 @@ const fs = require('fs'), path = require('path');
 const { SOURCES } = require('../../lib/sources');
 
 const DIR = process.env.INBOX_DIR || '/data/inbox';
+const picked = {};
 
 function parseCSV(text) {
   const lines = text.replace(/\r/g, '').split('\n').filter(l => l.trim());
@@ -19,9 +20,20 @@ module.exports = {
     const out = {};
     if (!fs.existsSync(DIR)) return out;
     for (const id of Object.keys(SOURCES)) {
-      const f = path.join(DIR, id + '.csv');
-      if (fs.existsSync(f)) out[id] = parseCSV(fs.readFileSync(f, 'utf8'));
+      const named = fs.readdirSync(DIR).filter(f => new RegExp('^' + id + '-\\d{4}-\\d{2}\\.csv$').test(f)).sort();
+      const plain = path.join(DIR, id + '.csv');
+      const f = named.length ? path.join(DIR, named[0]) : fs.existsSync(plain) ? plain : null; // one file per source per run
+      if (!f) continue;
+      const mm = (path.basename(f).match(/-(\d{4}-\d{2})\.csv$/) || [])[1];
+      out[id] = { rows: parseCSV(fs.readFileSync(f, 'utf8')), month: mm };
+      picked[id] = f;
     }
     return out;
+  },
+  done: async id => { // move a loaded file aside so it is not imported again into a later month
+    const f = picked[id]; if (!f) return;
+    const dir = path.join(DIR, 'done'); fs.mkdirSync(dir, { recursive: true });
+    fs.renameSync(f, path.join(dir, path.basename(f, '.csv') + '.' + new Date().toISOString().replace(/[:.]/g, '-') + '.csv'));
+    delete picked[id];
   },
 };

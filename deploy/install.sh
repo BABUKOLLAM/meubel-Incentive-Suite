@@ -29,6 +29,7 @@ echo "== 3/6 code in $DIR"
 if [ -d "$DIR/.git" ]; then git -C "$DIR" pull --ff-only; else git clone --depth 1 "$REPO" "$DIR"; fi
 cd "$DIR"
 mkdir -p data/inbox deploy/backups
+chown -R 1000:1000 data   # the app container runs as the unprivileged node user (uid 1000)
 
 echo "== 4/6 settings"
 if [ ! -f .env ]; then

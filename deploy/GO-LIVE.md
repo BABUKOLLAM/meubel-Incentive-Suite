@@ -7,6 +7,9 @@ Tick each line in order. Owner in brackets. Commands run on the VPS from `/opt/i
 - [ ] Domain decided and its DNS A record points at the VPS (IT)
 - [ ] VPS installed: `install.sh <domain> <email>`; `https://DOMAIN/api/health` answers `ok` (IT)
 - [ ] One sign-in provider configured in `.env` and tested by signing in as tech@bpropms.com (IT, Bpro)
+- [ ] Microsoft: `OIDC_MICROSOFT_TENANT` is the company's tenant id (not `common`); Google: accounts are company
+      Workspace accounts. Optionally `ALLOWED_EMAIL_DOMAINS=meubelgrande.com,bpropms.com` (IT)
+- [ ] `SESSION_SECRET` is 64 random hex characters (the installer generates it; the server refuses a weak one) (IT)
 - [ ] WhatsApp template `incentive_update` submitted to Meta (see `whatsapp-template.md`) (Admin)
 - [ ] SMTP relay chosen; SPF and DKIM records added for the sending domain; `SMTP_URL` and `MAIL_FROM` set (IT)
 - [ ] Roster filled from HR records; `import.js roster --check` passes with no errors; loaded (HR, Admin)

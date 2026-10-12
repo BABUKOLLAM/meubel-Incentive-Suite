@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Nightly Postgres dump into deploy/backups, keeping 30 days.
 set -euo pipefail
+umask 077   # the dumps hold every contact: readable by root only
 cd "$(dirname "$0")/.."
 mkdir -p deploy/backups
 f="deploy/backups/incentive-$(date +%F).sql.gz"

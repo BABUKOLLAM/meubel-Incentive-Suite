@@ -16,9 +16,12 @@ async function run(only) {
     try {
       const out = await a.mod.pull({ month: m, env: process.env });
       for (const id of Object.keys(out || {})) {
-        if (!sources.SOURCES[id]) { report.push(`${a.name}: unknown source ${id}`); continue; }
-        const n = await tx(c => sources.replaceMonth(c, id, m, out[id] || []));
-        report.push(`${a.name}: ${id} ${n} rows`);
+        if (!sources.has(id)) { report.push(`${a.name}: unknown source ${id}`); continue; }
+        const v = out[id], rows = Array.isArray(v) ? v : (v && v.rows) || [], mm = (!Array.isArray(v) && v && /^\d{4}-\d{2}$/.test(v.month || '')) ? v.month : m;
+        if (!rows.length) { report.push(`${a.name}: ${id} empty, previous rows kept`); continue; } // a half-written or empty export must not wipe the month
+        const n = await tx(c => sources.replaceMonth(c, id, mm, rows));
+        report.push(`${a.name}: ${id} ${n} rows${mm !== m ? ' for ' + mm : ''}`);
+        if (a.mod.done) await a.mod.done(id);
       }
       await q('insert into jobs_log(job,status,detail) values($1,$2,$3)', ['sync:' + a.name, 'ok', report.filter(r => r.startsWith(a.name)).join('; ')]);
     } catch (e) {

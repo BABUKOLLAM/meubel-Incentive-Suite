@@ -33,6 +33,8 @@ create or replace function audit_events_readonly() returns trigger language plpg
 begin raise exception 'audit_events is append-only'; end $$;
 drop trigger if exists audit_events_no_update on audit_events;
 create trigger audit_events_no_update before update or delete on audit_events for each row execute function audit_events_readonly();
+drop trigger if exists audit_events_no_truncate on audit_events;
+create trigger audit_events_no_truncate before truncate on audit_events for each statement execute function audit_events_readonly();
 
 -- Roster: the people the board scores. id must match the person ids used in data rows (or the name, which the board also matches).
 create table if not exists roster (
@@ -94,6 +96,15 @@ create table if not exists messages_log (
   cadence     text, audience text, channel text,
   recipient   text, subject text,
   status      text, provider_id text, error text
+);
+-- One row per message actually handed to WhatsApp or SMTP in a run: a re-run, a restart or a second replica cannot send twice
+create table if not exists message_sends (
+  run_key   text not null,             -- e.g. daily:2026-10-12, monthly:2026-09
+  audience  text not null,
+  channel   text not null,
+  recipient text not null,
+  at        timestamptz not null default now(),
+  primary key (run_key, audience, channel, recipient)
 );
 create table if not exists jobs_log (
   id      bigserial primary key,

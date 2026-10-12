@@ -44,6 +44,8 @@ jobs:
           node tools/import.js roster ../deploy/templates/roster.csv --check
           node tools/import.js profiles ../deploy/templates/profiles.csv --check
           bash -n ../deploy/install.sh
+      - name: Back-end security regressions
+        run: node test/backend.test.js
       - name: Schema parses
         run: node -e "const s=require('fs').readFileSync('backend/db/schema.sql','utf8');if(!/create table if not exists kv/.test(s))process.exit(1)"
 

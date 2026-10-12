@@ -11,6 +11,12 @@ const kv = require('./lib/kv');
 const sources = require('./lib/sources');
 
 const app = express();
+// Express 4 does not catch a rejected async handler: wrap every route so a database error answers 500 instead of
+// taking the process down
+for (const m of ['get', 'put', 'post', 'delete']) {
+  const orig = app[m].bind(app);
+  app[m] = (route, ...hs) => (typeof route === 'string' && hs.length ? orig(route, ...hs.map(h => (req, res, next) => { try { const r = h(req, res, next); if (r && r.catch) r.catch(next); } catch (e) { next(e); } })) : orig(route, ...hs));
+}
 app.disable('x-powered-by');
 app.use(cookieParser());
 app.use(express.json({ limit: '4mb' }));
@@ -20,7 +26,7 @@ app.use(express.text({ type: ['text/*', 'application/octet-stream'], limit: '4mb
 auth.mount(app);
 const requireUser = async (req, res, next) => { const me = await auth.current(req); if (!me) return res.status(401).json({ error: 'sign in' }); req.me = me; next(); };
 
-app.get('/api/health', async (req, res) => { try { await q('select 1'); res.json({ ok: true, time: new Date().toISOString() }); } catch (e) { res.status(500).json({ ok: false, error: e.message }); } });
+app.get('/api/health', async (req, res) => { try { await q('select 1'); res.json({ ok: true, time: new Date().toISOString() }); } catch (e) { console.error('health', e.message); res.status(500).json({ ok: false }); } });
 app.get('/api/me', requireUser, (req, res) => res.json(req.me));
 
 // ---- shared state
@@ -56,7 +62,7 @@ app.put('/api/profiles', requireUser, async (req, res) => {
   res.json({ ok: true, rows: n });
 });
 app.get('/api/audit', requireUser, async (req, res) => { if (!['superadmin', 'admin', 'consultant'].includes(req.me.role)) return res.status(403).json({ error: 'forbidden' }); res.json((await q('select * from audit_events order by id desc limit 1000')).rows); });
-app.get('/api/jobs', requireUser, async (req, res) => { if (!['superadmin', 'admin', 'consultant'].includes(req.me.role)) return res.status(403).json({ error: 'forbidden' }); res.json({ jobs: (await q('select * from jobs_log order by id desc limit 200')).rows, messages: (await q('select * from messages_log order by id desc limit 500')).rows }); });
+app.get('/api/jobs', requireUser, async (req, res) => { if (!['superadmin', 'admin', 'consultant'].includes(req.me.role)) return res.status(403).json({ error: 'forbidden' }); const admin = ['superadmin', 'admin'].includes(req.me.role); const mask = s => (admin || !s ? s : String(s).replace(/^(.{3}).*(.{2})$/, '$1•••$2')); res.json({ jobs: (await q('select * from jobs_log order by id desc limit 200')).rows, messages: (await q('select * from messages_log order by id desc limit 500')).rows.map(r => ({ ...r, recipient: mask(r.recipient) })) }); });
 app.post('/api/jobs/sync', requireUser, requireAdmin, async (req, res) => { try { res.json({ report: await require('./jobs/sync').run(req.query.adapter) }); } catch (e) { res.status(500).json({ error: e.message }); } });
 app.post('/api/jobs/messages/:kind', requireUser, requireAdmin, async (req, res) => { try { res.json({ sent: await require('./jobs/messages').run(req.params.kind) }); } catch (e) { res.status(500).json({ error: e.message }); } });
 
@@ -67,6 +73,10 @@ app.use('/docs', express.static(path.join(ROOT, 'docs'), { maxAge: '1h' }));
 app.get('/favicon.ico', (req, res) => res.type('image/svg+xml').send('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#1F2D44"/><text x="16" y="21" font-family="Arial" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">MR</text></svg>'));
 app.get('/', (req, res) => res.sendFile(path.join(ROOT, 'index.html')));
 app.get('/index.html', (req, res) => res.sendFile(path.join(ROOT, 'index.html')));
+
+// ---- errors: logged here, a plain answer to the browser
+app.use((err, req, res, next) => { console.error(req.method, req.path, err); if (res.headersSent) return next(err); res.status(err.status || 500).json({ error: err.status ? err.message : 'server error' }); });
+process.on('unhandledRejection', e => console.error('unhandled', e));
 
 // ---- schedules (Asia/Kolkata)
 function schedule() {

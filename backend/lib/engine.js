@@ -7,12 +7,12 @@ const sources = require('./sources');
 
 const INDEX = process.env.BOARD_HTML || path.join(__dirname, '..', '..', 'index.html');
 
-function stubDom(store) {
+function stubDom(store, month) {
   const stub = () => ({ innerHTML: '', textContent: '', className: '', value: '', hidden: false, style: {}, dataset: {}, files: [], classList: { add() {}, remove() {}, toggle() {}, contains() { return false; } }, addEventListener() {}, setAttribute() {}, getAttribute() { return null; }, removeAttribute() {}, getBoundingClientRect() { return { left: 0, width: 600 }; }, querySelectorAll() { return []; }, querySelector() { return stub(); }, closest() { return null; } });
   const nodes = {};
   const g = {
     document: { querySelector: s => nodes[s] || (nodes[s] = stub()), getElementById: id => nodes['#' + id] || (nodes['#' + id] = stub()), createElement: () => stub(), body: undefined, documentElement: undefined },
-    window: { BPRO_CONFIG: { month: process.env.BOARD_MONTH || null }, scrollTo() {}, getSelection() { return { removeAllRanges() {}, addRange() {} }; } },
+    window: { BPRO_CONFIG: { month: null }, scrollTo() {}, getSelection() { return { removeAllRanges() {}, addRange() {} }; } },
     localStorage: { getItem: k => (k in store ? JSON.stringify(store[k]) : null), setItem(k, v) { try { store[k] = JSON.parse(v); } catch (_) { store[k] = v; } }, removeItem(k) { delete store[k]; } },
     navigator: { clipboard: { writeText: () => Promise.resolve() } },
   };
@@ -26,7 +26,8 @@ async function load(opts = {}) {
   store['mr-user'] = 'tech@bpropms.com';
   const ros = await q("select id,name,role,branch,branch_id,company,to_char(left_on,'YYYY-MM-DD') as left_on from roster order by company,branch,name");
   if (ros.rows.length) store['mr-roster'] = ros.rows;
-  const g = stubDom(store);
+  const month = opts.month || process.env.BOARD_MONTH || null;
+  const g = stubDom(store, month); g.window.BPRO_CONFIG.month = month;
   const keys = Object.keys(g);
   const api = {};
   const body = js + `
@@ -37,7 +38,7 @@ async function load(opts = {}) {
   // feed the month's data
   const loaded = {};
   for (const src of engine.SOURCES) {
-    const rows = await sources.read(src.id);
+    const rows = await sources.read(src.id, month);
     if (rows && rows.length) { try { loaded[src.id] = engine.applySource(src, JSON.stringify(rows)); } catch (e) { loaded[src.id] = 'error: ' + e.message; } }
   }
   engine.loaded = loaded;

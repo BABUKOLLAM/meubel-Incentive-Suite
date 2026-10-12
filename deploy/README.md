@@ -40,12 +40,14 @@ Sign-in provider:
 
 - **Google Workspace**: Google Cloud Console → APIs & Services → Credentials → OAuth client (Web). Authorised
   redirect URI `https://DOMAIN/api/auth/callback/google`. Paste the client id and secret into `.env`.
-- **Microsoft 365**: Entra admin centre → App registrations → New. Redirect URI (Web)
+- **Microsoft 365**: Entra admin centre → App registrations → New (single tenant). Put the directory (tenant) id in
+  `OIDC_MICROSOFT_TENANT`; `common` is refused because it would admit any Microsoft tenant. Redirect URI (Web)
   `https://DOMAIN/api/auth/callback/microsoft`. Add a client secret. Paste id, secret and tenant id.
 
 ## 3. Start
 
 ```bash
+mkdir -p data/inbox && chown -R 1000:1000 data   # the app runs as the node user, uid 1000
 docker compose up -d --build
 docker compose logs -f app      # wait for "incentive board back end on :8080"
 curl -s https://DOMAIN/api/health
@@ -85,7 +87,10 @@ for SM and employees) so the board opens at the right place.
 ## 5. Data feeds
 
 Fastest start: scheduled exports dropped as CSV into `/opt/incentive/data/inbox/<source>.csv` (the exact
-columns are in the board's Data inputs → Copy template). The sync job reads them every 15 minutes. For APIs,
+columns are in the board's Data inputs → Copy template). The sync job reads them every 15 minutes and moves each
+loaded file to `inbox/done/`, so a file is never imported twice or into the next month. Name a file
+`<source>-YYYY-MM.csv` to load a specific month (a late correction to last month, for example). An empty file is
+refused and the month's rows are kept. For APIs,
 copy `backend/jobs/adapters/http-json.example.js` to `http-json.js`, set the URLs in `.env`, rebuild.
 
 Check: `docker compose exec app node jobs/sync.js` prints what was loaded; the board's Settings → Data inputs
@@ -93,7 +98,8 @@ shows each source as `api` with the row count; 🛠 Admin → Jobs shows the log
 
 ## 6. Messages
 
-Leave `DRY_RUN=1` until the first messages look right in `messages_log`:
+Messages are only logged until `DRY_RUN=0` is set on purpose (a missing value is a dry run). Check the first ones
+in `messages_log`:
 
 ```bash
 docker compose exec app node jobs/messages.js daily
@@ -106,7 +112,9 @@ reply to the number re-open the 24-hour window in which full messages are sent a
 template goes out with the headline and the board link. Email: any SMTP relay (SendGrid, Amazon SES, Google
 Workspace) as `SMTP_URL`, with SPF and DKIM set for the sending domain.
 
-Then set `DRY_RUN=0` and `docker compose up -d`.
+Then set `DRY_RUN=0` and `docker compose up -d`. Each message goes out once per run and recipient (the
+`message_sends` table), so a re-run or a restart does not send twice; a failed send is retried on the next run.
+The monthly round on the 1st reports the month that has just ended, scored to its last day.
 
 ## 7. Backups and upkeep
 

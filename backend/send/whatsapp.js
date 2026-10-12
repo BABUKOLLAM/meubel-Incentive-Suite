@@ -6,7 +6,7 @@ const TEMPLATE = process.env.WHATSAPP_TEMPLATE || 'incentive_update', LANG = pro
 
 function configured() { return !!(TOKEN && PHONE_ID); }
 async function post(payload) {
-  const r = await fetch(`https://graph.facebook.com/${VERSION}/${PHONE_ID}/messages`, { method: 'POST', headers: { Authorization: 'Bearer ' + TOKEN, 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+  const r = await fetch(`https://graph.facebook.com/${VERSION}/${PHONE_ID}/messages`, { method: 'POST', headers: { Authorization: 'Bearer ' + TOKEN, 'Content-Type': 'application/json' }, body: JSON.stringify(payload), signal: AbortSignal.timeout(20000) });
   const j = await r.json().catch(() => ({}));
   if (!r.ok) { const e = new Error(j.error && j.error.message || ('HTTP ' + r.status)); e.code = j.error && j.error.code; throw e; }
   return j.messages && j.messages[0] && j.messages[0].id;

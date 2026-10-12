@@ -239,7 +239,7 @@ approved and pending adjustments under the ledger; and a total across the months
 
 ## Footer on every output
 
-Reports (screen, Excel, PDF, CSV), statements, the payout file, the ledger and every table export, every email
+Reports (screen, Excel, PDF, CSV), statements (the line at the foot of each), the payout file, the ledger and every table export, every email
 and the board page carry **D&D by Dr.Babu.B. Bpro Consulting & Technologies · www.drbabu.in | www.bpropms.com**
 with both addresses as links: anchors in HTML and PDF, hyperlinks in Excel, `HYPERLINK` formulas in CSV (Excel,
 LibreOffice and Google Sheets open them as links), full URLs in the plain-text part of emails. WhatsApp messages

@@ -78,7 +78,7 @@ h1{font:600 34px/1.05 var(--display);margin:0 0 6px;color:var(--brown);text-wrap
 .badge-row{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card2)}
 .badge-row.off{opacity:.55}.badge-row .bi{font-size:22px;line-height:1}.badge-row small{color:var(--muted)}
 #print{display:none}
-@media print{body>*:not(#print){display:none!important}#print{display:block}body{background:#fff;color:#111}.stmt{page-break-after:always;padding:24px 28px;font:12.5px/1.45 Arial,Helvetica,sans-serif;color:#111}.stmt:last-child{page-break-after:auto}.stmt h1{font:700 20px/1.2 Georgia,serif;margin:0 0 2px}.stmt .sub{color:#555;margin:0 0 14px}.stmt table{width:100%;border-collapse:collapse;margin:10px 0 14px}.stmt th,.stmt td{border-bottom:1px solid #ddd;padding:6px 8px;text-align:left;vertical-align:top}.stmt th{background:#EEF2F6;font-size:11px;letter-spacing:.06em;text-transform:uppercase}.stmt td.r,.stmt th.r{text-align:right}.stmt tr.total td{font-weight:700;border-top:2px solid #333;border-bottom:none}.stmt .sig{display:flex;gap:40px;margin-top:36px}.stmt .sig div{flex:1;border-top:1px solid #333;padding-top:6px;font-size:11px;color:#555}.stmt .note{font-size:11px;color:#555}
+@media print{body>*:not(#print){display:none!important}#print{display:block}body{background:#fff;color:#111}.stmt{page-break-after:always;padding:24px 28px;font:12.5px/1.45 Arial,Helvetica,sans-serif;color:#111}.stmt:last-child{page-break-after:auto}.stmt h1{font:700 20px/1.2 Georgia,serif;margin:0 0 2px}.stmt .sub{color:#555;margin:0 0 14px}.stmt table{width:100%;border-collapse:collapse;margin:10px 0 14px}.stmt th,.stmt td{border-bottom:1px solid #ddd;padding:6px 8px;text-align:left;vertical-align:top}.stmt th{background:#EEF2F6;font-size:11px;letter-spacing:.06em;text-transform:uppercase}.stmt td.r,.stmt th.r{text-align:right}.stmt tr.total td{font-weight:700;border-top:2px solid #333;border-bottom:none}.stmt .sig{display:flex;gap:40px;margin-top:36px}.stmt .sig div{flex:1;border-top:1px solid #333;padding-top:6px;font-size:11px;color:#555}.stmt .note{font-size:11px;color:#555}.ddline{margin-top:22px;padding-top:5px;border-top:1px solid #bbb;font:9px/1.3 Arial,Helvetica,sans-serif;color:#555;text-align:center}.ddline a{color:#0A5E66}
 table.pwrap{width:100%;border-collapse:collapse}table.pwrap>tbody>tr>td,table.pwrap>tfoot>tr>td{padding:0;border:0;background:none!important}.ddspace{height:9mm}
 .ddfoot{position:fixed;left:0;right:0;bottom:0;padding-top:4px;border-top:1px solid #bbb;font:9px/1.3 Arial,Helvetica,sans-serif;color:#555;text-align:center;background:#fff}.ddfoot a{color:#0A5E66;text-decoration:underline}
 .rpt{font:10px/1.35 Arial,Helvetica,sans-serif;color:#111;padding:0 2px}.rpt h1{font:700 17px/1.2 Georgia,serif;margin:0 0 3px}.rpt .sub{color:#444;margin:0 0 8px;font-size:9px}
@@ -89,12 +89,13 @@ table.pwrap{width:100%;border-collapse:collapse}table.pwrap>tbody>tr>td,table.pw
 .rpt tr.grp td{background:#F5F7FA!important;color:#0A5E66;font-weight:700;text-align:left;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .rpt tr.sub td{background:#EEF2F6!important;font-weight:700;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .rpt tr.grand td{background:#D6EEF0!important;font-weight:700;border-top:2px solid #0E7C86;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-.rpt td.ind{padding-left:14px}.rpt .note{font-size:8.5px;color:#555;margin:6px 0 0}.rpt tfoot{display:table-row-group}.toast,#tip{display:none!important}}
+.rpt td.ind{padding-left:14px}.rpt .band{font:700 9px Arial;color:#0A5E66;margin:10px 0 4px}.rpt .nb{break-before:page}.rpt thead th{white-space:normal!important}.rpt .note{font-size:8.5px;color:#555;margin:6px 0 0}.rpt tfoot{display:table-row-group}.toast,#tip{display:none!important}}
 body.tv header.top,body.tv #toolbar,body.tv #crumbs,body.tv details,body.tv .foot{display:none}body.tv .wrap{max-width:none;padding-top:10px}body.tv table{font-size:17px}body.tv .card h2{font-size:17px}body.tv .tiles .v{font-size:30px}
 .hbar{display:inline-block;height:9px;border-radius:4px;background:var(--brass);vertical-align:middle;margin-right:6px;min-width:2px}.hbar.cur{background:var(--info)}
 .pill.good{background:var(--good-bg);color:var(--good)}.pill.warn{background:var(--warn-bg);color:var(--warn)}.pill.bad{background:var(--bad-bg);color:var(--bad)}.pill.info{background:var(--info-bg);color:var(--info)}.pill.brass{background:var(--brass-soft);color:var(--brass-ink)}
 
 .tw{overflow-x:auto;margin:0 -16px;padding:0 16px}
+.tw,.tw-r{background:linear-gradient(to right,var(--card) 30%,transparent) left/28px 100% no-repeat local,linear-gradient(to left,var(--card) 30%,transparent) right/28px 100% no-repeat local,radial-gradient(farthest-side at 0 50%,rgba(16,24,40,.16),transparent) left/12px 100% no-repeat scroll,radial-gradient(farthest-side at 100% 50%,rgba(16,24,40,.16),transparent) right/12px 100% no-repeat scroll} /* shadows at an edge that has more to scroll */
 table{border-collapse:collapse;width:100%;font-size:13px}
 th{text-align:left;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600;padding:6px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
 td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:middle;white-space:nowrap}
@@ -107,7 +108,7 @@ tfoot td small{font-weight:400;color:var(--muted)}
 tfoot tr.sub td{background:var(--row);color:var(--text);font-weight:600;border-top:1px solid var(--line);border-bottom:0}
 tfoot tr.grand td{background:var(--brass-soft);color:var(--text);font-weight:700;border-top:2px solid var(--brass);border-bottom:0}
 tfoot tr.grand td .pill{font-weight:600}
-.tw-r{overflow-x:auto;margin:0 -16px;padding:0 16px}
+.tw-r{overflow-x:auto}.tw-r:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
 .rp th.pc{text-align:center;border-left:1px solid var(--line)}
 .rp th.b0,.rp td.b0{border-left:1px solid var(--line)}
 .rp .tc{background:var(--card2)}
@@ -115,7 +116,9 @@ tfoot tr.grand td .pill{font-weight:600}
 .rp tr.grp td small{color:var(--muted);font-weight:400}
 .rp tbody tr.sub td{background:var(--row);font-weight:700;border-top:1px solid var(--line)}
 .rp td.ind{padding-left:22px}.rp td.ind small{color:var(--muted)}
-.rp th:first-child,.rp td:first-child{position:sticky;left:0;z-index:1;background:var(--card)}
+.rp thead tr:first-child th:first-child,.rp tbody td:first-child,.rp tfoot td:first-child{position:sticky;left:0;z-index:1;background:var(--card);box-shadow:1px 0 0 var(--line)}
+.rp tr.grp td:first-child{position:static;box-shadow:none}.rp tr.grp .gl{position:sticky;left:8px}
+.rp tfoot tr.grand td.tc{background:var(--brass-soft)}
 .rp tr.grp td:first-child{background:var(--card2)}.rp tbody tr.sub td:first-child{background:var(--row)}.rp tfoot tr.grand td:first-child{background:var(--brass-soft)}
 .rpt-form .rf{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;padding:7px 0;border-bottom:1px dashed var(--line)}
 .rpt-form .rl{flex:0 0 96px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600}
@@ -470,7 +473,11 @@ const norm=r=>{const u=1-r(),v=r();return Math.sqrt(-2*Math.log(u))*Math.cos(2*M
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const FIRST=['Anjali','Rahul','Meera','Suresh','Nithya','Arun','Divya','Vishnu','Lakshmi','Jithin','Sreeja','Manoj','Aswathy','Rakesh','Reshma','Faisal','Anu','Hari','Neethu','Sanoj','Gopika','Shibu','Parvathy','Akhil','Remya','Bijoy','Soumya','Nikhil','Athira','Prasad','Rejani','Vinod','Haritha','Sajan','Jisha','Ratheesh','Deepa','Ajmal','Shalini','Binu','Anusha','Midhun','Sandra','Febin','Amrutha','Sumesh','Greeshma','Noufal','Keerthi','Sarath','Ramya','Aneesh','Sruthi','Jomon','Veena','Ashiq','Dhanya','Renjith','Nimmy','Shyam','Priya','Alan','Mridula','Vipin','Krishna','Tintu','Abhilash','Sona','Anoop','Chitra','Riyas','Lekshmi','Mahesh','Sneha'];
 const ITEMS=['L-shape sofa','3-seater sofa','Recliner','Dining set 6','Dining set 4','Queen bed','King bed','Wardrobe 4 door','Wardrobe 3 door','Study table','Coffee table','TV unit','Bookshelf','Dresser','Shoe rack','Lounge chair','Bunk bed','Side table','Mattress','Office chair'];
-const ROSTER=(()=>{try{const r=JSON.parse(localStorage.getItem('mr-roster')||'null');return Array.isArray(r)&&r.length?r:null}catch(_){return null}})(); // live roster from the server
+// Text from outside the page (roster, data feeds, user list) is neutralised once, where it enters: no angle brackets,
+// typographic quotes for straight ones, so a name or an ERP field can never become markup in any view or message
+const safeText=v=>typeof v==='string'?v.replace(/[<>]/g,'').replace(/["`]/g,'”').replace(/'/g,'’'):v;
+const safeRow=o=>o&&typeof o==='object'?Object.fromEntries(Object.entries(o).map(([k,v])=>[k,safeText(v)])):o;
+const ROSTER=(()=>{try{const r=JSON.parse(localStorage.getItem('mr-roster')||'null');return Array.isArray(r)&&r.length?r.map(safeRow):null}catch(_){return null}})(); // live roster from the server
 const LIVE=!!ROSTER;
 const slug=s=>String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'x';
 const onRoll=x=>!x.left_on||new Date(x.left_on)>new Date();
@@ -747,7 +754,7 @@ function monthRecord(g){ // one computed month in the shape the history cards an
   const rk=rankings(g), live=m=>(m.bills||[]).filter(x=>x.status!=='cancelled'), f=asOf/DAYS;
   const people=allMembers(g).map(m=>({id:m.p.id,name:m.p.name,role:m.p.role,br:m.brc.br.id,branch:m.brc.br.name,co:m.co.name,coId:m.co.id,score:m.sc.score,ach:m.vals.ach,att:m.vals.att,gate:m.gate,pay:m.pay||0,perBill:m.perBill?m.perBill.confirmed:0,cre:m.cre?m.cre.confirmed:0,teamShare:m.teamShareNow||0,adj:m.adj||0,total:m.total,rank:rk[m.p.id]?rk[m.p.id].group.rank:null,badges:badgesFor(m,m.brc,rk).filter(x=>x.earned).map(x=>x.id),
     qty:live(m).length,so:m.p.role==='Sales'?(m.so||0):0,target:m.p.role==='Sales'?(m.p.target||0)*f:0}));
-  const products=[];g.companies.forEach(c=>c.branches.forEach(b=>{const mp=new Map();b.members.forEach(m=>live(m).forEach(y=>{const r=mp.get(y.item)||{br:b.br.id,item:y.item,cat:y.cat,qty:0,value:0};r.qty++;r.value+=y.bill;mp.set(y.item,r)}));products.push(...mp.values())}));
+  const products=[];g.companies.forEach(c=>c.branches.forEach(b=>{const mp=new Map();b.members.forEach(m=>live(m).forEach(y=>{const k=y.cat+'|'+y.item,r=mp.get(k)||{br:b.br.id,item:y.item,cat:y.cat,qty:0,value:0};r.qty++;r.value+=y.bill;mp.set(k,r)}));products.push(...mp.values())}));
   const brs=g.companies.flatMap(c=>c.branches.map(b=>({id:b.br.id,name:b.br.name,co:c.co.name,coId:c.co.id,target:b.target,so:b.so,qty:people.filter(p=>p.br===b.br.id).reduce((s,p)=>s+p.qty,0),ach:b.vals.ach,score:b.sc.score,gp:b.vals.gp,audit:b.vals.audit,grating:b.vals.grating,payout:b.members.reduce((s,m)=>s+m.total,0),teamPool:!!b.teamPoolNow})));
   return {people,branches:brs,products};
 }
@@ -819,7 +826,7 @@ function statementHtml(m,b){const p=m.p,br=b.br,co=br.company,isMgmt=p.role==='B
   ${earned.length?`<p class="note">Recognition this month: ${earned.map(x=>x.icon+' '+x.name).join(', ')} (no rupee value).</p>`:''}
   <p class="note">Please check this statement and confirm it. Disputes within 7 days of issue through your Branch Manager or HR, quoting the order number or day concerned. Rules: Corporate Incentive Structure in force for ${MONTH}.</p>
   <div class="sig"><div>Employee</div><div>Branch Manager</div><div>HR / Accounts</div></div></div>`}
-function printStatements(items){const box=$('#print');if(!box)return;box.innerHTML=printWrap(items.map(x=>statementHtml(x.m,x.b)).join(''));if(typeof window.print==='function')window.print()}
+function printStatements(items){const box=$('#print');if(!box)return;box.innerHTML=printWrap(items.map(x=>statementHtml(x.m,x.b).replace(/<\/div>$/,`<p class="ddline">${esc(DD.text)} · ${ddLinks()}</p></div>`)).join(''),'inline');if(typeof window.print==='function')window.print()}
 
 /* ---------- Footer on every report output: designed and developed by ---------- */
 const DD={text:'D&D by Dr.Babu.B. Bpro Consulting & Technologies',links:[['www.drbabu.in','https://www.drbabu.in'],['www.bpropms.com','https://www.bpropms.com']]};
@@ -829,7 +836,7 @@ const ddHtml=()=>`<span class="dd">${esc(DD.text)} · ${ddLinks()}</span>`;
 const ddEmail=()=>`<p style="margin:12px 0 0;padding-top:10px;border-top:1px solid #DCE2EA;font-size:11.5px;color:#5B6776">${esc(DD.text)} · ${ddLinks('color:#0A5E66')}</p>`;
 const ddPrint=()=>`<div class="ddfoot">${esc(DD.text)} · ${ddLinks()}</div>`;
 const ddCsvRows=()=>[[],[DD.text,...DD.links.map(([t,u])=>`=HYPERLINK("${u}","${t}")`)]]; // Excel, LibreOffice and Google Sheets open these as links
-const printWrap=(html,cls)=>{const pg=document.getElementById('pgsize');if(pg)pg.textContent=cls==='land'?'@page{size:A4 landscape;margin:9mm 9mm 8mm}':'';return `<table class="pwrap"><tfoot><tr><td><div class="ddspace"></div></td></tr></tfoot><tbody><tr><td>${html}</td></tr></tbody></table>${ddPrint()}`}; // the footer repeats on every printed page; the empty table footer keeps room for it
+const printWrap=(html,cls)=>{const pg=document.getElementById('pgsize');if(pg)pg.textContent=cls==='land'?'@page{size:A4 landscape;margin:9mm 9mm 8mm}':'@page{size:A4;margin:12mm 12mm 10mm}';if(cls==='inline')return html;return `<table class="pwrap"><tfoot><tr><td><div class="ddspace"></div></td></tr></tfoot><tbody><tr><td>${html}</td></tr></tbody></table>${ddPrint()}`}; // the footer repeats on every printed page; the empty table footer keeps room for it
 
 /* ---------- Subtotals and grand totals: table-footer rows, so paging never moves them and the CSV export carries them ---------- */
 const sumBy=(a,f)=>a.reduce((s,x)=>s+(+f(x)||0),0);
@@ -842,9 +849,9 @@ function totFoot(groups,row,grand){ // groups [{label,items}] → a subtotal per
   return `<tfoot>${groups.length>1?groups.map(g=>row('Subtotal · '+g.label,g.items,'sub')).join(''):''}${row(grand||(groups.length>1?'Grand total':'Total'),all,'grand')}</tfoot>`;
 }
 function branchFoot(l,a,cls){const t=sumBy(a,b=>b.target),so=sumBy(a,b=>b.so);
-  return `<tr class="${cls}"><td colspan="2">${footLbl(l,plural(a.length,'branch','branches'))}</td><td class="r">${inrL(t)}</td><td class="r">${inrL(so)}</td><td>${achPill(dv(so,t*asOf/DAYS)*100)}</td><td class="r">${pct(dv(sumBy(a,b=>b.soProj),t)*100)}</td><td class="r">${pct(wavgBy(a,b=>b.vals.gp,b=>b.so))}</td><td class="r">${pct(wavgBy(a,b=>b.vals.conv,b=>b.cust))}</td><td class="r">${pct(wavgBy(a,b=>b.vals.walkout,b=>b.walk))}</td><td class="r">${wavgBy(a,b=>b.vals.grating,b=>b.target).toFixed(1)}</td><td class="r">${wavgBy(a,b=>b.vals.audit,()=>1).toFixed(0)}</td><td class="r">${wavgBy(a,b=>b.sc.score,b=>b.target).toFixed(0)}</td><td class="r">${inrL(sumBy(a,b=>b.payProj))}</td></tr>`}
+  return `<tr class="${cls}"><td colspan="2">${footLbl(l,plural(a.length,'branch','branches'))}</td><td class="r">${inrL(t)}</td><td class="r">${inrL(so)}</td><td>${achPill(dv(so,t*asOf/DAYS)*100)}</td><td class="r">${pct(dv(sumBy(a,b=>b.soProj),t)*100)}</td><td class="r">${pct(wavgBy(a,b=>b.vals.gp,b=>b.so))}</td><td class="r">${pct(wavgBy(a,b=>b.vals.conv,b=>b.cust))}</td><td class="r">${pct(wavgBy(a,b=>b.vals.walkout,b=>b.walk))}</td><td class="r">${wavgBy(a,b=>b.vals.grating,b=>b.target).toFixed(1)}</td><td class="r">${wavgBy(a,b=>b.vals.audit,b=>b.target).toFixed(0)}</td><td class="r">${wavgBy(a,b=>b.sc.score,b=>b.target).toFixed(0)}</td><td class="r">${inrL(sumBy(a,b=>b.payProj))}</td></tr>`}
 function riskFoot(l,a,cls){const t=sumBy(a,b=>b.target),so=sumBy(a,b=>b.so);
-  return `<tr class="${cls}"><td colspan="3">${footLbl(l,plural(a.length,'branch','branches'))}</td><td>${achPill(dv(so,t*asOf/DAYS)*100)}</td><td class="r">${pct(dv(sumBy(a,b=>b.soProj),t)*100)}</td><td class="r">${wavgBy(a,b=>b.sc.score,b=>b.target).toFixed(0)}</td><td class="r">${pct(wavgBy(a,b=>b.vals.gp,b=>b.so))}</td><td class="r">${pct(wavgBy(a,b=>b.vals.conv,b=>b.cust))}</td><td class="r">${wavgBy(a,b=>b.vals.grating,b=>b.target).toFixed(1)}</td><td class="r">${wavgBy(a,b=>b.vals.audit,()=>1).toFixed(0)}</td><td class="r">${inrL(sumBy(a,b=>b.payProj))}</td><td></td></tr>`}
+  return `<tr class="${cls}"><td colspan="3">${footLbl(l,plural(a.length,'branch','branches'))}</td><td>${achPill(dv(so,t*asOf/DAYS)*100)}</td><td class="r">${pct(dv(sumBy(a,b=>b.soProj),t)*100)}</td><td class="r">${wavgBy(a,b=>b.sc.score,b=>b.target).toFixed(0)}</td><td class="r">${pct(wavgBy(a,b=>b.vals.gp,b=>b.so))}</td><td class="r">${pct(wavgBy(a,b=>b.vals.conv,b=>b.cust))}</td><td class="r">${wavgBy(a,b=>b.vals.grating,b=>b.target).toFixed(1)}</td><td class="r">${wavgBy(a,b=>b.vals.audit,b=>b.target).toFixed(0)}</td><td class="r">${inrL(sumBy(a,b=>b.payProj))}</td><td></td></tr>`}
 function peopleFoot(l,a,cls){const sc=a.filter(m=>m.sc.rows.length);
   return `<tr class="${cls}"><td colspan="3">${footLbl(l,plural(a.length,'person','people'))}</td><td class="r">${pct(wavgBy(a,m=>m.vals.att,()=>1))}</td><td class="r">${sc.length?wavgBy(sc,m=>m.sc.score,()=>1).toFixed(0):'—'}</td><td class="r">${inr(sumBy(a,m=>m.payProj))}</td><td class="r">${inr(sumBy(a,m=>m.perBill?m.perBill.expected:m.cre?m.cre.expected:0))}</td><td class="r">${inr(sumBy(a,m=>m.teamShare))}</td><td class="r"><b>${inr(sumBy(a,m=>m.totalProj))}</b></td></tr>`}
 function salesFoot(l,a,cls){const so=sumBy(a,r=>r.so),n=sumBy(a,r=>r.n);
@@ -1245,7 +1252,7 @@ function buildMessage(aud,cad,ch,ctx){ // ctx: {b (computed branch), person (com
   else if(aud==='HR'){const w=hrMonthly();text=emailHrText(w,cad);html=emailHrHtml(w,cad);title=`HR ${CADENCE[cad].label} review`;subject=`HR and payroll review · ${MONTH}${w.closed?' (closed)':` to day ${asOf}`} · attendance ${pct(w.att)} · ${w.gated.length} under the gate · payout ${inrL(w.g.payProj)}`}
   else if(aud==='MD'){const w=monthly();text=emailMdText(w);html=emailMdHtml(w);title=`Group ${CADENCE[cad].label} review`;subject=`Group incentive review · ${MONTH}${w.closed?' (closed)':` to day ${asOf}`} · ${pct(w.closed?w.g.achProj:w.g.ach)} of target · outlay ${inrL(w.g.payProj)}`}
   else{const d=teamDigest(b,aud,cad,null);text=digestText(d);html=digestHtml(d);title=`${b.br.name} ${aud} team, ${CADENCE[cad].label} update`;subject=title}
-  if(ch==='email')text+='\n\n'+DD_TEXT; // email gets the footer; WhatsApp stays short
+  text=text.split('\n\n'+DD_TEXT).join('');if(ch==='email')text+='\n\n'+DD_TEXT; // email carries the footer once; WhatsApp stays short
   return {text,html,subject,title};
 }
 function viewMessages(){
@@ -1309,7 +1316,7 @@ const USERS=[
  {email:'director@royalgroup.example',name:'Director, Royal Group',role:'director'},
  {email:'hr@meubelgrande.example',name:'HR team',role:'hr'},
 ];
-try{(JSON.parse(localStorage.getItem('mr-users')||'[]')).forEach(u=>{if(u&&u.email&&!USERS.some(x=>x.email===u.email))USERS.push(u)})}catch(_){}
+try{(JSON.parse(localStorage.getItem('mr-users')||'[]')).forEach(u=>{if(u&&u.email&&!USERS.some(x=>x.email===u.email))USERS.push(safeRow(u))})}catch(_){}
 function clientUsers(){ // one BM, SM and salesperson per branch, generated from the roster
   const out=[];branches.forEach(br=>{const bm=br.people.find(p=>p.role==='BM'),sm=br.people.find(p=>p.role==='SM'),sp=br.people.find(p=>p.role==='Sales');
     if(bm)out.push({email:`bm.${br.id}@${br.company.id==='mg'?'meubelgrande':'royalgroup'}.example`,name:`${bm.name} (BM ${br.name})`,role:'bm',br:br.id,person:bm.id});
@@ -1456,12 +1463,10 @@ function viewGroup(){
     ${tile('Group score',g.score.toFixed(0),'Target-weighted branch scorecards','',g.score>=85?'good':g.score>=70?'warn':'bad')}
     ${tile('Incentive outlay',inrL(g.payProj),`expected · ${inrL(g.pay)} earned so far`,'','info')}
   </div>
-  <div class="grid">
-    <div class="card"><h2>Meubel Grande vs Royal Group</h2><div class="body"><div class="tw"><table><thead><tr><th>Company</th><th class="r">Target</th><th class="r">Booked</th><th>Achievement</th><th class="r">Expected</th><th class="r">GP</th><th class="r">Score</th><th class="r">Incentive exp.</th></tr></thead><tbody>
+  <div class="card"><h2>${esc(GROUP.companies.map(c=>c.name).join(' vs '))}</h2><div class="body"><div class="tw"><table><thead><tr><th>Company</th><th class="r">Target</th><th class="r">Booked</th><th>Achievement</th><th class="r">Expected</th><th class="r">GP</th><th class="r">Score</th><th class="r">Incentive exp.</th></tr></thead><tbody>
       ${g.companies.map(c=>`<tr class="link" data-co="${c.co.id}"><td><span class="dot" style="background:${c.co.color}"></span> <b>${c.co.name}</b><br><small style="color:var(--muted)">${c.branches.length} branches · ${c.branches.reduce((s,b)=>s+b.members.length,0)} people</small></td><td class="r">${inrL(c.target)}</td><td class="r">${inrL(c.so)}</td><td>${bar(c.ach/100)}<small style="color:var(--muted)">${pct(c.ach)} now · ${pct(c.achProj)} expected</small></td><td class="r">${inrL(c.soProj)}<br><small style="color:var(--muted)">${pct(c.pTarget*100)} chance</small></td><td class="r">${pct(c.gp)}</td><td class="r">${c.score.toFixed(0)}</td><td class="r">${inrL(c.payProj)}</td></tr>`).join('')}
     </tbody><tfoot><tr class="grand"><td>${footLbl('Group total',plural(bs.length,'branch','branches')+' · '+plural(allMembers(g).length,'person','people'))}</td><td class="r">${inrL(g.target)}</td><td class="r">${inrL(g.so)}</td><td>${bar(g.ach/100)}<small>${pct(g.ach)} now · ${pct(g.achProj)} expected</small></td><td class="r">${inrL(g.soProj)}<br><small>${pct(g.pTarget*100)} chance</small></td><td class="r">${pct(g.gp)}</td><td class="r">${g.score.toFixed(0)}</td><td class="r">${inrL(g.payProj)}</td></tr></tfoot></table></div><p class="note">Click a company to drill down. Achievement is booked SO value against the target pro-rated to day ${asOf}.</p></div></div>
-    <div class="card"><h2>Branches, achievement vs pro-rated target</h2><div class="body">${hbarChart(items)}<div class="legend"><span><i class="sw" style="background:var(--c-mg)"></i>Meubel Grande</span><span><i class="sw" style="background:var(--c-rg)"></i>Royal Group</span><span>Dashed line: 100% of pace</span></div></div></div>
-  </div>
+    <div class="card"><h2>Branches, achievement vs pro-rated target</h2><div class="body"><div style="max-width:780px">${hbarChart(items)}</div><div class="legend"><span><i class="sw" style="background:var(--c-mg)"></i>Meubel Grande</span><span><i class="sw" style="background:var(--c-rg)"></i>Royal Group</span><span>Dashed line: 100% of pace</span></div></div></div>
   <div class="card"><h2>All branches</h2><div class="body"><div class="tw"><table><thead><tr><th>Branch</th><th>Company</th><th class="r">Target</th><th class="r">Booked</th><th>Ach.</th><th class="r">Expected</th><th class="r">GP</th><th class="r">Conv.</th><th class="r">Walk-out</th><th class="r">Google</th><th class="r">Audit</th><th class="r">Score</th><th class="r">Incentive exp.</th></tr></thead><tbody>
     ${bs.slice().sort((a,b)=>b.achProj-a.achProj).map(b=>`<tr class="link" data-co="${b.co.id}" data-br="${b.br.id}"><td><b>${b.br.name}</b></td><td><span class="dot" style="background:${b.co.color}"></span> ${b.co.name}</td><td class="r">${inrL(b.target)}</td><td class="r">${inrL(b.so)}</td><td>${achPill(b.vals.ach)}</td><td class="r">${pct(b.achProj)}</td><td class="r">${pct(b.vals.gp)}</td><td class="r">${pct(b.vals.conv)}</td><td class="r">${pct(b.vals.walkout)}</td><td class="r">${b.vals.grating}</td><td class="r">${b.vals.audit}</td><td class="r"><b>${b.sc.score.toFixed(0)}</b></td><td class="r">${inrL(b.payProj)}</td></tr>`).join('')}
   </tbody>${totFoot(groupsOf(bs,b=>b.co.id,b=>b.co.name),branchFoot)}</table></div></div></div>
@@ -1758,7 +1763,7 @@ function viewLeaderboard(){
     const bs=g.companies.flatMap(c=>c.branches.filter(b=>!state.co||c.co.id===state.co).map(b=>({...b,co:c.co}))).sort((a,b)=>(b.sc.score*1000+b.achProj)-(a.sc.score*1000+a.achProj));
     if(prevG){g.companies.flatMap(c=>c.branches).forEach(()=>{});const pb=prevG.companies.flatMap(c=>c.branches.filter(b=>!state.co||c.co.id===state.co)).sort((a,b)=>(b.sc.score*1000+b.achProj)-(a.sc.score*1000+a.achProj));pb.forEach((b,i)=>prevRank[b.br.id]=i+1)}
     table=`<table><thead><tr><th>#</th><th>Branch</th><th>Company</th><th class="r">Score</th><th class="r">Achievement</th><th class="r">Expected</th><th class="r">GP</th><th class="r">Conv.</th><th class="r">Google</th><th class="r">Audit</th><th class="r">Team pool</th><th>Badges</th></tr></thead><tbody>
-      ${bs.map((b,i)=>`<tr class="link" data-co="${b.co.id}" data-br="${b.br.id}"><td><span class="rank r${i+1}">${i+1}</span>${mv(i+1,prevRank[b.br.id])}</td><td><b>${b.br.name}</b></td><td><span class="dot" style="background:${b.co.color}"></span> ${b.co.name}</td><td class="r"><b>${b.sc.score.toFixed(0)}</b></td><td class="r">${achPill(b.vals.ach)}</td><td class="r">${pct(b.achProj)}</td><td class="r">${pct(b.vals.gp)}</td><td class="r">${pct(b.vals.conv)}</td><td class="r">${b.vals.grating}</td><td class="r">${b.vals.audit}</td><td class="r">${b.teamPoolProj?'<span class="pill good">Unlocked</span>':'<span class="pill warn">Locked</span>'}</td><td>${branchBadges(b).filter(x=>x.earned).map(badgeChip).join('')||'<span style="color:var(--muted)">—</span>'}</td></tr>`).join('')}</tbody>${bs.length?`<tfoot><tr class="grand"><td colspan="3">${footLbl('Total',plural(bs.length,'branch','branches'))}</td><td class="r">${wavgBy(bs,b=>b.sc.score,b=>b.target).toFixed(0)}</td><td class="r">${achPill(dv(sumBy(bs,b=>b.so),sumBy(bs,b=>b.target)*asOf/DAYS)*100)}</td><td class="r">${pct(dv(sumBy(bs,b=>b.soProj),sumBy(bs,b=>b.target))*100)}</td><td class="r">${pct(wavgBy(bs,b=>b.vals.gp,b=>b.so))}</td><td class="r">${pct(wavgBy(bs,b=>b.vals.conv,b=>b.cust))}</td><td class="r">${wavgBy(bs,b=>b.vals.grating,b=>b.target).toFixed(1)}</td><td class="r">${wavgBy(bs,b=>b.vals.audit,()=>1).toFixed(0)}</td><td class="r">${bs.filter(b=>b.teamPoolProj).length} unlocked</td><td></td></tr></tfoot>`:''}</table>`;
+      ${bs.map((b,i)=>`<tr class="link" data-co="${b.co.id}" data-br="${b.br.id}"><td><span class="rank r${i+1}">${i+1}</span>${mv(i+1,prevRank[b.br.id])}</td><td><b>${b.br.name}</b></td><td><span class="dot" style="background:${b.co.color}"></span> ${b.co.name}</td><td class="r"><b>${b.sc.score.toFixed(0)}</b></td><td class="r">${achPill(b.vals.ach)}</td><td class="r">${pct(b.achProj)}</td><td class="r">${pct(b.vals.gp)}</td><td class="r">${pct(b.vals.conv)}</td><td class="r">${b.vals.grating}</td><td class="r">${b.vals.audit}</td><td class="r">${b.teamPoolProj?'<span class="pill good">Unlocked</span>':'<span class="pill warn">Locked</span>'}</td><td>${branchBadges(b).filter(x=>x.earned).map(badgeChip).join('')||'<span style="color:var(--muted)">—</span>'}</td></tr>`).join('')}</tbody>${bs.length?`<tfoot><tr class="grand"><td colspan="3">${footLbl('Total',plural(bs.length,'branch','branches'))}</td><td class="r">${wavgBy(bs,b=>b.sc.score,b=>b.target).toFixed(0)}</td><td class="r">${achPill(dv(sumBy(bs,b=>b.so),sumBy(bs,b=>b.target)*asOf/DAYS)*100)}</td><td class="r">${pct(dv(sumBy(bs,b=>b.soProj),sumBy(bs,b=>b.target))*100)}</td><td class="r">${pct(wavgBy(bs,b=>b.vals.gp,b=>b.so))}</td><td class="r">${pct(wavgBy(bs,b=>b.vals.conv,b=>b.cust))}</td><td class="r">${wavgBy(bs,b=>b.vals.grating,b=>b.target).toFixed(1)}</td><td class="r">${wavgBy(bs,b=>b.vals.audit,b=>b.target).toFixed(0)}</td><td class="r">${bs.filter(b=>b.teamPoolProj).length} unlocked</td><td></td></tr></tfoot>`:''}</table>`;
   } else {
     const list=ms.filter(m=>roleKey(m)===tab).sort((a,b)=>rankValue(b)-rankValue(a));
     if(prevG){allMembers(prevG).filter(inScope).filter(m=>roleKey(m)===tab).sort((a,b)=>rankValue(b)-rankValue(a)).forEach((m,i)=>prevRank[m.p.id]=i+1)}
@@ -1809,7 +1814,7 @@ function weekly(br,cad='weekly'){
   const gated=now.members.filter(m=>m.gate);if(gated.length)actions.push(`Attendance under ${GATES.attendance}% for ${gated.map(m=>m.p.name).join(', ')}: their scorecard pay is zero until it recovers.`);
   return {g,now,prev,co,coNow,rankNow,rankPrev,weekSO,lastWeekSO,weekBills,movers,teams,bm,sm,actions:actions.slice(0,4),weekEnd:asOf,weekStart:Math.max(1,asOf-len+1),word,cad,len};
 }
-const esc=t=>String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+const esc=t=>String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 const delta=(n,p,f,inv)=>p==null?'':(n-p===0?' (no change)':` (${(inv?n<p:n>p)?'▲':'▼'} ${f(Math.abs(n-p))} vs last week)`);
 function emailHtml(w){
   const {now,prev,co,coNow,rankNow,rankPrev,weekSO,lastWeekSO,weekBills,movers,teams,bm,actions}=w, br=now.br;
@@ -2087,7 +2092,7 @@ function findPerson(key,brHint){const k=lc(key);if(!k)return null;const pool=brH
 function findBranch(key){const k=lc(key);return branches.find(b=>lc(b.id)===k||lc(b.name)===k)||null}
 function parseCSV(text){const rows=[];let row=[],cell='',q=false;for(let i=0;i<text.length;i++){const c=text[i];if(q){if(c==='"'){if(text[i+1]==='"'){cell+='"';i++}else q=false}else cell+=c}else if(c==='"')q=true;else if(c===','){row.push(cell);cell=''}else if(c==='\n'||c==='\r'){if(c==='\r'&&text[i+1]==='\n')i++;row.push(cell);rows.push(row);row=[];cell=''}else cell+=c}if(cell.length||row.length){row.push(cell);rows.push(row)}
   const nonEmpty=rows.filter(r=>r.some(x=>x.trim()!==''));if(!nonEmpty.length)return [];const head=nonEmpty[0].map(h=>lc(h).replace(/\s+/g,'_'));return nonEmpty.slice(1).map(r=>Object.fromEntries(head.map((h,i)=>[h,(r[i]??'').trim()])))}
-function parseAny(text){const t=text.trim();if(t[0]==='['||t[0]==='{'){const j=JSON.parse(t);const arr=Array.isArray(j)?j:(j.rows||j.data||[]);return arr.map(o=>Object.fromEntries(Object.entries(o).map(([k,v])=>[lc(k).replace(/\s+/g,'_'),v])))}return parseCSV(t)}
+function parseAny(text){const t=text.trim();if(t[0]==='['||t[0]==='{'){const j=JSON.parse(t);const arr=Array.isArray(j)?j:(j.rows||j.data||[]);return arr.map(o=>Object.fromEntries(Object.entries(o).map(([k,v])=>[lc(k).replace(/\s+/g,'_'),safeText(v)])))}return parseCSV(t).map(safeRow)}
 const byPerson=(rows,col)=>{const m=new Map();rows.forEach(r=>{const p=findPerson(r[col]);if(!p)return;if(!m.has(p))m.set(p,[]);m.get(p).push(r)});return m};
 const SOURCES=[
  {id:'targets',name:'Sales targets',cols:'employee,target',ex:'Anjali R.,850000',apply:rows=>{let n=0;rows.forEach(r=>{const p=findPerson(r.employee);if(p&&p.role==='Sales'){p.target=+r.target||p.target;n++}});branches.forEach(br=>br.target=br.people.filter(p=>p.role==='Sales').reduce((s,p)=>s+p.target,0));return `${n} targets set`}},
@@ -2166,7 +2171,7 @@ function viewSettings(){
   const done=(id,m,err)=>{const el=document.getElementById(id);if(el){el.textContent=m;el.className='status '+(err?'err':'ok')}};
   if(role().settings!=='edit'){$('#view').querySelectorAll('[data-cfg],[data-w],[data-t],#cfgApply,#cfgFile,#cfgPaste').forEach(i=>i.disabled=true);$('#cfgSave').disabled=true;$('#cfgDone').textContent='Read-only for your role'}
   if(!role().reset)$('#cfgReset').disabled=true;
-  if(role().users){$('#nuAdd').addEventListener('click',()=>{const u={name:$('#nuName').value.trim(),email:$('#nuEmail').value.trim().toLowerCase(),role:$('#nuRole').value,br:$('#nuBr').value||undefined};if(!u.name||!/^[^@\s]+@[^@\s]+$/.test(u.email)){$('#nuDone').textContent='Name and a valid email are needed';return}if(allUsers().some(x=>x.email===u.email)){$('#nuDone').textContent='That email already exists';return}
+  if(role().users){$('#nuAdd').addEventListener('click',()=>{const u={name:safeText($('#nuName').value.trim()),email:$('#nuEmail').value.trim().toLowerCase(),role:$('#nuRole').value,br:$('#nuBr').value||undefined};if(!u.name||!/^[^@\s]+@[^@\s]+$/.test(u.email)){$('#nuDone').textContent='Name and a valid email are needed';return}if(allUsers().some(x=>x.email===u.email)){$('#nuDone').textContent='That email already exists';return}
       if(u.br&&['bm','sm','employee'].includes(u.role)){const br=branches.find(b=>b.id===u.br);const p=br.people.find(x=>u.role==='bm'?x.role==='BM':u.role==='sm'?x.role==='SM':x.role==='Sales');u.person=p?p.id:undefined}
       USERS.push(u);try{localStorage.setItem('mr-users',JSON.stringify(USERS.slice(7)))}catch(_){}audit('User added',`${u.email} as ${ROLES[u.role].name}`);render()});
     $('#view').querySelectorAll('[data-deluser]').forEach(b=>b.addEventListener('click',()=>{const i=USERS.findIndex(u=>u.email===b.dataset.deluser);if(i>=7){const u=USERS.splice(i,1)[0];try{localStorage.setItem('mr-users',JSON.stringify(USERS.slice(7)))}catch(_){}audit('User removed',u.email);render()}}))}
@@ -2289,7 +2294,7 @@ function rptSpec(){ // the saved choices, cleaned against what exists now
   const type=types.some(t=>t.id===s.type)?s.type:types[0].id;
   let ms=Array.isArray(s.ms)?s.ms.filter(id=>RPT_MEASURES.some(m=>m.id===id)):[];
   if(type==='product')ms=ms.filter(id=>RPT_PRODUCT.includes(id));
-  if(!ms.length)ms=type==='role'||type==='person'?['heads','inc']:['qty','value'];
+  if(!ms.length&&!(Array.isArray(s.ms)&&!s.ms.length))ms=type==='role'||type==='person'?['heads','inc']:['qty','value']; // the viewer may untick every measure on purpose
   const years=Array.isArray(s.years)?s.years.map(Number).filter(y=>yrs.includes(y)):yrs.slice(-2);
   const months=Array.isArray(s.months)?s.months.map(Number).filter(m=>m>=1&&m<=12):[1,2,3,4,5,6,7,8,9,10,11,12];
   return {type,ms,years:years.length||Array.isArray(s.years)?years:yrs.slice(-2),months,gran,total:s.total!==false};
@@ -2310,26 +2315,33 @@ function buildReport(spec,recs){
   const sel=recs.filter(r=>spec.years.includes(yearOf(r.key,spec.gran))&&spec.months.includes(+r.key.slice(5,7)));
   const periods=[],pIdx=new Map();
   sel.forEach(r=>{const p=periodOf(r.key,spec.gran);if(!pIdx.has(p.id)){pIdx.set(p.id,{...p,keys:[],sample:false,running:false});periods.push(pIdx.get(p.id))}const P=pIdx.get(p.id);P.keys.push(r.key);if(r.sample)P.sample=true;if(r.running)P.running=true});
-  const B=new Map(),rows=new Map(),groups=new Map();
+  const B=new Map(),rows=new Map(),groups=new Map(),legacyMonths=new Set();
   const put=(kind,f,rowId,rowL,rowSub,grpId,grpL,per)=>{if(!rows.has(rowId))rows.set(rowId,{id:rowId,l:rowL,sub:rowSub,g:grpId});if(!groups.has(grpId))groups.set(grpId,{id:grpId,l:grpL});
-    for(const k of [rowId+'|'+per,rowId+'|*','G:'+grpId+'|'+per,'G:'+grpId+'|*','ALL|'+per,'ALL|*']){let x=B.get(k);if(!x){x={p:[],b:[],i:[]};B.set(k,x)}x[kind].push(f)}};
+    for(const k of [rowId+'|'+per,rowId+'|*','G:'+grpId+'|'+per,'G:'+grpId+'|*','ALL|'+per,'ALL|*']){let x=B.get(k);if(!x){x={p:[],b:[],i:[],v:[]};B.set(k,x)}x[kind].push(f)}};
   sel.forEach(r=>{const per=periodOf(r.key,spec.gran).id;
-    if(prod){(r.products||[]).forEach(x=>{const br=brOf(x.br);if(inScope(br))put('i',x,'i:'+x.item,x.item,'','c:'+(x.cat||'?'),RPT_CATS[x.cat]||'Uncategorised',per)});return}
+    // an item sells in more than one price category, so a product row is the item within its category
+    if(prod){(r.products||[]).forEach(x=>{const br=brOf(x.br);if(inScope(br))put('i',x,'i:'+(x.cat||'?')+':'+x.item,x.item,'','c:'+(x.cat||'?'),RPT_CATS[x.cat]||'Uncategorised',per)});return}
+    const legacy=!(r.people||[]).some(x=>x.so!=null); // closed before release 1.3: sales volumes kept per branch only
+    if(legacy)legacyMonths.add(r.month||r.key);
+    const where=(br,name,co0)=>{const co=coOf(br);return {coId:co?co.id:(co0||'?'),coName:co?co.name:(co0||'Company'),brName:(branches.find(b=>b.id===br)||{name:name||br}).name}};
     (r.people||[]).forEach(x=>{const br=brOf(x.br,x.branch);if(!inScope(br))return;if(T.id==='seller'&&x.role!=='Sales')return;
-      const co=coOf(br),coId=co?co.id:(x.coId||x.co||'?'),coName=co?co.name:(x.co||'Company'),brName=(branches.find(b=>b.id===br)||{name:x.branch||br}).name;
-      if(T.id==='branch')put('p',x,'b:'+br,brName,'','co:'+coId,coName,per);
-      else if(T.id==='role')put('p',x,'r:'+coId+':'+x.role,RPT_ROLES[x.role]||x.role,'','co:'+coId,coName,per);
-      else put('p',x,'p:'+x.id,x.name,T.id==='person'?(RPT_ROLES[x.role]||x.role):'','b:'+br,brName+(state.co?'':' · '+coName),per)});
-    if(T.id==='branch')(r.branches||[]).forEach(x=>{const br=brOf(x.id,x.name);if(!inScope(br))return;const co=coOf(br);put('b',x,'b:'+br,x.name,'','co:'+(co?co.id:x.coId||x.co),co?co.name:x.co,per)});
+      const {coId,coName,brName}=where(br,x.branch,x.coId||x.co),vol=!legacy&&x.role==='Sales';
+      const row=T.id==='branch'?['b:'+br,brName,'','co:'+coId,coName]:T.id==='role'?['r:'+coId+':'+x.role,RPT_ROLES[x.role]||x.role,'','co:'+coId,coName]
+        :['p:'+br+':'+x.id,x.name,T.id==='person'?(RPT_ROLES[x.role]||x.role):'','b:'+br,brName+(state.co?'':' · '+coName)]; // a person who moved branch is a row in each branch
+      put('p',x,...row,per);if(vol)put('v',x,...row,per)});
+    if(T.id==='branch'||(legacy&&T.id==='role'))(r.branches||[]).forEach(x=>{const br=brOf(x.id,x.name);if(!inScope(br))return;const {coId,coName,brName}=where(br,x.name,x.coId||x.co);
+      const row=T.id==='branch'?['b:'+br,brName,'','co:'+coId,coName]:['r:'+coId+':Sales',RPT_ROLES.Sales,'','co:'+coId,coName];
+      if(T.id==='branch')put('b',x,...row,per);
+      if(legacy)put('v',{qty:x.qty,so:x.so,target:x.target},...row,per)});
   });
   const sum=(a,k)=>a.reduce((s,x)=>s+(+x[k]||0),0), mean=(a,k)=>a.length?sum(a,k)/a.length:null;
   const val=(m,c)=>{if(!c)return null;const P=c.p;
     switch(m){
-      case 'qty':return prod?sum(c.i,'qty'):sum(P,'qty');
-      case 'value':return prod?sum(c.i,'value'):sum(P,'so');
+      case 'qty':return prod?sum(c.i,'qty'):c.v.length&&c.v.some(x=>x.qty!=null)?sum(c.v,'qty'):null;
+      case 'value':return prod?sum(c.i,'value'):c.v.length?sum(c.v,'so'):null;
       case 'avg':{const q=val('qty',c);return q?val('value',c)/q:null}
-      case 'target':return prod?null:sum(P,'target');
-      case 'ach':{if(prod)return null;const t=sum(P,'target');return t>0?sum(P,'so')/t*100:null}
+      case 'target':return prod?null:c.v.length?sum(c.v,'target'):null;
+      case 'ach':{if(prod)return null;const t=sum(c.v,'target');return t>0?sum(c.v,'so')/t*100:null}
       case 'inc':return prod?null:sum(P,'total');
       case 'score':return prod?null:T.id==='branch'?mean(c.b,'score'):mean(P.filter(x=>x.score>0),'score');
       case 'att':return prod?null:mean(P,'att');
@@ -2343,9 +2355,10 @@ function buildReport(spec,recs){
     return {id:g.id,l:g.l,rows:rs,...line('G:'+g.id)}});
   const scope=rptScopeName(), yrs=spec.years.slice().sort();
   const monthsTxt=spec.months.length===12?'All months':spec.months.slice().sort((a,b)=>a-b).map(m=>MNAMES[m-1].slice(0,3)).join(', ');
-  const params=[['Rows',T.l],['Measures',MS.map(m=>m.l).join(', ')||'—'],['Years',yrs.map(y=>yearLbl(y,spec.gran)).join(', ')||'—'],['Months',monthsTxt||'—'],['Columns',(RPT_GRANS.find(g=>g[0]===spec.gran)||[])[1]+(total?', with a total column':'')],['Scope',scope[0].toUpperCase()+scope.slice(1)],['Prepared',`${nowStr()} by ${ME.name||ME.email}`]];
+  const params=[['Rows',T.l],['Measures',MS.map(m=>m.l).join(', ')||'—'],['Years',yrs.map(y=>yearLbl(y,spec.gran)).join(', ')||'—'],['Months',monthsTxt||'—'],['Columns',(RPT_GRANS.find(g=>g[0]===spec.gran)||[])[1]+(total?', with a total column':'')],['Scope',scope[0].toUpperCase()+scope.slice(1)],['Prepared',`${new Date().toLocaleString('sv-SE',{timeZone:'Asia/Kolkata'}).slice(0,16)} IST by ${ME.name||ME.email}`]];
   const notes=[];
   if(periods.some(p=>p.sample))notes.push(LIVE?'':'Months marked sample are generated from this month with season and growth, so the report can be tried before real months are archived; archived closes replace them.');
+  if(legacyMonths.size)notes.push(`${[...legacyMonths].join(', ')} ${legacyMonths.size>1?'were':'was'} archived before release 1.3: sales volumes are kept per branch only, so salesperson quantities and the product mix are blank for ${legacyMonths.size>1?'those months':'that month'}.`);
   if(periods.some(p=>p.running))notes.push(`${MONTH} is running: figures to day ${asOf}, target pro-rated to the day, incentive as standing today.`);
   notes.push('Subtotals and the grand total are computed from the underlying figures: sums for Qty, Value, Target, Incentive and People; ratios (Avg ticket, Achievement) from those sums; Score and Attendance as averages.');
   const slug=s=>String(s).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
@@ -2358,14 +2371,14 @@ function reportTable(R){
   const head1=`<tr><th rowspan="2">${esc(R.T.row)}</th>${per.map(p=>`<th class="pc" colspan="${M}">${esc(p.l)}${p.running?' <span class="pill info">running</span>':p.sample&&!LIVE?' <small>sample</small>':''}</th>`).join('')}${tot?`<th class="pc tc" colspan="${M}">Total</th>`:''}</tr>`;
   const head2=`<tr>${Array.from({length:per.length+(tot?1:0)},()=>R.MS.map((m,i)=>`<th class="r${i?'':' b0'}" data-tip="${esc(m.tip)}">${m.l}</th>`).join('')).join('')}</tr>`;
   const cells=x=>[...x.cells,...(tot?x.tot:[])].map((v,i)=>`<td class="r${i%M?'':' b0'}${tot&&i>=x.cells.length?' tc':''}">${rptFmt(R.MS[i%M].f,v)}</td>`).join('');
-  const body=R.sections.map(s=>`<tr class="grp"><td colspan="${span}">${esc(s.l)} <small>${s.rows.length}</small></td></tr>${s.rows.map(r=>`<tr><td class="ind">${esc(r.l)}${r.sub?` <small>${esc(r.sub)}</small>`:''}</td>${cells(r)}</tr>`).join('')}<tr class="sub"><td>Subtotal · ${esc(s.l)}</td>${cells(s)}</tr>`).join('');
+  const body=R.sections.map(s=>`<tr class="grp"><td colspan="${span}"><span class="gl">${esc(s.l)} <small>${s.rows.length}</small></span></td></tr>${s.rows.map(r=>`<tr><td class="ind">${esc(r.l)}${r.sub?` <small>${esc(r.sub)}</small>`:''}</td>${cells(r)}</tr>`).join('')}<tr class="sub"><td>Subtotal · ${esc(s.l)}</td>${cells(s)}</tr>`).join('');
   return `<table class="rp"><thead>${head1}${head2}</thead><tbody>${body}</tbody><tfoot><tr class="grand"><td>Grand total</td>${cells(R.grand)}</tr></tfoot></table>`;
 }
 function reportCSV(R){
   const M=R.MS.length,tot=R.total;
   const num=(f,v)=>v==null||!isFinite(v)?'':f==='pct'||f==='dec'?(+v).toFixed(1):Math.round(v);
   const vals=x=>[...x.cells,...(tot?x.tot:[])].map((v,i)=>num(R.MS[i%M].f,v));
-  const head=[R.T.grp,R.T.row,...R.periods.flatMap(p=>R.MS.map(m=>p.l+(p.running?' (running)':'')+' · '+m.l)),...(tot?R.MS.map(m=>'Total · '+m.l):[])];
+  const head=[R.T.grp,R.T.row,...R.periods.flatMap(p=>R.MS.map(m=>p.l+(p.running?' (running)':p.sample&&!LIVE?' (sample)':'')+' · '+m.l)),...(tot?R.MS.map(m=>'Total · '+m.l):[])];
   const rows=[];R.sections.forEach(s=>{s.rows.forEach(r=>rows.push([s.l,r.l+(r.sub?' ('+r.sub+')':''),...vals(r)]));rows.push(['Subtotal · '+s.l,'',...vals(s)])});rows.push(['Grand total','',...vals(R.grand)]);
   return csvText([R.title],[...R.params.map(p=>[p[0],p[1]]),[],head,...rows,...(R.notes.length?[[],...R.notes.map(n=>[n])]:[])]);
 }
@@ -2386,9 +2399,15 @@ function reportXLSX(R){
   rows.push([S(DD.text,'foot')]);const fr=rows.length+1;rows.push([S(DD.links[0][0],'link'),S(DD.links[1][0],'link')]);
   return xlsxBook([{name:'Report',rows,merges,links:[{ref:'A'+fr,url:DD.links[0][1]},{ref:'B'+fr,url:DD.links[1][1]}],cols:[36,...Array(nc-1).fill(14)],freeze:{row:h1+1,col:1},titles:[h1,h1+1],footer:DD.text+' · '+DD.links.map(l=>l[0]).join(' | ')}],{title:R.title});
 }
+function rptBands(R,maxCols){ // split the period columns into bands that fit an A4 landscape page; the total column rides the last band
+  const M=R.MS.length,per=Math.max(1,Math.floor(maxCols/M)),n=R.periods.length,out=[];
+  for(let a=0;a<n||(!n&&!out.length);a+=per){const z=Math.min(n,a+per),last=z>=n,cut=x=>({...x,cells:x.cells.slice(a*M,z*M)});
+    out.push({...R,periods:R.periods.slice(a,z),total:R.total&&last,sections:R.sections.map(sec=>({...cut(sec),rows:sec.rows.map(cut)})),grand:cut(R.grand),band:[a+1,z,n]});if(!n)break}
+  return out;
+}
 function printReport(R){const box=$('#print');if(!box)return;
-  const cols=1+(R.periods.length+(R.total?1:0))*R.MS.length;
-  box.innerHTML=printWrap(`<div class="rpt" style="font-size:${cols>26?7:cols>16?8.5:10}px"><h1>${esc(R.title)}</h1><p class="sub">${R.params.map(p=>`<b>${esc(p[0])}:</b> ${esc(p[1])}`).join(' · ')}</p>${reportTable(R)}${R.notes.map(n=>`<p class="note">${esc(n)}</p>`).join('')}</div>`,'land');
+  const bands=rptBands(R,14),cols=1+Math.max(...bands.map(b=>(b.periods.length+(b.total?1:0))*b.MS.length));
+  box.innerHTML=printWrap(`<div class="rpt" style="font-size:${cols>12?8.5:10}px"><h1>${esc(R.title)}</h1><p class="sub">${R.params.map(p=>`<b>${esc(p[0])}:</b> ${esc(p[1])}`).join(' · ')}</p>${bands.map((b,i)=>`${bands.length>1?`<p class="band">Columns ${esc(b.periods[0]?b.periods[0].l:'')} to ${esc(b.periods.length?b.periods[b.periods.length-1].l:'')}${b.total?' and the total':''} · part ${i+1} of ${bands.length}</p>`:''}<div class="${i?'nb':''}">${reportTable(b)}</div>`).join('')}${R.notes.map(n=>`<p class="note">${esc(n)}</p>`).join('')}</div>`,'land');
   const t=document.title;document.title=R.file;const back=()=>{document.title=t;window.removeEventListener('afterprint',back)};if(typeof window.addEventListener==='function')window.addEventListener('afterprint',back);
   if(typeof window.print==='function')window.print()}
 
@@ -2452,7 +2471,7 @@ function viewReports(){
   const chip=(name,val,on,l,dis,tip)=>`<label class="${on?'on':''}${dis?' dis':''}"${tip?` data-tip="${esc(tip)}"`:''}><input type="checkbox" data-r="${name}" value="${val}" ${on?'checked':''} ${dis?'disabled':''}>${l}</label>`;
   const nRows=R.sections.reduce((s,x)=>s+x.rows.length,0), first=R.MS[0];
   const src=recs.filter(r=>sp.years.includes(yearOf(r.key,sp.gran))&&sp.months.includes(+r.key.slice(5,7)));
-  const presets=[['ytd','This year by month, Qty and Value'],['yoy','Year on year, Qty and Value'],['fy','Financial years, Value and Achievement'],['inc','Incentive by role, by quarter'],['prod','Product mix by year']];
+  const presetType={ytd:'branch',yoy:'branch',fy:'branch',inc:'role',prod:'product'},presets=[['ytd','This year by month, Qty and Value'],['yoy','Year on year, Qty and Value'],['fy','Financial years, Value and Achievement'],['inc','Incentive by role, by quarter'],['prod','Product mix by year']].filter(([id])=>types.some(t=>t.id===presetType[id]));
   $('#view').innerHTML=`
   <div class="tiles">
     ${tile('Months in the report',src.length,src.length?`${keyLabel(src[0].key)} to ${keyLabel(src[src.length-1].key)}`:'none chosen','hero')}
@@ -2461,23 +2480,26 @@ function viewReports(){
     ${first?tile('Grand total · '+first.l,rptFmt(first.f,R.grand.tot[0]),rptScopeName(),'','good'):''}
   </div>
   <div class="card"><h2>Report builder <small>rows, measures and periods across years, in one output</small></h2><div class="body rpt-form">
-    <div class="rf"><span class="rl">Quick start</span><span class="chips">${presets.map(([id,l])=>`<button class="btn small" data-preset="${id}">${l}</button>`).join('')}</span></div>
+    <div class="rf" role="group" aria-label="Quick start"><span class="rl">Quick start</span><span class="chips">${presets.map(([id,l])=>`<button class="btn small" data-preset="${id}">${l}</button>`).join('')}</span></div>
     <div class="rf"><span class="rl">Rows</span><select id="rType" aria-label="Report rows">${types.map(t=>`<option value="${t.id}" ${t.id===sp.type?'selected':''}>${t.l}</option>`).join('')}</select><span class="note" style="margin:0">Scope follows the Company and Branch selectors above: <b>${esc(rptScopeName())}</b>.</span></div>
-    <div class="rf"><span class="rl">Measures</span><span class="chips">${RPT_MEASURES.map(m=>chip('m',m.id,sp.ms.includes(m.id),m.l,sp.type==='product'&&!RPT_PRODUCT.includes(m.id),m.tip)).join('')}</span></div>
-    <div class="rf"><span class="rl">Years</span><span class="chips">${yrs.map(y=>chip('y',y,sp.years.includes(y),yearLbl(y,sp.gran))).join('')}</span></div>
-    <div class="rf"><span class="rl">Months</span><span class="chips">${MNAMES.map((n,i)=>chip('mo',i+1,sp.months.includes(i+1),n.slice(0,3))).join('')}<button class="btn small" data-mo="all">All</button><button class="btn small" data-mo="none">Clear</button></span></div>
+    <div class="rf" role="group" aria-label="Measures"><span class="rl">Measures</span><span class="chips">${RPT_MEASURES.map(m=>chip('m',m.id,sp.ms.includes(m.id),m.l,sp.type==='product'&&!RPT_PRODUCT.includes(m.id),m.tip)).join('')}</span></div>
+    <div class="rf" role="group" aria-label="Years"><span class="rl">Years</span><span class="chips">${yrs.map(y=>chip('y',y,sp.years.includes(y),yearLbl(y,sp.gran))).join('')}</span></div>
+    <div class="rf" role="group" aria-label="Months"><span class="rl">Months</span><span class="chips">${MNAMES.map((n,i)=>chip('mo',i+1,sp.months.includes(i+1),n.slice(0,3))).join('')}<button class="btn small" data-mo="all">All</button><button class="btn small" data-mo="none">Clear</button></span></div>
     <div class="rf"><span class="rl">Columns</span><select id="rGran" aria-label="Period columns">${RPT_GRANS.map(([id,l])=>`<option value="${id}" ${id===sp.gran?'selected':''}>${l}</option>`).join('')}</select><label class="chk"><input type="checkbox" id="rTot" ${sp.total?'checked':''}> Total column across the periods</label></div>
-    <div class="wa-bar"><button class="btn primary" id="rXlsx" ${R.empty?'disabled':''}>⬇ Excel (.xlsx)</button><button class="btn" id="rPdf" ${R.empty?'disabled':''}>🖨 PDF (print or save)</button><button class="btn" id="rCsv" ${R.empty?'disabled':''}>⬇ CSV</button><span class="note" style="margin:0">Every output carries the parameters above, subtotals, the grand total and the D&amp;D footer with its links.</span></div>
+    <div class="wa-bar"><button class="btn primary" id="rXlsx" ${R.empty||!R.MS.length?'disabled':''}>⬇ Excel (.xlsx)</button><button class="btn" id="rPdf" ${R.empty||!R.MS.length?'disabled':''}>🖨 PDF (print or save)</button><button class="btn" id="rCsv" ${R.empty||!R.MS.length?'disabled':''}>⬇ CSV</button><span class="note" style="margin:0">Every output carries the parameters above, subtotals, the grand total and the D&amp;D footer with its links.</span></div>
   </div></div>
   <div class="card"><h2>Report output <small>${esc(R.title)}</small></h2><div class="body">
-    ${R.empty?'<p class="empty">No month matches the years and months chosen.</p>':`<div class="tw-r">${reportTable(R)}</div>`}
+    ${!R.MS.length?'<p class="empty">Tick at least one measure.</p>':R.empty?'<p class="empty">No month matches the years and months chosen.</p>':`<div class="tw-r" tabindex="0" role="region" aria-label="Report output, scrolls sideways">${reportTable(R)}</div>`}
     ${R.notes.map(n=>`<p class="note">${esc(n)}</p>`).join('')}
     <p class="note">${ddHtml()}</p>
   </div></div>`;
-  const upd=o=>{state.rpt={...sp,...o};saveState();render()};
+  const upd=(o,focus)=>{const a=document.activeElement,sel=focus||(a&&a.id?'#'+a.id:a&&a.dataset&&a.dataset.r?`input[data-r="${a.dataset.r}"][value="${a.value}"]`:a&&a.dataset&&a.dataset.mo?`[data-mo="${a.dataset.mo}"]`:a&&a.dataset&&a.dataset.preset?`[data-preset="${a.dataset.preset}"]`:null);
+    state.rpt={...sp,...o};saveState();render();if(sel){const el=$('#view').querySelector(sel);if(el&&el.focus)el.focus()}};
   const on=(id,ev,fn)=>{const el=$(id);if(el&&el.addEventListener)el.addEventListener(ev,fn)};
   on('#rType','change',e=>upd({type:e.target.value}));
-  on('#rGran','change',e=>upd({gran:e.target.value}));
+  on('#rGran','change',e=>{const g=e.target.value,fy=x=>x==='fy';let years=sp.years; // calendar year Y lies in FY Y-1 and FY Y; FY Y in calendar Y and Y+1
+    if(fy(g)!==fy(sp.gran)){years=[...new Set(sp.years.flatMap(y=>fy(g)?[y-1,y]:[y,y+1]))].filter(y=>rptYears(g).includes(y));toast(fy(g)?'Years now read as financial years, April to March':'Years now read as calendar years')}
+    upd({gran:g,years})});
   on('#rTot','change',e=>upd({total:!!e.target.checked}));
   const view=$('#view');
   view.querySelectorAll('input[data-r]').forEach(i=>i.addEventListener('change',()=>{const n=i.dataset.r,vals=[...view.querySelectorAll(`input[data-r="${n}"]:checked`)].map(x=>n==='m'?x.value:+x.value);upd(n==='m'?{ms:vals}:n==='y'?{years:vals}:{months:vals})}));
@@ -2573,7 +2595,7 @@ function viewAdmin(){
     const pending=ADJ.filter(a=>a.status==='Pending').length;
     body=`<div class="card"><h2>Month close checklist <small>${MONTH} · ${asOf>=DAYS?'month ended':`${DAYS-asOf} days to go`}</small></h2><div class="body">
       ${CLOSE_STEPS.map(([k,l],i)=>{const st=CLOSE[k]||{};const blocked=k==='adjust'&&pending;return `<div class="check"><input type="checkbox" data-close="${k}" ${st.done?'checked':''} ${edit&&!blocked?'':'disabled'}><div><b>${i+1}. ${l}</b><small>${st.done?`Done ${st.on} by ${esc(st.by||'')}`:blocked?`${pending} pending adjustment${pending>1?'s':''} in the ledger`:'Open'}</small></div><span>${st.done?'<span class="st live">done</span>':blocked?'<span class="st pending">blocked</span>':'<span class="st draft">open</span>'}</span></div>`}).join('')}
-      <div class="wa-bar"><button class="btn primary" id="stmtAll" ${edit?'':'disabled'}>🖨 Statements for every employee (print or save as PDF)</button><button class="btn" id="payoutCsv" ${edit?'':'disabled'}>⬇ Payout file (CSV)</button><button class="btn" id="archiveMonth" ${edit&&asOf>=DAYS?'':'disabled'}>📚 Archive ${MONTH} into history</button><span class="note" style="margin:0">${asOf>=DAYS?'':'Archiving opens on the last day of the month. '}${HIST.length?`Archived: ${HIST.map(x=>x.month).join(', ')}.`:'Nothing archived yet; the history cards show three generated sample months until the first real close.'}</span></div>
+      <div class="wa-bar"><button class="btn primary" id="stmtAll" ${edit?'':'disabled'}>🖨 Statements for every employee (print or save as PDF)</button><button class="btn" id="payoutCsv" ${edit?'':'disabled'}>⬇ Payout file (CSV)</button><button class="btn" id="archiveMonth" ${edit&&asOf>=DAYS?'':'disabled'}>📚 Archive ${MONTH} into history</button><span class="note" style="margin:0">${asOf>=DAYS?'':'Archiving opens on the last day of the month. '}${HIST.length?`Archived: ${HIST.map(x=>x.month).join(', ')}.`:'Nothing archived yet'+(LIVE?'.':'; the history cards and reports use generated sample months, and each archived close replaces its sample month.')}</span></div>
       <div class="wa-bar"><button class="btn" id="closeReset" ${edit?'':'disabled'}>Reset checklist for a new month</button><span class="note" style="margin:0">Each tick is logged with who and when. The MD approval step is the monthly email in 📣 Messages; the payout step hands the per-employee totals from the board to payroll.</span></div>
     </div></div>`;
   }

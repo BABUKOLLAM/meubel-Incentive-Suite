@@ -20,15 +20,17 @@ const SOURCES = {
 };
 const col = c => (c === 'cross' ? 'cross_sell' : c);
 
-async function read(id) {
-  const s = SOURCES[id]; if (!s) return null;
-  const r = await q(`select * from ${s.view}`);
-  return r.rows;
+const has = id => Object.hasOwn(SOURCES, id);
+// The current month (the view), or a given 'YYYY-MM' from the table: the monthly close reads the month just ended
+async function read(id, month) {
+  if (!has(id)) return null; const s = SOURCES[id];
+  if (!month) return (await q(`select * from ${s.view}`)).rows;
+  return (await q(`select ${s.cols.map(c => (c === 'cross' ? 'cross_sell as "cross"' : c)).join(',')} from ${s.table} where month=$1`, [month])).rows;
 }
 
 // Replace a month's rows for one source inside a transaction (what the sync job calls)
 async function replaceMonth(client, id, month, rows) {
-  const s = SOURCES[id]; if (!s) throw new Error('unknown source ' + id);
+  if (!has(id)) throw new Error('unknown source ' + id); const s = SOURCES[id];
   await client.query(`delete from ${s.table} where month=$1`, [month]);
   const cols = s.cols.map(col);
   for (let i = 0; i < rows.length; i += 500) {
@@ -45,4 +47,4 @@ async function replaceMonth(client, id, month, rows) {
   return rows.length;
 }
 
-module.exports = { SOURCES, read, replaceMonth };
+module.exports = { SOURCES, has, read, replaceMonth };

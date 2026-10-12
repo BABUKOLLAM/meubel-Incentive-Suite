@@ -10,7 +10,9 @@ const engine = require('../lib/engine');
 const wa = require('../send/whatsapp');
 const mail = require('../send/email');
 
-const DRY = process.env.DRY_RUN === '1';
+const DRY = process.env.DRY_RUN !== '0'; // nothing goes out until DRY_RUN=0 is set on purpose
+const istDate = () => new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Kolkata' }).slice(0, 10);
+const prevMonth = () => { const d = istDate(); const y = +d.slice(0, 4), m = +d.slice(5, 7) - 1; return m ? `${y}-${String(m).padStart(2, '0')}` : `${y - 1}-12`; };
 
 async function roster() { const r = await q('select id,name,role,branch,branch_id,phone,email from roster where left_on is null or left_on > now()'); return r.rows; }
 async function profilesByRole(roles) { const r = await q('select email,name,role,phone from profiles where active and role = any($1)', [roles]); return r.rows; }
@@ -20,33 +22,41 @@ async function log(row) { await q('insert into messages_log(cadence,audience,cha
 async function deliver(channel, to, built, meta) {
   if (!to) { await log({ ...meta, channel, recipient: '', subject: built.subject, status: 'skipped', error: 'no contact on roster' }); return; }
   if (DRY) { await log({ ...meta, channel, recipient: to, subject: built.subject, status: 'dry-run' }); return; }
+  // one send per run, audience, channel and recipient: a re-run, a restart or a second replica cannot send twice
+  const claim = await q('insert into message_sends(run_key,audience,channel,recipient) values($1,$2,$3,$4) on conflict do nothing returning 1', [meta.runKey, (meta.audience || '') + (meta.scope ? '@' + meta.scope : ''), channel, to]);
+  if (!claim.rows.length) { await log({ ...meta, channel, recipient: to, subject: built.subject, status: 'duplicate', error: 'already sent in this run' }); return; }
   try {
     const res = channel === 'whatsapp' ? await wa.send(to, built.text, built.subject) : await mail.send(to, built.subject, built.html, built.text, meta.cc);
     await log({ ...meta, channel, recipient: to, subject: built.subject, status: 'sent', provider_id: res.id });
-  } catch (e) { await log({ ...meta, channel, recipient: to, subject: built.subject, status: 'failed', error: e.message }); }
+  } catch (e) { // a failed send frees its slot so the next run retries it
+    await q('delete from message_sends where run_key=$1 and audience=$2 and channel=$3 and recipient=$4', [meta.runKey, (meta.audience || '') + (meta.scope ? '@' + meta.scope : ''), channel, to]);
+    await log({ ...meta, channel, recipient: to, subject: built.subject, status: 'failed', error: e.message });
+  }
 }
 
-async function run(kind) {
-  const E = await engine.load();
+async function run(kind, opts = {}) {
+  // the monthly round on the 1st reports the month that has just closed, scored to its last day
+  const E = await engine.load(kind === 'monthly' ? { month: opts.month || prevMonth(), asOf: 31 } : {});
   const R = await roster();
-  const contact = (name, role, branchName) => R.find(x => x.name === name && (!role || x.role === role) && (!branchName || x.branch === branchName)) || R.find(x => x.name === name) || {};
+  const contact = (name, role, branchName, id) => (id && R.find(x => x.id === id)) || R.find(x => x.name === name && (!role || x.role === role) && (!branchName || x.branch === branchName)) || {};
+  const runKey = `${kind}:${kind === 'monthly' ? E.CAL.key : istDate()}`;
   const g = E.computeGroup(), rk = E.rankings(g);
   const branchesC = E.branches.map(br => ({ br, b: E.computeBranch(br) }));
-  const meta = cad => ({ cadence: cad });
+  const meta = cad => ({ cadence: cad, runKey });
   const sent = [];
   const perBranch = async (aud, cad, ch, toRole) => {
     for (const { br, b } of branchesC) {
       const built = E.buildMessage(aud, cad, ch, { b, rk, person: null });
-      const heads = b.members.filter(m => toRole.includes(m.p.role)).map(m => contact(m.p.name, m.p.role, br.name));
-      if (aud === 'BM' && ch === 'email') { const bm = heads.find(h => h.role === 'BM'), sm = heads.find(h => h.role === 'SM'); await deliver('email', bm && bm.email, built, { ...meta(cad), audience: aud, cc: sm && sm.email }); }
-      else for (const h of heads) await deliver(ch, ch === 'whatsapp' ? h.phone : h.email, built, { ...meta(cad), audience: aud });
+      const heads = b.members.filter(m => toRole.includes(m.p.role)).map(m => contact(m.p.name, m.p.role, br.name, m.p.id));
+      if (aud === 'BM' && ch === 'email') { const bm = heads.find(h => h.role === 'BM'), sm = heads.find(h => h.role === 'SM'); await deliver('email', bm && bm.email, built, { ...meta(cad), audience: aud, scope: br.id, cc: sm && sm.email }); }
+      else for (const h of heads) await deliver(ch, ch === 'whatsapp' ? h.phone : h.email, built, { ...meta(cad), audience: aud, scope: br.id });
       sent.push(`${aud} ${cad} ${ch} ${br.name}`);
     }
   };
   const teamGroups = async (aud, cad) => { // team WhatsApps go to every member of the team in the branch
     for (const { br, b } of branchesC) {
       const built = E.buildMessage(aud, cad, 'whatsapp', { b, rk, person: null });
-      for (const m of b.members.filter(m => m.p.role === aud)) await deliver('whatsapp', contact(m.p.name, m.p.role, br.name).phone, built, { ...meta(cad), audience: aud });
+      for (const m of b.members.filter(m => m.p.role === aud)) await deliver('whatsapp', contact(m.p.name, m.p.role, br.name, m.p.id).phone, built, { ...meta(cad), audience: aud, scope: br.id });
       sent.push(`${aud} ${cad} whatsapp ${br.name}`);
     }
   };
@@ -59,7 +69,7 @@ async function run(kind) {
   else if (kind === 'weekly') { for (const t of ['Sales', 'CRE', 'Logistics', 'Back office']) await teamGroups(t, 'weekly'); }
   else if (kind === 'bm-email') { await perBranch('BM', 'weekly', 'email', ['BM', 'SM']); await groupMail('MD', 'weekly', ['md', 'director']); }
   else if (kind === 'monthly') {
-    for (const { br, b } of branchesC) for (const m of b.members) { const built = E.buildMessage('person', 'monthly', 'whatsapp', { b, rk, person: m }); await deliver('whatsapp', contact(m.p.name, m.p.role, br.name).phone, built, { ...meta('monthly'), audience: 'person' }); }
+    for (const { br, b } of branchesC) for (const m of b.members) { const built = E.buildMessage('person', 'monthly', 'whatsapp', { b, rk, person: m }); await deliver('whatsapp', contact(m.p.name, m.p.role, br.name, m.p.id).phone, built, { ...meta('monthly'), audience: 'person:' + m.p.id }); }
     await teamGroups('CRE', 'monthly'); await groupMail('MD', 'monthly', ['md', 'director']); await groupMail('HR', 'monthly', ['hr']);
   }
   else if (kind === 'md-preview') await groupMail('MD', 'monthly', ['md', 'director']);

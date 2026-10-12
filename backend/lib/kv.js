@@ -23,14 +23,13 @@ async function readAll(profile) {
   const out = {}; r.rows.forEach(x => { out[x.key] = x.value; });
   const role = profile.role;
   if (!WIDE.includes(role)) {
-    delete out['mr-audit'];
-    delete out['mr-users'];
-    if (Array.isArray(out['mr-adj'])) {
-      let allowed = [];
-      if (role === 'employee') allowed = [profile.person_id];
-      else if (profile.branch_id) allowed = (await branchPeople(profile.branch_id)).flatMap(p => [p.id, p.name]);
-      out['mr-adj'] = out['mr-adj'].filter(a => allowed.includes(a.person));
-    }
+    for (const k of ['mr-audit', 'mr-users', 'mr-wire', 'mr-close', 'mr-src']) delete out[k]; // administration only
+    let allowed = [];
+    if (role === 'employee') allowed = [profile.person_id];
+    else if (profile.branch_id) allowed = (await branchPeople(profile.branch_id)).flatMap(p => [p.id, p.name]);
+    if (Array.isArray(out['mr-adj'])) out['mr-adj'] = out['mr-adj'].filter(a => allowed.includes(a.person));
+    if (Array.isArray(out['mr-hist'])) // closed months: only the people (and, for managers, the branch) in scope
+      out['mr-hist'] = out['mr-hist'].map(h => ({ ...h, people: (h.people || []).filter(p => allowed.includes(p.id)), branches: role === 'employee' ? [] : (h.branches || []).filter(b => b.id === profile.branch_id), products: role === 'employee' ? [] : (h.products || []).filter(x => x.br === profile.branch_id) }));
   }
   return out;
 }
@@ -43,7 +42,7 @@ async function write(profile, key, value) {
     const last = await q('select detail from audit_events where key=$1 order by id desc limit 1', ['mr-audit']);
     const newest = value[0];
     if (newest && (!last.rows[0] || last.rows[0].detail !== JSON.stringify(newest)))
-      await q('insert into audit_events(who,action,detail,key) values($1,$2,$3,$4)', [newest.who || profile.email, newest.action || 'audit', JSON.stringify(newest), 'mr-audit']);
+      await q('insert into audit_events(who,action,detail,key) values($1,$2,$3,$4)', [profile.email, String(newest.action || 'audit').slice(0, 200), JSON.stringify(newest), 'mr-audit']);
   } else {
     await q('insert into audit_events(who,action,detail,key) values($1,$2,$3,$4)', [profile.email, 'Saved ' + key, null, key]);
   }
