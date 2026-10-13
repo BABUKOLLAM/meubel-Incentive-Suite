@@ -71,9 +71,8 @@ const bad = [], ok = (c, m) => { if (!c) bad.push(m); };
   ok((await fetch(B + '/api/push/key')).status === 401 && /^[\w-]{80,}$/.test((await (await fetch(B + '/api/push/key', { headers: { cookie: a2 } })).json()).publicKey), 'push key wrong');
   const tdir = require('fs').mkdtempSync(require('os').tmpdir() + '/push-');
   require('child_process').execSync(`openssl req -x509 -newkey rsa:2048 -nodes -subj /CN=localhost -days 1 -keyout ${tdir}/k.pem -out ${tdir}/c.pem`, { stdio: 'ignore' });
-  const tls = require('fs').readFileSync(tdir + '/k.pem', 'utf8') + require('fs').readFileSync(tdir + '/c.pem', 'utf8');
   const hits = [];
-  const fake = require('https').createServer({ key: tls.match(/-----BEGIN PRIVATE KEY-----[\s\S]+?-----END PRIVATE KEY-----/)[0], cert: tls.match(/-----BEGIN CERTIFICATE-----[\s\S]+?-----END CERTIFICATE-----/)[0] }, (rq, rs) => {
+  const fake = require('https').createServer({ key: require('fs').readFileSync(tdir + '/k.pem'), cert: require('fs').readFileSync(tdir + '/c.pem') }, (rq, rs) => {
     let n = 0; rq.on('data', d => n += d.length); rq.on('end', () => { hits.push({ url: rq.url, n, enc: rq.headers['content-encoding'], auth: /^vapid t=/.test(rq.headers.authorization || '') }); rs.statusCode = rq.url === '/gone' ? 410 : 201; rs.end(); });
   }).listen(8493);
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
@@ -90,7 +89,7 @@ const bad = [], ok = (c, m) => { if (!c) bad.push(m); };
   ok(rel && rel.sent === 1 && rel.total === 1 && hits.length === 3, 'release not announced to the remaining phone: ' + JSON.stringify(rel));
   ok((await push.announceBuild('feedfacecafe', '1.6', 'New reports')) === null, 'the same build announced twice');
   ok((await fetch(B + '/api/push/subscribe', { method: 'DELETE', headers: { cookie: bm, 'Content-Type': 'application/json' }, body: JSON.stringify({ endpoint: sub('phone').endpoint }) })).status === 200 && (await push.send({ title: 't' })).total === 0, 'unsubscribe failed');
-  fake.close(); delete process.env.NODE_TLS_REJECT_UNAUTHORIZED;
+  fake.close(); delete process.env.NODE_TLS_REJECT_UNAUTHORIZED; require('fs').rmSync(tdir, { recursive: true, force: true });
   let flood = 0; for (let i = 0; i < 40; i++) if ((await fetch(B + '/api/auth/logout')).status === 429) flood++;
   ok(flood > 0, 'sign-in routes not rate-limited');
   if (bad.length) { console.log(bad.join('\n')); process.exit(1); }
