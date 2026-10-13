@@ -62,9 +62,38 @@ const bad = [], ok = (c, m) => { if (!c) bad.push(m); };
   ok(/No such document/.test(await (await fetch(B + '/verify/%3Cscript%3E')).text()) && !(await (await fetch(B + '/verify/%3Cscript%3E')).text()).includes('<script>'), 'verify page echoes input');
   ok((await fetch(B + '/api/docs', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{"docs":[]}' })).status === 401, 'anonymous registration accepted');
   { const appc = new Client({ connectionString: APP }); await appc.connect(); ok(await appc.query("update issued_docs set title='forged'").then(() => false, () => true), 'app role can rewrite an issued document'); await appc.end(); }
+  // update notifications: build fingerprint, service worker, manifest, subscriptions, a release reaching a fake push service
+  const ver = await (await fetch(B + '/api/version')).json();
+  ok(/^[0-9a-f]{12}$/.test(ver.build) && ver.release === '1.5', 'version endpoint wrong: ' + JSON.stringify(ver));
+  const swt = await (await fetch(B + '/sw.js')).text();
+  ok(swt.includes(ver.build) && !swt.includes('__BUILD__'), 'service worker not stamped with the build');
+  ok((await (await fetch(B + '/manifest.webmanifest')).json()).display === 'standalone', 'manifest missing');
+  ok((await fetch(B + '/api/push/key')).status === 401 && /^[\w-]{80,}$/.test((await (await fetch(B + '/api/push/key', { headers: { cookie: a2 } })).json()).publicKey), 'push key wrong');
+  const tdir = require('fs').mkdtempSync(require('os').tmpdir() + '/push-');
+  require('child_process').execSync(`openssl req -x509 -newkey rsa:2048 -nodes -subj /CN=localhost -days 1 -keyout ${tdir}/k.pem -out ${tdir}/c.pem`, { stdio: 'ignore' });
+  const tls = require('fs').readFileSync(tdir + '/k.pem', 'utf8') + require('fs').readFileSync(tdir + '/c.pem', 'utf8');
+  const hits = [];
+  const fake = require('https').createServer({ key: tls.match(/-----BEGIN PRIVATE KEY-----[\s\S]+?-----END PRIVATE KEY-----/)[0], cert: tls.match(/-----BEGIN CERTIFICATE-----[\s\S]+?-----END CERTIFICATE-----/)[0] }, (rq, rs) => {
+    let n = 0; rq.on('data', d => n += d.length); rq.on('end', () => { hits.push({ url: rq.url, n, enc: rq.headers['content-encoding'], auth: /^vapid t=/.test(rq.headers.authorization || '') }); rs.statusCode = rq.url === '/gone' ? 410 : 201; rs.end(); });
+  }).listen(8493);
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+  const crypto = require('crypto'), ecdh = crypto.createECDH('prime256v1'); ecdh.generateKeys();
+  const sub = ep => ({ endpoint: 'https://localhost:8493/' + ep, keys: { p256dh: ecdh.getPublicKey('base64url'), auth: crypto.randomBytes(16).toString('base64url') } });
+  const subPost = (c, s) => fetch(B + '/api/push/subscribe', { method: 'POST', headers: { cookie: c, 'Content-Type': 'application/json' }, body: JSON.stringify({ subscription: s }) });
+  ok((await subPost(bm, sub('phone'))).status === 200 && (await subPost(a2, sub('gone'))).status === 200, 'subscription refused');
+  ok((await subPost(bm, { endpoint: 'http://plain/', keys: {} })).status === 400, 'bad subscription accepted');
+  ok((await fetch(B + '/api/push/announce', { method: 'POST', headers: { cookie: bm, 'Content-Type': 'application/json' }, body: '{"title":"x"}' })).status === 403, 'a branch manager can announce');
+  const an = await (await fetch(B + '/api/push/announce', { method: 'POST', headers: { cookie: a2, 'Content-Type': 'application/json' }, body: JSON.stringify({ title: 'Payroll closes Friday', body: 'Check your statement.' }) })).json();
+  ok(an.sent === 1 && an.gone === 1 && hits.length === 2 && hits.every(h => h.enc === 'aes128gcm' && h.auth && h.n > 0), 'announcement not delivered: ' + JSON.stringify(an) + JSON.stringify(hits));
+  const push = require(root + '/lib/push.js');
+  const rel = await push.announceBuild('feedfacecafe', '1.6', 'New reports');
+  ok(rel && rel.sent === 1 && rel.total === 1 && hits.length === 3, 'release not announced to the remaining phone: ' + JSON.stringify(rel));
+  ok((await push.announceBuild('feedfacecafe', '1.6', 'New reports')) === null, 'the same build announced twice');
+  ok((await fetch(B + '/api/push/subscribe', { method: 'DELETE', headers: { cookie: bm, 'Content-Type': 'application/json' }, body: JSON.stringify({ endpoint: sub('phone').endpoint }) })).status === 200 && (await push.send({ title: 't' })).total === 0, 'unsubscribe failed');
+  fake.close(); delete process.env.NODE_TLS_REJECT_UNAUTHORIZED;
   let flood = 0; for (let i = 0; i < 40; i++) if ((await fetch(B + '/api/auth/logout')).status === 429) flood++;
   ok(flood > 0, 'sign-in routes not rate-limited');
   if (bad.length) { console.log(bad.join('\n')); process.exit(1); }
-  console.log(`db test: migrations ${first.length ? first.join(', ') : 'already applied'}; restricted app role; versioned saves; branch scope; sign-out everywhere; PKCE; document verification; cross-site and flood refused`);
+  console.log(`db test: migrations ${first.length ? first.join(', ') : 'already applied'}; restricted app role; versioned saves; branch scope; sign-out everywhere; PKCE; document verification; update notifications; cross-site and flood refused`);
   process.exit(0);
 })().catch(e => { console.log('db test failed:', e.message); process.exit(1); });

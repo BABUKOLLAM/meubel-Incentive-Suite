@@ -433,7 +433,11 @@ thirty minutes with Docker Compose (Postgres, the Node back end, Caddy for HTTPS
 - **Operations**: health endpoint, jobs and messages logs, nightly `pg_dump` script; versioned migrations
   (`backend/db/migrations`, each applied once) run by a one-shot `migrate` service as the database owner, while
   the app connects as a restricted role that cannot change the schema or the audit trail;
-  `git pull && docker compose up -d --build` to update.
+  `sudo deploy/update.sh` to update, or automatically from GitHub after every green check (the **deploy** workflow,
+  once the `VPS_*` secrets are set; see `deploy/README.md`).
+- **Phones**: the hosted board installs as an app, works from its last copy when offline, shows *A new version of
+  the board is ready* when a release lands, and sends a push notification to every device that switched
+  *Get updates* on. Admins can also announce anything to those devices from Admin → Jobs and status.
 
 - **Live roster**: hosted, the board builds companies, branches and people from the `roster` table instead of the
   generated sample, each starting empty (nothing booked, no punches, nothing audited); the feeds fill them. A
@@ -456,10 +460,11 @@ deploy/                    VPS guide, one-command installer, go-live checklist, 
 docker-compose.yml         Postgres + back end + Caddy
 test/browser.test.js       headless Chromium walk: no page errors, no bad text, no phone overflow
 test/backend.test.js       back-end security regressions on a stubbed database
-test/db.test.js            migrations, app role, versioned saves, branch scope, sign-out, PKCE, limits on a real Postgres
+test/db.test.js            migrations, app role, versioned saves, branch scope, sign-out, PKCE, document verification, push notifications, limits on a real Postgres
 CLAUDE.md                  conventions for anyone (or any agent) working on the repo
 test/render.test.js        renders every view under every role with a stub DOM; fails on any exception, NaN or undefined
-.github/workflows/check.yml  runs the render test and a secret scan on every push and pull request
+.github/workflows/check.yml  render, back-end, database and browser tests on every push and pull request
+.github/workflows/deploy.yml updates the VPS over SSH after a green check on main (needs the VPS_* secrets)
 ```
 
 Run the test locally with `node test/render.test.js` (Node 18 or later, no packages to install).

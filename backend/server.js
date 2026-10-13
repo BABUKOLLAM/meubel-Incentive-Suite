@@ -10,6 +10,13 @@ const auth = require('./lib/auth');
 const kv = require('./lib/kv');
 const sources = require('./lib/sources');
 const docs = require('./lib/docs');
+const push = require('./lib/push');
+const fs = require('fs'), crypto = require('crypto');
+
+// The build: a fingerprint of the files a browser loads, so a phone can tell that a new version is on the server
+const BUILD = crypto.createHash('sha256').update(['../index.html', 'public/remote.js', 'public/sw.js'].map(f => { try { return fs.readFileSync(path.join(__dirname, f)); } catch (_) { return ''; } }).join('|')).digest('hex').slice(0, 12);
+const RELEASE = (() => { try { return (fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8').match(/const BOARD_RELEASE='([^']+)'/) || [])[1] || '—'; } catch (_) { return '—'; } })();
+const NOTES = (() => { try { return fs.readFileSync(path.join(__dirname, '..', 'deploy', 'RELEASE.md'), 'utf8').split('\n').find(l => l.trim() && !l.startsWith('#')).trim().slice(0, 180); } catch (_) { return ''; } })();
 
 const app = express();
 // Express 4 does not catch a rejected async handler: wrap every route so a database error answers 500 instead of
@@ -49,6 +56,7 @@ app.use(express.text({ type: ['text/*', 'application/octet-stream'], limit: '4mb
 auth.mount(app);
 const requireUser = async (req, res, next) => { const me = await auth.current(req); if (!me) return res.status(401).json({ error: 'sign in' }); req.me = me; next(); };
 
+app.get('/api/version', (req, res) => { res.set('Cache-Control', 'no-store'); res.json({ build: BUILD, release: RELEASE, notes: NOTES }); });
 app.get('/api/health', async (req, res) => { try { await q('select 1'); res.json({ ok: true, time: new Date().toISOString() }); } catch (e) { console.error('health', e.message); res.status(500).json({ ok: false }); } });
 app.get('/api/me', requireUser, (req, res) => res.json(req.me));
 
@@ -112,8 +120,22 @@ app.post('/api/docs', requireUser, async (req, res) => {
 });
 app.get('/verify/:id', limiter(60 * 1000, 120, 'verify'), async (req, res) => { res.set('Cache-Control', 'no-store'); res.type('html').send(await docs.page(String(req.params.id), req.query.h ? String(req.query.h) : null)); });
 
+// ---- update notifications on phones and browsers (Web Push)
+app.get('/api/push/key', requireUser, async (req, res) => res.json(await push.vapid()));
+app.post('/api/push/subscribe', requireUser, async (req, res) => { try { await push.subscribe(req.me, req.body && req.body.subscription); res.json({ ok: true }); } catch (e) { res.status(e.status || 400).json({ error: e.message }); } });
+app.delete('/api/push/subscribe', requireUser, async (req, res) => { await push.unsubscribe(req.me, req.body && req.body.endpoint); res.json({ ok: true }); });
+app.post('/api/push/test', requireUser, async (req, res) => res.json(await push.send({ title: 'Incentive board', body: 'Notifications are on for this device.', url: '/', tag: 'board-test' }, req.me.email)));
+app.post('/api/push/announce', requireUser, requireAdmin, async (req, res) => {
+  const title = String((req.body && req.body.title) || '').slice(0, 80), body = String((req.body && req.body.body) || '').slice(0, 240);
+  if (!title) return res.status(400).json({ error: 'a title is needed' });
+  const r = await push.send({ title, body, url: '/', tag: 'board-announce' });
+  await q('insert into audit_events(who,action,detail) values($1,$2,$3)', [req.me.email, 'Announcement pushed', `${title} · ${r.sent} sent`]);
+  res.json(r);
+});
+
 // ---- the page and its files
 const ROOT = path.join(__dirname, '..');
+app.get('/sw.js', (req, res) => { res.set('Cache-Control', 'no-cache'); res.set('Service-Worker-Allowed', '/'); res.type('application/javascript').send(fs.readFileSync(path.join(__dirname, 'public', 'sw.js'), 'utf8').replace('__BUILD__', BUILD)); });
 app.use(express.static(path.join(__dirname, 'public'), { maxAge: '5m' }));
 app.use('/docs', express.static(path.join(ROOT, 'docs'), { maxAge: '1h' }));
 app.get('/favicon.ico', (req, res) => res.type('image/svg+xml').send('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#1F2D44"/><text x="16" y="21" font-family="Arial" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">MR</text></svg>'));
@@ -140,5 +162,6 @@ function schedule() {
 const PORT = process.env.PORT || 8080;
 (process.env.MIGRATE_ON_START === '0' ? Promise.resolve() : migrate()).then(() => {
   if (process.env.JOBS !== '0') schedule();
+  push.announceBuild(BUILD, RELEASE, NOTES).then(r => { if (r) console.log('release announced', r); }).catch(e => console.warn('release announcement skipped:', e.message));
   app.listen(PORT, () => console.log('incentive board back end on :' + PORT));
 }).catch(e => { console.error('migration failed', e); process.exit(1); });

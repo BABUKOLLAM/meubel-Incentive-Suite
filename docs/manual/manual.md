@@ -166,6 +166,16 @@ Settings and the Admin console sit above the engine: they change the rules, neve
 
 > 🔍 **Lens.** The look is warm and quiet on purpose: ivory pages, warm charcoal type, the navy and violet of the Bpro mark for structure, and terracotta and saffron for emphasis. Every text colour meets the WCAG AA contrast ratio in both the light and the dark theme.
 
+### 📲 The board on your phone: install, updates and offline
+
+**Install it.** On the group's server the board installs like an app. On Android, open it in Chrome and choose *Install app* (or *Add to Home screen*). On an iPhone, open it in Safari, press Share and choose *Add to Home Screen*. It then opens full screen from its own icon, with the Bpro mark.
+
+**Updates.** When a new release reaches the server, every open board shows *A new version of the board is ready* with **Update now** within five minutes, or as soon as the phone comes back to the board. Press it to load the new version; nothing typed is lost because every change is already saved. Press **🔕 Get updates** in the header and allow notifications to have the phone told even when the board is closed: one notification per release, carrying its release notes. The button then reads **🔔 Updates on**, and pressing it again switches them off. On an iPhone, switch updates on from the Home Screen app (iOS 16.4 or later). Admins can send their own notice to the same phones from 🛠 Admin → Jobs and status → *Announce to phones*; each one is written to the audit log.
+
+**Offline.** With no connection the board opens on the copy from your last visit and says so at the top. Figures are readable; changes are not saved until the connection is back, and the board reloads on its own when it is.
+
+> 📌 **Sticky note.** Notifications carry no figures, only the release and its notes, so a locked phone shows nothing confidential.
+
 ### ⇆ Top bar or side bar
 
 &#91;image: The same menu docked as a side bar, with the scope selectors above the view buttons\]
@@ -858,6 +868,9 @@ Newest first, with a copy button for the auditor. In this preview the console ke
 | The verification page says *does not match* | the document was edited after it was issued | ask the issuer for a fresh copy; treat the one in hand as altered |
 | The verification page says *No such document* | the ID was mistyped or never issued by the board | scan the code rather than typing; otherwise treat the document as not genuine |
 | PDF does nothing inside the claude.ai viewer | the viewer's frame blocks the print dialog | save the print-ready copy the board offers, open it, and print or save as PDF |
+| No *Get updates* button on an iPhone | the board is open in Safari, not from the Home Screen | Share → *Add to Home Screen*, open it from there, then switch updates on |
+| *Get updates* says notifications were not allowed | the phone's browser blocked notifications for the site | allow them in the browser's site settings, then press the button again |
+| The board says *You are offline* | no connection; the last copy is shown | reconnect: the board reloads by itself; changes made offline are not kept |
 | A Branch Manager sees only one branch in rankings | client roles receive their own branch only | expected; group-wide ranks are in the messages and on the leadership views |
 
 ### Glossary
@@ -890,7 +903,7 @@ Newest first, with a copy button for the auditor. In this preview the console ke
 | 1.0 | 3 October 2026 | first release of the manual, matching the sample build with roles, Total view, Admin console, messages matrix and data inputs |
 | 1.1 | 3 October 2026 | board audit fixes (document skeleton, stale-state sanitiser, labels, workflow); badge ladder and badge wall built in; manual section 6.3 updated |
 | 1.2 | 3 October 2026 | month history and archive, printable statements, payout file and ledger exports, leaderboard export and TV mode; manual sections 5.3, 6.2 and 10.7 |
-| 1.5 | 13 October 2026 | brand and verification release: the Bpro logo on the board, the sign-in screen, every report, statement, Excel file and e-mail; a QR code, document ID and SHA-256 fingerprint on every download with a public verification page on the server; page numbers on printed pages; a warm palette (ivory, warm charcoal, Bpro navy and violet, terracotta and saffron) with WCAG AA contrast; refreshed screenshots; manual section 2 and troubleshooting |
+| 1.5 | 13 October 2026 | brand and verification release: the Bpro logo on the board, the sign-in screen, every report, statement, Excel file and e-mail; a QR code, document ID and SHA-256 fingerprint on every download with a public verification page on the server; page numbers on printed pages; a warm palette (ivory, warm charcoal, Bpro navy and violet, terracotta and saffron) with WCAG AA contrast; refreshed screenshots; the board installs on phones with an update banner, update notifications, admin announcements and an offline copy; manual section 2 and troubleshooting |
 | 1.4 | 12 October 2026 | audit release: production sign-in hardening (company tenant, verified email, sign out on every device, rate limits), branch-scoped data for client roles, versioned saves that merge two people's changes, a restricted database login, messages once per run and the monthly round on the closed month, inbox safeguards; report fixes (products by category, months archived before 1.3, people who moved branch, years in financial-year mode), PDF reports in column sections, A4 statements with the footer, keyboard focus kept in the builder; manual sections 2, 3, 7, 8.6, 9, 10 and troubleshooting |
 | 1.3 | 12 October 2026 | Reports window (measures across months, quarters, calendar and financial years in one Excel, PDF or CSV output); subtotals and grand totals on the board's tables; the D&D footer with its links on every report, statement, export and email; manual section 2 |
 

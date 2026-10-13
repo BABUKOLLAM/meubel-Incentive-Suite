@@ -57,8 +57,69 @@
     return new Promise(() => {}); // the board does not start until the redirect comes back signed in
   }
 
+  function installable() { // the board installs as an app on phones: manifest, icons, theme colour
+    const add = (tag, attrs) => { const el = document.createElement(tag); Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v)); document.head.appendChild(el); };
+    add('link', { rel: 'manifest', href: '/manifest.webmanifest' });
+    add('link', { rel: 'apple-touch-icon', href: '/icons/apple-touch-icon.png' });
+    add('meta', { name: 'theme-color', content: '#1E2A4A' });
+    add('meta', { name: 'apple-mobile-web-app-capable', content: 'yes' });
+    add('meta', { name: 'apple-mobile-web-app-title', content: 'Incentive' });
+  }
+
+  // ---- updates: a new release on the server shows a banner on every open board, and a push message on phones
+  let bootBuild = null, swReg = null, bannerShown = false;
+  function updateBanner(release, notes) {
+    if (bannerShown) return; bannerShown = true;
+    const el = document.createElement('div'); el.id = 'updBanner'; el.setAttribute('role', 'status');
+    el.setAttribute('style', 'position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:95;width:min(560px,94vw);background:#1E2A4A;color:#F6F1EA;padding:12px 14px;border-radius:14px;font:13.5px/1.45 Inter,system-ui,sans-serif;box-shadow:0 14px 34px -14px rgba(0,0,0,.55);display:flex;gap:12px;align-items:center');
+    const t = document.createElement('div'); t.style.flex = '1'; t.innerHTML = '<b style="color:#fff">A new version of the board is ready' + (release ? ' · release ' + String(release).replace(/[<>&"]/g, '') : '') + '</b>';
+    if (notes) { const n = document.createElement('div'); n.style.cssText = 'opacity:.85;font-size:12.5px'; n.textContent = notes; t.appendChild(n); }
+    const b = document.createElement('button'); b.textContent = 'Update now'; b.setAttribute('style', 'border:0;border-radius:10px;padding:8px 14px;background:#C9BFF0;color:#1E2A4A;font-weight:700;cursor:pointer;white-space:nowrap');
+    b.onclick = () => { if (swReg && swReg.waiting) { swReg.waiting.postMessage('skipWaiting'); setTimeout(() => location.reload(), 1500); } else location.reload(); };
+    el.appendChild(t); el.appendChild(b); document.body.appendChild(el);
+  }
+  async function checkVersion() {
+    try { const v = await (await api('/version')).json(); if (!bootBuild) bootBuild = v.build; else if (v.build && v.build !== bootBuild) updateBanner(v.release, v.notes); } catch (_) {}
+  }
+  async function serviceWorker() {
+    if (!('serviceWorker' in navigator)) return;
+    try {
+      swReg = await navigator.serviceWorker.register('/sw.js', { scope: '/' });
+      swReg.addEventListener('updatefound', () => { const w = swReg.installing; if (w) w.addEventListener('statechange', () => { if (w.state === 'installed' && navigator.serviceWorker.controller) checkVersion().then(() => updateBanner()); }); });
+      navigator.serviceWorker.addEventListener('controllerchange', () => { if (bannerShown) location.reload(); });
+    } catch (e) { console.warn('service worker', e); }
+  }
+
+  // ---- notifications on this device (Web Push): a switch in the header
+  const b64 = s => { const p = '='.repeat((4 - s.length % 4) % 4), r = atob((s + p).replace(/-/g, '+').replace(/_/g, '/')); return Uint8Array.from([...r].map(c => c.charCodeAt(0))); };
+  const pushable = () => 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
+  const iosNotInstalled = () => /iphone|ipad|ipod/i.test(navigator.userAgent) && !(window.navigator.standalone || matchMedia('(display-mode: standalone)').matches);
+  async function pushState() { if (!pushable() || !swReg) return null; return swReg.pushManager.getSubscription(); }
+  async function togglePush(btn, toast) {
+    try {
+      if (iosNotInstalled()) { toast('On iPhone, add the board to the Home Screen first (Share → Add to Home Screen), then switch updates on there.'); return; }
+      const cur = await pushState();
+      if (cur) { await api('/push/subscribe', { method: 'DELETE', body: JSON.stringify({ endpoint: cur.endpoint }) }); await cur.unsubscribe(); paintPush(btn, false); toast('Update notifications are off on this device'); return; }
+      if ((await Notification.requestPermission()) !== 'granted') { toast('Notifications were not allowed. They can be allowed later in the browser settings for this site.'); return; }
+      const { publicKey } = await (await api('/push/key')).json();
+      const sub = await swReg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64(publicKey) });
+      const r = await api('/push/subscribe', { method: 'POST', body: JSON.stringify({ subscription: sub.toJSON() }) }); if (!r.ok) throw new Error('HTTP ' + r.status);
+      paintPush(btn, true); toast('Update notifications are on: this device hears about every new release');
+      api('/push/test', { method: 'POST' }).catch(() => {});
+    } catch (e) { console.warn('push', e); toast('Could not switch notifications on here: ' + e.message); }
+  }
+  function paintPush(btn, on) { btn.textContent = on ? '🔔 Updates on' : '🔕 Get updates'; btn.setAttribute('aria-pressed', on ? 'true' : 'false'); btn.title = on ? 'This device gets a notification for every new release. Click to switch off.' : 'Get a notification on this device when the board is updated'; }
+  async function pushButton(toast) {
+    const box = document.querySelector('.hbtns'); if (!box || !pushable() || document.getElementById('pushBtn')) return;
+    const btn = document.createElement('button'); btn.className = 'hbtn'; btn.id = 'pushBtn'; box.appendChild(btn);
+    paintPush(btn, !!(await pushState())); btn.addEventListener('click', () => togglePush(btn, toast));
+  }
+  async function announce(title, body) { const r = await api('/push/announce', { method: 'POST', body: JSON.stringify({ title, body }) }); const j = await r.json(); if (!r.ok) throw new Error(j.error || ('HTTP ' + r.status)); return j; }
+
   async function preload() {
-    const r = await api('/me');
+    installable();
+    let r;
+    try { r = await api('/me'); } catch (e) { offline = true; offlineNote(); throw e; } // no connection: the board opens on the copy from the last visit
     if (r.status === 401 || r.status === 403) {
       const conf = await (await api('/config')).json();
       if (r.status === 403) conf.message = 'This account is not on the roster for the board. Ask the administrator to add it.';
@@ -103,7 +164,15 @@
     localStorage.removeItem = k => { origDel(k); if (SHARED.includes(k)) api('/kv/' + k, { method: 'DELETE' }).then(() => { ver[k] = 0; delete base[k]; }).catch(() => {}); };
   }
 
+  // offline: say so, keep the last copy readable, and reload once the connection is back
+  let offline = false;
+  function offlineNote() {
+    const show = () => notice('You are offline. This is the copy from your last visit; changes are not saved until the connection is back.', false);
+    if (document.body) show(); else addEventListener('DOMContentLoaded', show);
+    addEventListener('online', () => location.reload(), { once: true });
+  }
   async function afterBoot(B) {
+    if (offline) { const sel = document.getElementById('selUser'); if (sel) sel.disabled = true; return; }
     const sel = document.getElementById('selUser'); if (sel) { sel.disabled = true; sel.setAttribute('data-tip', 'Signed in through single sign-on; the role comes from the roster.'); }
     let n = 0;
     for (const src of B.SOURCES) {
@@ -117,6 +186,9 @@
     }
     if (n) { B.render(); if (B.toast) B.toast(n + ' data source' + (n > 1 ? 's' : '') + ' loaded from the server'); }
     setInterval(() => api('/me').then(r => { if (r.status === 401) location.reload(); }).catch(() => {}), 5 * 60 * 1000);
+    await checkVersion(); setInterval(checkVersion, 5 * 60 * 1000);
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { checkVersion(); if (swReg) swReg.update().catch(() => {}); } });
+    await serviceWorker(); await pushButton(B.toast || (() => {}));
     // someone else's save shows up here within a minute, before this person edits a stale copy
     setInterval(() => api('/kv-versions').then(r => r.ok ? r.json() : {}).then(v => {
       const changed = SHARED.filter(k => k in v && (ver[k] || 0) < v[k] && !pending[k] && !timers[k + ':seen']);
@@ -133,5 +205,5 @@
     try { await api('/auth/logout', { method: 'POST', headers: { Accept: 'application/json' } }); } catch (_) {}
     location.href = '/';
   }
-  window.BPRO_REMOTE = { preload, afterBoot, signOut, registerDocs, me: () => me, _merge3: merge3 };
+  window.BPRO_REMOTE = { preload, afterBoot, signOut, registerDocs, announce, me: () => me, _merge3: merge3 };
 })();

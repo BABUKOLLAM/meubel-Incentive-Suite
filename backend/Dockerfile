@@ -5,6 +5,7 @@ RUN npm ci --omit=dev --no-audit --no-fund
 COPY backend/ ./
 COPY index.html /app/index.html
 COPY docs/ /app/docs/
+COPY deploy/RELEASE.md /app/deploy/RELEASE.md
 ENV NODE_ENV=production TZ=Asia/Kolkata PORT=8080
 EXPOSE 8080
 USER node

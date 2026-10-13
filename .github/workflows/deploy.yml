@@ -1,0 +1,38 @@
+# Deploys main to the VPS after the checks pass (or by hand from the Actions tab). Needs repository secrets:
+#   VPS_HOST      the server's address              VPS_SSH_KEY   a private key whose public half is in the server
+#   VPS_USER      login (default root)                            user's ~/.ssh/authorized_keys
+#   VPS_PORT      SSH port (default 22)             VPS_HOST_KEY  optional: the server's line from `ssh-keyscan HOST`
+#   VPS_DIR       install folder (default /opt/incentive)
+# Without VPS_HOST and VPS_SSH_KEY the job ends with a notice and deploys nothing.
+name: deploy
+on:
+  workflow_run:
+    workflows: [check]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+jobs:
+  vps:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Update the board on the VPS
+        env:
+          HOST: ${{ secrets.VPS_HOST }}
+          LOGIN: ${{ secrets.VPS_USER }}
+          KEY: ${{ secrets.VPS_SSH_KEY }}
+          PORT: ${{ secrets.VPS_PORT }}
+          KNOWN: ${{ secrets.VPS_HOST_KEY }}
+          DIR: ${{ secrets.VPS_DIR }}
+        run: |
+          if [ -z "$HOST" ] || [ -z "$KEY" ]; then echo "::notice::VPS_HOST and VPS_SSH_KEY are not set, so nothing was deployed. See deploy/README.md, 'Automatic deploys'."; exit 0; fi
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "$KEY" > ~/.ssh/deploy_key && chmod 600 ~/.ssh/deploy_key
+          if [ -n "$KNOWN" ]; then printf '%s\n' "$KNOWN" > ~/.ssh/known_hosts; CHECK=yes; else CHECK=accept-new; fi
+          D="${DIR:-/opt/incentive}"
+          ssh -i ~/.ssh/deploy_key -p "${PORT:-22}" -o StrictHostKeyChecking=$CHECK -o ServerAliveInterval=20 "${LOGIN:-root}@$HOST" \
+            "if [ \"\$(id -u)\" = 0 ]; then bash '$D/deploy/update.sh' '$D'; else sudo bash '$D/deploy/update.sh' '$D'; fi"

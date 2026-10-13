@@ -141,6 +141,45 @@ records every scheduled run and failure.
    `schema_migrations`; `docker compose logs migrate` shows which ran.
 
 
+## Updating: one command, or automatic from GitHub
+
+On the server, `sudo /opt/incentive/deploy/update.sh` pulls the latest code, rebuilds, waits until the board answers
+and prints the release it is now running. Nothing else is needed: new migrations run on their own, and the first
+start of a new build tells every phone that switched update notifications on (see below).
+
+To deploy on every push to `main` instead, once the checks pass, add these under GitHub → the repository →
+Settings → Secrets and variables → Actions:
+
+| Secret | What to put in it |
+|---|---|
+| `VPS_HOST` | the server's address, for example `board.meubelgrande.in` or its IP |
+| `VPS_SSH_KEY` | a private key made for this purpose (`ssh-keygen -t ed25519 -f deploy_key -N ""`); put `deploy_key.pub` into the server user's `~/.ssh/authorized_keys` |
+| `VPS_USER` | optional, the login (default `root`; another user needs passwordless `sudo` for `deploy/update.sh`) |
+| `VPS_PORT` | optional, the SSH port (default 22) |
+| `VPS_HOST_KEY` | optional but recommended: the output of `ssh-keyscan -t ed25519 <host>`, so the connection is checked against the server's real key |
+| `VPS_DIR` | optional, the install folder (default `/opt/incentive`) |
+
+The **deploy** workflow then runs `deploy/update.sh` over SSH after every green **check** run on `main`, and can
+be started by hand from the Actions tab (Run workflow). Without `VPS_HOST` and `VPS_SSH_KEY` it ends with a notice
+and deploys nothing.
+
+## Update notifications on phones
+
+The hosted board installs as an app (Android: the browser's *Install app* / *Add to Home screen*; iPhone: Safari →
+Share → *Add to Home Screen*) and keeps the last copy for a weak connection, with a note when it is offline.
+
+- **Banner**: every open board checks the server's build every five minutes and whenever it comes back to the
+  screen; when a new release is running it shows *A new version of the board is ready* with **Update now**.
+- **Push message**: *🔕 Get updates* in the header switches notifications on for that device (on iPhone, from the
+  Home Screen app, iOS 16.4 or later). The first start of a new build sends one message to every such device; its
+  text is the first line of `deploy/RELEASE.md`, so edit that line with each release. `PUSH_ON_DEPLOY=0` in `.env`
+  turns the automatic message off.
+- **Announcements**: Admin → Jobs and status → *Announce to phones* sends any title and message to every device
+  that switched updates on; each send is written to the audit log.
+- The signing keys (VAPID) are made on first use and kept in the database, so there is nothing to configure;
+  `VAPID_SUBJECT=mailto:you@company` sets the contact address push services see. Devices that uninstall or block
+  notifications are removed automatically.
+
 ## What is still sample until the feeds arrive
 
 Once a roster is loaded the sample universe is gone: every person and branch is real and starts empty, and each
