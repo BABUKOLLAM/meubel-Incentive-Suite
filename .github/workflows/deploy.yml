@@ -29,7 +29,7 @@ jobs:
           KNOWN: ${{ secrets.VPS_HOST_KEY }}
           DIR: ${{ secrets.VPS_DIR }}
         run: |
-          if [ -z "$HOST" ] || [ -z "$KEY" ]; then echo "::notice::VPS_HOST and VPS_SSH_KEY are not set, so nothing was deployed. See deploy/README.md, 'Automatic deploys'."; exit 0; fi
+          if [ -z "$HOST" ] || [ -z "$KEY" ]; then echo "::notice::VPS_HOST and VPS_SSH_KEY are not set, so nothing was deployed. See deploy/README.md, 'Updating: one command, or automatic from GitHub'."; exit 0; fi
           mkdir -p ~/.ssh && chmod 700 ~/.ssh
           printf '%s\n' "$KEY" > ~/.ssh/deploy_key && chmod 600 ~/.ssh/deploy_key
           if [ -n "$KNOWN" ]; then printf '%s\n' "$KNOWN" > ~/.ssh/known_hosts; CHECK=yes; else CHECK=accept-new; fi
