@@ -9,6 +9,7 @@ const { q } = require('./lib/db');
 const auth = require('./lib/auth');
 const kv = require('./lib/kv');
 const sources = require('./lib/sources');
+const docs = require('./lib/docs');
 
 const app = express();
 // Express 4 does not catch a rejected async handler: wrap every route so a database error answers 500 instead of
@@ -103,6 +104,13 @@ app.get('/api/audit', requireUser, async (req, res) => { if (!['superadmin', 'ad
 app.get('/api/jobs', requireUser, async (req, res) => { if (!['superadmin', 'admin', 'consultant'].includes(req.me.role)) return res.status(403).json({ error: 'forbidden' }); const admin = ['superadmin', 'admin'].includes(req.me.role); const mask = s => (admin || !s ? s : String(s).replace(/^(.{3}).*(.{2})$/, '$1•••$2')); res.json({ jobs: (await q('select * from jobs_log order by id desc limit 200')).rows, messages: (await q('select * from messages_log order by id desc limit 500')).rows.map(r => ({ ...r, recipient: mask(r.recipient) })) }); });
 app.post('/api/jobs/sync', requireUser, requireAdmin, async (req, res) => { try { res.json({ report: await require('./jobs/sync').run(req.query.adapter) }); } catch (e) { res.status(500).json({ error: e.message }); } });
 app.post('/api/jobs/messages/:kind', requireUser, requireAdmin, async (req, res) => { try { res.json({ sent: await require('./jobs/messages').run(req.params.kind) }); } catch (e) { res.status(500).json({ error: e.message }); } });
+
+// ---- document verification: the board registers each download; the QR code on it opens /verify/<id>
+app.post('/api/docs', requireUser, async (req, res) => {
+  try { const r = await docs.register(req.me, req.body && req.body.docs); const base = (process.env.BASE_URL || '').replace(/\/$/, ''); res.json(r.map(x => (x ? { id: x.id, url: base + '/verify/' + x.id } : null))); }
+  catch (e) { res.status(e.status || 400).json({ error: e.message }); }
+});
+app.get('/verify/:id', limiter(60 * 1000, 120, 'verify'), async (req, res) => { res.set('Cache-Control', 'no-store'); res.type('html').send(await docs.page(String(req.params.id), req.query.h ? String(req.query.h) : null)); });
 
 // ---- the page and its files
 const ROOT = path.join(__dirname, '..');

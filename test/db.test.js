@@ -51,9 +51,20 @@ const bad = [], ok = (c, m) => { if (!c) bad.push(m); };
   ok((await fetch(B + '/api/auth/logout', { method: 'POST', headers: { cookie: a1, Accept: 'application/json' } })).status === 200, 'sign-out failed');
   ok((await fetch(B + '/api/me', { headers: { cookie: a1 } })).status === 401 && (await fetch(B + '/api/me', { headers: { cookie: a1b } })).status === 401, 'a session survived sign-out');
   ok((await fetch(B + '/api/me', { headers: { cookie: a2 } })).status === 200, "sign-out ended someone else's session");
+  // document verification: register, the public page says genuine, a wrong fingerprint and an unknown ID are flagged
+  const hash = 'ab'.repeat(32);
+  const reg = await (await fetch(B + '/api/docs', { method: 'POST', headers: { cookie: a2, 'Content-Type': 'application/json' }, body: JSON.stringify({ docs: [{ kind: 'statement', title: 'Anjali R. · incentive statement · October 2026', hash, summary: { employee: 'Anjali R.', total: 7458 } }, { kind: 'bogus', title: 'x', hash }] }) })).json();
+  ok(reg[0] && /^STM-[A-Z0-9]{12}$/.test(reg[0].id) && reg[0].url.endsWith('/verify/' + reg[0].id) && reg[1] === null, 'document not registered: ' + JSON.stringify(reg));
+  const vp = await (await fetch(B + '/verify/' + reg[0].id + '?h=' + hash.slice(0, 16))).text();
+  ok(/Genuine document/.test(vp) && vp.includes('7,458') && vp.includes('pr•••@bpropms.com') && !vp.includes('process@bpropms.com'), 'verification page wrong for a genuine document');
+  ok(/does not match/.test(await (await fetch(B + '/verify/' + reg[0].id + '?h=' + 'cd'.repeat(8))).text()), 'altered fingerprint not flagged');
+  ok(/No such document/.test(await (await fetch(B + '/verify/STM-NOTREAL0000')).text()), 'unknown document not flagged');
+  ok(/No such document/.test(await (await fetch(B + '/verify/%3Cscript%3E')).text()) && !(await (await fetch(B + '/verify/%3Cscript%3E')).text()).includes('<script>'), 'verify page echoes input');
+  ok((await fetch(B + '/api/docs', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{"docs":[]}' })).status === 401, 'anonymous registration accepted');
+  { const appc = new Client({ connectionString: APP }); await appc.connect(); ok(await appc.query("update issued_docs set title='forged'").then(() => false, () => true), 'app role can rewrite an issued document'); await appc.end(); }
   let flood = 0; for (let i = 0; i < 40; i++) if ((await fetch(B + '/api/auth/logout')).status === 429) flood++;
   ok(flood > 0, 'sign-in routes not rate-limited');
   if (bad.length) { console.log(bad.join('\n')); process.exit(1); }
-  console.log(`db test: migrations ${first.length ? first.join(', ') : 'already applied'}; restricted app role; versioned saves; branch scope; sign-out everywhere; PKCE; cross-site and flood refused`);
+  console.log(`db test: migrations ${first.length ? first.join(', ') : 'already applied'}; restricted app role; versioned saves; branch scope; sign-out everywhere; PKCE; document verification; cross-site and flood refused`);
   process.exit(0);
 })().catch(e => { console.log('db test failed:', e.message); process.exit(1); });

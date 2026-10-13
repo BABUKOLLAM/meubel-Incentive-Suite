@@ -35,22 +35,22 @@
   }
   function notice(text, reload) {
     let el = document.getElementById('kvNotice');
-    if (!el) { el = document.createElement('div'); el.id = 'kvNotice'; el.setAttribute('role', 'status'); el.setAttribute('style', 'position:fixed;left:50%;top:14px;transform:translateX(-50%);z-index:90;max-width:min(560px,92vw);background:#1F2D44;color:#fff;padding:10px 14px;border-radius:12px;font:13px/1.45 Inter,system-ui,sans-serif;box-shadow:0 12px 30px -12px rgba(0,0,0,.5)'); document.body.appendChild(el); }
+    if (!el) { el = document.createElement('div'); el.id = 'kvNotice'; el.setAttribute('role', 'status'); el.setAttribute('style', 'position:fixed;left:50%;top:14px;transform:translateX(-50%);z-index:90;max-width:min(560px,92vw);background:#1E2A4A;color:#fff;padding:10px 14px;border-radius:12px;font:13px/1.45 Inter,system-ui,sans-serif;box-shadow:0 12px 30px -12px rgba(0,0,0,.5)'); document.body.appendChild(el); }
     el.textContent = text + ' ';
-    const b = document.createElement('button'); b.textContent = 'Reload now'; b.setAttribute('style', 'margin-left:8px;border:0;border-radius:8px;padding:4px 10px;background:#D6EEF0;color:#0A5E66;font-weight:600;cursor:pointer'); b.onclick = () => location.reload(); el.appendChild(b);
+    const b = document.createElement('button'); b.textContent = 'Reload now'; b.setAttribute('style', 'margin-left:8px;border:0;border-radius:8px;padding:4px 10px;background:#ECE6F6;color:#4E3E87;font-weight:600;cursor:pointer'); b.onclick = () => location.reload(); el.appendChild(b);
     if (reload) setTimeout(() => location.reload(), 2500);
   }
 
   function signInScreen(conf) {
     const el = document.createElement('div');
-    el.setAttribute('style', 'position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#F3F5F8;font:15px/1.5 Inter,system-ui,sans-serif;color:#1B2430;z-index:100;padding:20px');
-    const btn = p => `<a href="${cfg.api}/auth/login?provider=${p.id}" style="display:block;margin:8px 0;padding:11px 16px;border:1px solid #DCE2EA;border-radius:10px;background:#fff;color:#1B2430;text-decoration:none;font-weight:600;text-align:center">Sign in with ${p.name}</a>`;
-    el.innerHTML = `<div style="width:min(420px,100%);background:#fff;border:1px solid #DCE2EA;border-radius:16px;padding:28px 26px;box-shadow:0 20px 50px -30px rgba(16,24,40,.4)">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px"><span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#1F2D44,#0E7C86);color:#fff;font-weight:700;font-size:12.5px">MR</span><b style="letter-spacing:.14em;font-size:11px;text-transform:uppercase;color:#0A5E66">Meubel Grande · Royal Group</b></div>
+    el.setAttribute('style', 'position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#F6F1EA;font:15px/1.5 Inter,system-ui,sans-serif;color:#2A2420;z-index:100;padding:20px');
+    const btn = p => `<a href="${cfg.api}/auth/login?provider=${p.id}" style="display:block;margin:8px 0;padding:11px 16px;border:1px solid #E5DCCF;border-radius:10px;background:#fff;color:#2A2420;text-decoration:none;font-weight:600;text-align:center">Sign in with ${p.name}</a>`;
+    el.innerHTML = `<div style="width:min(420px,100%);background:#fff;border:1px solid #E5DCCF;border-radius:16px;padding:28px 26px;box-shadow:0 20px 50px -30px rgba(16,24,40,.4)">
+      <img src="/assets/bpro-logo.jpg" alt="Bpro Consulting &amp; Technologies" style="display:block;width:132px;border-radius:10px;margin:0 0 16px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:6px"><span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#1E2A4A,#6B58A6);color:#fff;font-weight:700;font-size:12.5px">MR</span><b style="letter-spacing:.14em;font-size:11px;text-transform:uppercase;color:#4E3E87">Meubel Grande · Royal Group</b></div>
       <h1 style="font:600 26px/1.15 'Cormorant Garamond',Georgia,serif;margin:6px 0 4px">Incentive board</h1>
-      <p style="margin:0 0 16px;color:#5B6776">Sign in with your company account. You will see the group, your branch or your own page according to your role.</p>
+      <p style="margin:0 0 16px;color:#6A5F55">Sign in with your company account. You will see the group, your branch or your own page according to your role.</p>
       ${(conf.providers || []).map(btn).join('') || '<p style="color:#B42318">No sign-in provider is configured on the server yet.</p>'}
-      ${conf.devLogin ? `<form method="get" action="${cfg.api}/auth/dev" style="margin-top:14px;border-top:1px dashed #DCE2EA;padding-top:12px"><label style="font-size:12px;color:#5B6776">Development sign-in (disabled in production)<br><input name="as" placeholder="email on the profiles table" style="width:100%;margin-top:4px;padding:8px;border:1px solid #DCE2EA;border-radius:8px"></label><button style="margin-top:8px;padding:8px 12px;border:1px solid #DCE2EA;border-radius:8px;background:#F3F5F8;cursor:pointer">Continue</button></form>` : ''}
+      ${conf.devLogin ? `<form method="get" action="${cfg.api}/auth/dev" style="margin-top:14px;border-top:1px dashed #E5DCCF;padding-top:12px"><label style="font-size:12px;color:#6A5F55">Development sign-in (disabled in production)<br><input name="as" placeholder="email on the profiles table" style="width:100%;margin-top:4px;padding:8px;border:1px solid #E5DCCF;border-radius:8px"></label><button style="margin-top:8px;padding:8px 12px;border:1px solid #E5DCCF;border-radius:8px;background:#F6F1EA;cursor:pointer">Continue</button></form>` : ''}
       ${conf.message ? `<p style="margin:14px 0 0;color:#B42318;font-size:13px">${conf.message}</p>` : ''}
     </div>`;
     document.body.appendChild(el);
@@ -124,9 +124,14 @@
     }).catch(() => {}), 60 * 1000);
   }
 
+  async function registerDocs(list) { // the server records each download and returns its verification address
+    const r = await api('/docs', { method: 'POST', body: JSON.stringify({ docs: list }) });
+    if (!r.ok) throw new Error('docs: HTTP ' + r.status);
+    return r.json();
+  }
   async function signOut() { // ends this person's sessions on every device
     try { await api('/auth/logout', { method: 'POST', headers: { Accept: 'application/json' } }); } catch (_) {}
     location.href = '/';
   }
-  window.BPRO_REMOTE = { preload, afterBoot, signOut, me: () => me, _merge3: merge3 };
+  window.BPRO_REMOTE = { preload, afterBoot, signOut, registerDocs, me: () => me, _merge3: merge3 };
 })();

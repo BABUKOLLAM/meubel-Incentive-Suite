@@ -1,10 +1,10 @@
 /* Incentive Board Manual · print stylesheet (A4) */
 @page { size: A4; }
 :root {
-  --ink: #1B2430; --muted: #5B6776; --espresso: #1F2D44; --brass: #0E7C86; --brass-ink: #0A5E66; --brass-soft: #D6EEF0;
-  --ivory: #F3F5F8; --line: #DCE2EA; --row: #F5F7FA;
+  --ink: #2A2420; --muted: #6A5F55; --espresso: #1E2A4A; --brass: #6B58A6; --brass-ink: #4E3E87; --brass-soft: #ECE6F6;
+  --ivory: #F6F1EA; --line: #E5DCCF; --row: #F8F2EA;
   --sticky: #FFF1A8; --sticky-ink: #5A4500; --sticky-edge: #E8D370;
-  --lens: #E8EFFA; --lens-ink: #2F5FA8; --lens-edge: #8FB3E6;
+  --lens: #EAEFF9; --lens-ink: #3F5FAF; --lens-edge: #A9B6E6;
   --policy: #FBE9E4; --policy-ink: #8A2E1C; --policy-edge: #D9876F;
   --game: #ECE6F7; --game-ink: #4B2D8A; --game-edge: #A48BD6;
   --serif: "Liberation Serif", "DejaVu Serif", Georgia, serif;
@@ -52,7 +52,7 @@ section.toc { break-before: auto; page-break-before: auto; }
 .call.sticky::before { content: ""; position: absolute; top: -6pt; left: 50%; width: 46pt; height: 12pt; margin-left: -23pt; background: rgba(255,255,255,.55); border: 1px solid rgba(0,0,0,.08); transform: rotate(1.5deg); }
 .call.sticky .tag { color: var(--sticky-ink); }
 .call.sticky strong { color: var(--sticky-ink); }
-.call.lens { background: var(--lens); color: #163a52; border-left: 4pt solid var(--lens-edge); border-radius: 0 6pt 6pt 0; }
+.call.lens { background: var(--lens); color: #1E2A4A; border-left: 4pt solid var(--lens-edge); border-radius: 0 6pt 6pt 0; }
 .call.lens .tag, .call.lens strong { color: var(--lens-ink); }
 .call.policy { background: var(--policy); color: #4a1f14; border-left: 4pt solid var(--policy-edge); border-radius: 0 6pt 6pt 0; }
 .call.policy .tag, .call.policy strong { color: var(--policy-ink); }
@@ -120,7 +120,7 @@ figcaption b { color: var(--brass-ink); }
 ul.conv li { margin-bottom: 5pt; }
 
 /* ---------- cover ---------- */
-.cover { height: 297mm; padding: 22mm 20mm 18mm; display: flex; flex-direction: column; background: linear-gradient(180deg, #FFFFFF 0%, #F3F5F8 100%); position: relative; }
+.cover { height: 297mm; padding: 22mm 20mm 18mm; display: flex; flex-direction: column; background: linear-gradient(180deg, #FFFFFF 0%, #F6F1EA 100%); position: relative; }
 .cover::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 9mm; background: var(--espresso); }
 .cover::before { content: ""; position: absolute; left: 0; right: 0; bottom: 9mm; height: 2.5mm; background: var(--brass); }
 .cv-top { display: flex; align-items: center; gap: 12pt; }
@@ -138,6 +138,9 @@ ul.conv li { margin-bottom: 5pt; }
 .cv-chip.policy { background: var(--policy); border-color: var(--policy-edge); color: var(--policy-ink); }
 .cv-chip.game { background: var(--game); border-color: var(--game-edge); color: var(--game-ink); }
 .cv-bottom { margin-top: auto; padding-bottom: 8mm; }
+.cv-verify { display: flex; gap: 10pt; align-items: center; margin: 0 0 8mm; padding: 8pt 10pt; border: 1px solid var(--line); border-left: 3pt solid var(--brass); border-radius: 6pt; background: #fff; font: 8.4pt/1.45 var(--sans); color: var(--ink); max-width: 128mm; }
+.cv-verify b { color: var(--espresso); }
+.cv-verify .fp { font: 7.2pt "Liberation Mono", "DejaVu Sans Mono", monospace; color: var(--muted); word-break: break-all; }
 .credit { font-size: 10.5pt; text-align: left; margin-bottom: 6pt; }
 .fine { font-size: 8.6pt; color: var(--muted); text-align: left; max-width: 150mm; }
 

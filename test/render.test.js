@@ -67,6 +67,17 @@ for(const type of RPT_TYPES.map(t=>t.id))for(const gran of RPT_GRANS.map(g=>g[0]
 {const R=buildReport({type:'branch',ms:['qty','value','ach'],years:rptYears(),months:[1,2,3,4,5,6,7,8,9,10,11,12],gran:'month',total:true},rptRecords()),bs=rptBands(R,14);
   if(bs.reduce((a,b)=>a+b.periods.length,0)!==R.periods.length||bs.filter(b=>b.total).length!==1||!bs[bs.length-1].total||bs.some(b=>b.periods.length*R.MS.length>14)){__errs++;console.log('print bands wrong',bs.map(b=>b.periods.length))}}
 {const b=computeBranch(branches[0]),rk=rankings(computeGroup());for(const a of ['BM','MD','HR','Sales','person'])for(const ch of ['email','whatsapp']){const n=buildMessage(a,'weekly',ch,{b,rk,person:b.members[0]}).text.split('www.drbabu.in').length-1;if(n!==(ch==='email'?1:0)){__errs++;console.log('footer count',a,ch,n)}}}
+// brand and verification: logo, QR code, document IDs on every output
+(async()=>{try{const R=buildReport({type:'branch',ms:['qty','value'],years:rptYears(),months:[1,2,3,4,5,6,7,8,9,10,11,12],gran:'year',total:true},rptRecords());
+  const d=await issueDoc('report',R.title,rptSummary(R,'PDF'));
+  if(!/^RPT-[0-9A-F]{10}$/.test(d.id)||!/^[0-9a-f]{64}$/.test(d.hash)||!d.payload.includes(d.id)){__errs++;console.log('issued document malformed',d.id)}
+  const svg=qrSvg(d.payload,80);if(!/^<svg class="qr"/.test(svg)||!/<path d="M/.test(svg)){__errs++;console.log('QR svg missing')}
+  if(!BPRO_LOGO.startsWith('data:image/jpeg;base64,/9j/')){__errs++;console.log('logo missing')}
+  const csv=reportCSV(R,d);if(!csv.includes('Document ID,'+d.id)||!csv.includes('Fingerprint (SHA-256),'+d.hash)){__errs++;console.log('CSV lacks the verification lines')}
+  const z=reportXLSX(R,d),txt=new TextDecoder('latin1').decode(z);if(!txt.includes('xl/media/s1i1.jpeg')||!txt.includes(d.id)){__errs++;console.log('Excel lacks the logo or the document ID')}
+  const st=statementHtml(allMembers(computeGroup())[0],allMembers(computeGroup())[0].brc);if(!/class="stmt"/.test(st)){__errs++;console.log('statement markup changed')}
+  const vb=verifyBlock(d);if(!vb.includes(d.id)||!vb.includes('<svg')){__errs++;console.log('verification block incomplete')}
+  if(__errs)process.exitCode=1;console.log('brand: logo, QR, document ID '+d.id+' on PDF, Excel and CSV')}catch(e){__errs++;process.exitCode=1;console.log('brand checks threw',e.message)}})();
 Object.assign(state,{rpt:null});
 const __bm=allUsers().find(u=>u.role==='sm');setUser(__bm.email);Object.assign(state,{level:'reports',co:null,br:null,team:null,person:null});enforce(state);if(state.level!=='reports'||state.br!==__bm.br||rptTypes().some(t=>t.id==='person')){__errs++;console.log('sales manager report scope',state.level,state.br)}
 setUser('tech@bpropms.com');

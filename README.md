@@ -237,6 +237,25 @@ flags; team subtotals and the branch total under Everyone in a branch; the team 
 or branch subtotals under the salespeople in Sales analytics; a total under each leaderboard tab; the net of
 approved and pending adjustments under the ledger; and a total across the months in each history card.
 
+## Brand, QR code and verification
+
+Every output carries the Bpro logo (Bpro Consulting & Technologies) and its own proof of origin. The board shows
+the logo in its header and footer and on the sign-in screen; reports (PDF and Excel) open with a header band
+(client and title left, logo right); statements and e-mails carry it at the top.
+
+Every download except the payout file gets a **document ID** (`RPT-`, `STM-`, `EXP-`, `LDG-`) and a **SHA-256
+fingerprint** of what it states, its title and the time of issue. PDF and Excel outputs show a QR code with the ID
+and fingerprint in a *Verify this document* panel; CSV files end with the same lines in text. On the hosted board
+each download is recorded in `issued_docs` (migration 003; the app role may insert and read but never rewrite) and
+the QR code opens `/verify/<id>`, a public page that says *Genuine document*, *does not match the record* (the
+fingerprint in the code differs) or *No such document*. IDs are random and unguessable; the issuer's address is
+shortened. Without the server the QR code carries the ID and fingerprint themselves. QR codes are drawn in the page
+by qrcode-generator 1.4.4 (Kazuhiko Arase, MIT licence), embedded unchanged.
+
+Printed pages are numbered *Page X of Y* in the page margin. The palette is warm: ivory pages, warm charcoal type,
+Bpro navy and violet for structure, terracotta and saffron for emphasis; every text colour meets WCAG AA contrast in
+both themes.
+
 ## Footer on every output
 
 Reports (screen, Excel, PDF, CSV), statements (the line at the foot of each), the ledger and every table export, every email

@@ -39,6 +39,7 @@ async function migrate(opts = {}) {
       await c.query(`grant usage, select on all sequences in schema public to ${app}`);
       await c.query(`revoke update, delete, truncate on audit_events from ${app}`);   // append-only, also for the app
       await c.query(`revoke insert, update, delete, truncate on schema_migrations from ${app}`);
+      await c.query(`revoke update, delete, truncate on issued_docs from ${app}`);         // a record of issue is never rewritten
     } else if (url === process.env.DATABASE_URL && process.env.NODE_ENV === 'production') {
       console.warn('DB_APP_PASSWORD is not set: the app connects as the database owner');
     }

@@ -6,7 +6,7 @@ Oct 3, 2026 · @BABU
 
 &#91;image: Bpro\]
 
-**Settings manual and user manual** for administrators and top management, release 1.4, October 2026.
+**Settings manual and user manual** for administrators and top management, release 1.5, October 2026.
 
 One board pays every role from the same written policy, shows each person their incentive as it builds through the month, and sends the right summary to the right person on WhatsApp or email. This manual explains the whole programme, then walks through every screen: the lenses for leadership, the settings and data inputs for administrators, and the back-end console for the Bpro team.
 
@@ -155,6 +155,16 @@ Settings and the Admin console sit above the engine: they change the rules, neve
 &#91;image: Subtotals and the grand total under the All branches table\]
 
 **What to look at.** Every table that lists branches, people or money ends with its totals: company subtotals and the group total under All branches and the risk-flag table; the team subtotals and the branch total under Everyone in a branch; the team total under each team; company or branch subtotals under the salespeople in Sales analytics; a total under each leaderboard tab; the net effect of approved and pending adjustments under the ledger; and a total across the months in each history card. The totals stay put when a long table is paged, and every CSV export includes them.
+
+### 🔏 Logo, QR code and verification on every download
+
+**What to look at.** Every output the board issues carries the Bpro logo and its own proof of origin. Reports (PDF and Excel) open with a header band: the client and the report title on the left, the Bpro logo on the right. Each statement carries the logo at the top. At the foot of every PDF and Excel output sits a **Verify this document** panel with a QR code, a **document ID** (for example `RPT-…`, `STM-…`) and a **SHA-256 fingerprint**: a 64-character code computed from what the document states, its title and the time it was issued. CSV files cannot hold a picture, so they end with the same ID, fingerprint and verification line in text. Printed pages are numbered *Page X of Y*, with the Bpro name in the opposite corner and the D&D line with its links across the foot.
+
+**How verification works.** On the group's server, each download is recorded the moment it is made: its ID, fingerprint, who issued it and a short summary (for a statement, the employee, the month and the total). The QR code opens a public verification page for that record. The page says **Genuine document** and lists the details to compare with the paper in hand; **The code does not match the record** if the document has been altered since it was issued; and **No such document** if the ID was never issued. The ID is random and cannot be guessed, so only someone holding the document reaches its record, and the issuer's address is shown shortened. Outside the server (the sample build or the claude.ai copy) the QR code carries the ID and the fingerprint themselves, and online verification waits for the hosted board.
+
+> 📌 **Sticky note.** The payout file for payroll is the one download without a footer or QR code: it is a machine file, the header and one row per employee, so a payroll import reads it unchanged.
+
+> 🔍 **Lens.** The look is warm and quiet on purpose: ivory pages, warm charcoal type, the navy and violet of the Bpro mark for structure, and terracotta and saffron for emphasis. Every text colour meets the WCAG AA contrast ratio in both the light and the dark theme.
 
 ### ⇆ Top bar or side bar
 
@@ -650,7 +660,7 @@ Each tick records who and when. The HR monthly email and the MD monthly email ar
 
 The bar under the checklist carries the three outputs of a close:
 
-1. **Statements for every employee** fills a print view with one A4 page per person (every component with the rule behind it, the 7-day dispute window, signature lines, and the D&D line with its links at the foot) and opens the browser's print dialog. Choose *Save as PDF* for the files that go out, or print. **Statement** on any person's page prints that one person's. Inside the claude.ai viewer, where the frame may not open a print dialog, the board also offers a print-ready copy to save; open it and it prints itself.
+1. **Statements for every employee** fills a print view with one A4 page per person (every component with the rule behind it, the 7-day dispute window, signature lines, the Bpro logo, its own QR code, document ID and fingerprint, and the D&D line with its links at the foot) and opens the browser's print dialog. Choose *Save as PDF* for the files that go out, or print. **Statement** on any person's page prints that one person's. Inside the claude.ai viewer, where the frame may not open a print dialog, the board also offers a print-ready copy to save; open it and it prints itself.
 2. **Payout file (CSV)** downloads one row per employee with employee id, role, branch, attendance, gate, score, scorecard pay, per-bill confirmed and provisional, CRE override, follow-up bonus, team pool share, adjustments, total confirmed, total expected, group rank and badges. This is the hand-over to payroll in step 8. It is a plain machine file (the header and one row per employee, no footer lines), so a payroll import reads it as it is.
 3. **Archive into history** opens on the last day of the month. It snapshots every branch and every person, including each branch's mid-month projection, so that ⚙️ Settings → Prediction constants can show the spread observed between projection and outcome. After three real closes, set the spread constant from that figure.
 
@@ -844,6 +854,9 @@ Newest first, with a copy button for the auditor. In this preview the console ke
 | *Updated by another user* appears | someone else saved while your screen was open | press **Reload now** before editing further |
 | Microsoft sign-in is refused | the account is outside the company's tenant, or not on the profiles table | sign in with the company account; ask the administrator to add the email |
 | *Too many requests* | many sign-in attempts or refreshes from one address in a minute | wait a minute and try again |
+| The QR code shows text, not a web page | the document was made outside the group's server (sample or claude.ai copy) | expected: the text carries the ID and fingerprint; online verification needs the hosted board |
+| The verification page says *does not match* | the document was edited after it was issued | ask the issuer for a fresh copy; treat the one in hand as altered |
+| The verification page says *No such document* | the ID was mistyped or never issued by the board | scan the code rather than typing; otherwise treat the document as not genuine |
 | PDF does nothing inside the claude.ai viewer | the viewer's frame blocks the print dialog | save the print-ready copy the board offers, open it, and print or save as PDF |
 | A Branch Manager sees only one branch in rankings | client roles receive their own branch only | expected; group-wide ranks are in the messages and on the leadership views |
 
@@ -877,6 +890,7 @@ Newest first, with a copy button for the auditor. In this preview the console ke
 | 1.0 | 3 October 2026 | first release of the manual, matching the sample build with roles, Total view, Admin console, messages matrix and data inputs |
 | 1.1 | 3 October 2026 | board audit fixes (document skeleton, stale-state sanitiser, labels, workflow); badge ladder and badge wall built in; manual section 6.3 updated |
 | 1.2 | 3 October 2026 | month history and archive, printable statements, payout file and ledger exports, leaderboard export and TV mode; manual sections 5.3, 6.2 and 10.7 |
+| 1.5 | 13 October 2026 | brand and verification release: the Bpro logo on the board, the sign-in screen, every report, statement, Excel file and e-mail; a QR code, document ID and SHA-256 fingerprint on every download with a public verification page on the server; page numbers on printed pages; a warm palette (ivory, warm charcoal, Bpro navy and violet, terracotta and saffron) with WCAG AA contrast; refreshed screenshots; manual section 2 and troubleshooting |
 | 1.4 | 12 October 2026 | audit release: production sign-in hardening (company tenant, verified email, sign out on every device, rate limits), branch-scoped data for client roles, versioned saves that merge two people's changes, a restricted database login, messages once per run and the monthly round on the closed month, inbox safeguards; report fixes (products by category, months archived before 1.3, people who moved branch, years in financial-year mode), PDF reports in column sections, A4 statements with the footer, keyboard focus kept in the builder; manual sections 2, 3, 7, 8.6, 9, 10 and troubleshooting |
 | 1.3 | 12 October 2026 | Reports window (measures across months, quarters, calendar and financial years in one Excel, PDF or CSV output); subtotals and grand totals on the board's tables; the D&D footer with its links on every report, statement, export and email; manual section 2 |
 
@@ -884,6 +898,6 @@ Newest first, with a copy button for the auditor. In this preview the console ke
 
 &#91;image: Bpro\]
 
-**Incentive board: settings manual cum user manual.** Designed and developed by **Dr. Babu B.**, Team Bpro Consulting & Technologies, for Meubel Grande and Royal Group. [www.drbabu.in](https://www.drbabu.in) · [www.bpropms.com](https://www.bpropms.com). Every report, statement, export and email the board produces carries the line *D&D by Dr.Babu.B. Bpro Consulting & Technologies · www.drbabu.in | www.bpropms.com*, with both addresses as links. Screenshots are from the sample build of 3 October 2026; names, branches and figures are generated. The policy values quoted are the 19 September 2026 draft's placeholders until leadership confirms them in Settings.
+**Incentive board: settings manual cum user manual.** Designed and developed by **Dr. Babu B.**, Team Bpro Consulting & Technologies, for Meubel Grande and Royal Group. [www.drbabu.in](https://www.drbabu.in) · [www.bpropms.com](https://www.bpropms.com). Every report, statement, export and email the board produces carries the Bpro logo, a QR code to verify it (the payout file excepted) and the line *D&D by Dr.Babu.B. Bpro Consulting & Technologies · www.drbabu.in | www.bpropms.com*, with both addresses as links. Screenshots are from the sample build of 3 October 2026; names, branches and figures are generated. The policy values quoted are the 19 September 2026 draft's placeholders until leadership confirms them in Settings.
 
 > 🎮 **Last note.** A programme people check every evening beats a policy people read once a year. The board exists to make the second into the first.

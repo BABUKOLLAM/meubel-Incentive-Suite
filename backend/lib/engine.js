@@ -27,7 +27,7 @@ async function load(opts = {}) {
   const ros = await q("select id,name,role,branch,branch_id,company,to_char(left_on,'YYYY-MM-DD') as left_on from roster order by company,branch,name");
   if (ros.rows.length) store['mr-roster'] = ros.rows;
   const month = opts.month || process.env.BOARD_MONTH || null;
-  const g = stubDom(store, month); g.window.BPRO_CONFIG.month = month;
+  const g = stubDom(store, month); g.window.BPRO_CONFIG.month = month; g.window.BPRO_CONFIG.base = process.env.BASE_URL || null; // e-mails link the logo on the server
   const keys = Object.keys(g);
   const api = {};
   const body = js + `

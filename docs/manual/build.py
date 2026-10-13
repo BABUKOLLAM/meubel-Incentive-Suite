@@ -230,7 +230,7 @@ def render_blocks(bl, sec):
         elif kind == 'ul':
             out.append('<ul>%s</ul>' % ''.join('<li>%s</li>' % inline(x) for x in pl))
         elif kind == 'img':
-            out.append('<p class="logo-line"><img src="img/bpro.png" alt="Bpro"></p>')
+            out.append('<p class="logo-line"><img src="img/bpro-logo.jpg" alt="Bpro"></p>')
         elif kind == 'diagram':
             fig_no[0] += 1
             out.append('<figure class="dia"><img src="img/diagram.png" alt="%s"><figcaption><b>Figure %d.</b> %s</figcaption></figure>' % (pl, fig_no[0], pl))
@@ -288,20 +288,26 @@ def build_body(toc_pages):
         parts.append('</section>')
     return page_shell('<main>' + '\n'.join(parts) + '</main>')
 
+OFFICIAL = 'https://github.com/BABUKOLLAM/meubel-Incentive-Suite/blob/main/docs/manual/Incentive-Board-Manual-v1.5.pdf'
+SRC_HASH = __import__('hashlib').sha256(open(os.path.join(HERE, 'manual.md'), 'rb').read()).hexdigest()
+def qr_svg(text, size):  # QR code as inline SVG, drawn by qr.js (qrcode-generator, MIT)
+    return subprocess.run(['node', os.path.join(HERE, 'qr.js'), text, str(size)], capture_output=True, text=True, check=True).stdout
+
 def build_cover():
     body = '''<div class="cover">
-  <div class="cv-top"><img class="logo" src="img/bpro.png" alt="Bpro"><div class="cv-brand">Bpro Consulting &amp; Technologies<br><small>HRMS · PMS · LMS · Consulting · Process.ai</small></div></div>
+  <div class="cv-top"><img class="logo" src="img/bpro-logo.jpg" alt="Bpro"><div class="cv-brand">Bpro Consulting &amp; Technologies<br><small>HRMS · PMS · LMS · Consulting · Process.ai</small></div></div>
   <div class="cv-mid">
     <div class="eyebrow">Meubel Grande · Royal Group</div>
     <h1>Incentive Board<br>Manual</h1>
-    <p class="sub"><strong>Settings manual and user manual</strong> for administrators and top management<br>Release 1.4 · October 2026</p>
+    <p class="sub"><strong>Settings manual and user manual</strong> for administrators and top management<br>Release 1.5 · October 2026</p>
     <div class="cv-strip">%s</div>
   </div>
   <div class="cv-bottom">
+    <div class="cv-verify">%s<div><b>Verify this copy</b><br>Scan to open the official copy of release 1.5 in the Meubel incentive repository.<br>Source fingerprint (SHA-256 of the manual text): <span class="fp">%s</span></div></div>
     <p class="credit">%s</p>
     <p class="fine">Screenshots are from the sample build: every name, branch and rupee figure is generated. Policy values are the 19 September 2026 draft's placeholders until leadership confirms them in Settings.</p>
   </div>
-</div>''' % (''.join('<span class="cv-chip %s">%s %s</span>' % (k, ic, l) for ic, k, l, d in LEGEND), inline(credit))
+</div>''' % (''.join('<span class="cv-chip %s">%s %s</span>' % (k, ic, l) for ic, k, l, d in LEGEND), qr_svg(OFFICIAL + '#sha256=' + SRC_HASH[:16], 92), SRC_HASH, inline(credit))
     return page_shell(body, 'Incentive Board Manual · cover').replace('</style>', '@page { margin: 0; }</style>')
 
 def render_pdf(html_path, pdf_path, header=True):
@@ -330,6 +336,6 @@ if __name__ == '__main__':
         print('pass', p + 1, 'pages', total, 'sections found', len(new), 'of', len(sections))
         if new == pages: break
         pages = new
-    final = os.path.join(out, 'Incentive-Board-Manual-v1.4.pdf')
+    final = os.path.join(out, 'Incentive-Board-Manual-v1.5.pdf')
     subprocess.run(['pdfunite', os.path.join(out, 'cover.pdf'), os.path.join(out, 'body.pdf'), final], check=True)
     print('wrote', final, json.dumps(pages))

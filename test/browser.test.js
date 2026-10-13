@@ -11,7 +11,7 @@ const path = require('path');
   p.on('pageerror', e => errs.push('pageerror: ' + e.message));
   await p.goto('file://' + path.resolve(__dirname, '..', 'index.html'), { waitUntil: 'load' });
   await p.waitForTimeout(500);
-  const bad = await p.evaluate(() => {
+  const bad = await p.evaluate(async () => {
     const out = [];
     const roles = ['tech@bpropms.com', allUsers().find(u => u.role === 'bm').email, allUsers().find(u => u.role === 'employee').email];
     for (const email of roles) {
@@ -24,9 +24,9 @@ const path = require('path');
       }
     }
     setUser('tech@bpropms.com'); go({ level: 'reports' }); window.print = () => {};
-    document.getElementById('rPdf').click();
+    document.getElementById('rPdf').click(); await new Promise(r => setTimeout(r, 1200)); // the document ID and QR code are issued first
     const pr = document.getElementById('print');
-    if (!pr.querySelector('.ddfoot a[href="https://www.drbabu.in"]') || !pr.querySelector('.ddfoot a[href="https://www.bpropms.com"]') || !/Grand total/.test(pr.textContent)) out.push('report print: footer links or grand total missing');
+    if (!pr.querySelector('.vq svg.qr') || !pr.querySelector('.dh-logo') || !pr.querySelector('.ddfoot a[href="https://www.drbabu.in"]') || !pr.querySelector('.ddfoot a[href="https://www.bpropms.com"]') || !/Grand total/.test(pr.textContent)) out.push('report print: footer links or grand total missing');
     return out;
   });
   const ph = await b.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
