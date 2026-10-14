@@ -20,6 +20,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
+      - name: Secrets this run can see (names only, never values)
+        env:
+          ALL: ${{ toJSON(secrets) }}
+        run: |
+          echo "repository: $GITHUB_REPOSITORY, started by: $GITHUB_ACTOR, event: $GITHUB_EVENT_NAME"
+          echo "secret names: $(printf '%s' "$ALL" | jq -r 'keys | map(select(. != "github_token")) | join(", ")')"
       - name: Update the board on the VPS
         env:
           HOST: ${{ secrets.VPS_HOST }}
