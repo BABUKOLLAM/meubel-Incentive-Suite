@@ -20,12 +20,17 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - name: Secrets this run can see (names only, never values)
+      - name: Which deploy secrets this run received (yes or no, never values)
         env:
-          ALL: ${{ toJSON(secrets) }}
+          HAS_HOST: ${{ secrets.VPS_HOST != '' }}
+          HAS_KEY: ${{ secrets.VPS_SSH_KEY != '' }}
+          HAS_USER: ${{ secrets.VPS_USER != '' }}
+          HAS_PORT: ${{ secrets.VPS_PORT != '' }}
+          HAS_HOST_KEY: ${{ secrets.VPS_HOST_KEY != '' }}
+          HAS_DIR: ${{ secrets.VPS_DIR != '' }}
         run: |
-          echo "repository: $GITHUB_REPOSITORY, started by: $GITHUB_ACTOR, event: $GITHUB_EVENT_NAME"
-          echo "secret names: $(printf '%s' "$ALL" | jq -r 'keys | map(select(. != "github_token")) | join(", ")')"
+          echo "repository $GITHUB_REPOSITORY, event $GITHUB_EVENT_NAME, by $GITHUB_ACTOR"
+          echo "VPS_HOST=$HAS_HOST VPS_SSH_KEY=$HAS_KEY VPS_USER=$HAS_USER VPS_PORT=$HAS_PORT VPS_HOST_KEY=$HAS_HOST_KEY VPS_DIR=$HAS_DIR"
       - name: Update the board on the VPS
         env:
           HOST: ${{ secrets.VPS_HOST }}
