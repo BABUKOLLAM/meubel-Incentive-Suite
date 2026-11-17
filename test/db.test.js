@@ -62,6 +62,13 @@ const bad = [], ok = (c, m) => { if (!c) bad.push(m); };
   ok(/No such document/.test(await (await fetch(B + '/verify/%3Cscript%3E')).text()) && !(await (await fetch(B + '/verify/%3Cscript%3E')).text()).includes('<script>'), 'verify page echoes input');
   ok((await fetch(B + '/api/docs', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{"docs":[]}' })).status === 401, 'anonymous registration accepted');
   { const appc = new Client({ connectionString: APP }); await appc.connect(); ok(await appc.query("update issued_docs set title='forged'").then(() => false, () => true), 'app role can rewrite an issued document'); await appc.end(); }
+  // users added or removed in Settings gain or lose sign-in through the profiles endpoint (super admin only)
+  const sa = await login('tech@bpropms.com'), putProfile = (c, body) => fetch(B + '/api/profiles', { method: 'PUT', headers: { cookie: c, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  const devStatus = async e => (await fetch(B + '/api/auth/dev?as=' + e, { redirect: 'manual' })).status;
+  ok(await devStatus('new.md@example.com') === 403, 'unknown email could sign in');
+  ok((await putProfile(a2, { email: 'new.md@example.com', name: 'New MD', role: 'md' })).status === 403, 'an admin (not super admin) changed sign-in profiles');
+  ok((await putProfile(sa, { email: 'New.MD@example.com', name: 'New MD', role: 'md', active: true })).status === 200 && await devStatus('new.md@example.com') === 302, 'added user cannot sign in');
+  ok((await putProfile(sa, { email: 'new.md@example.com', name: 'New MD', role: 'md', active: false })).status === 200 && await devStatus('new.md@example.com') === 403, 'removed user can still sign in');
   // update notifications: build fingerprint, service worker, manifest, subscriptions, a release reaching a fake push service
   const ver = await (await fetch(B + '/api/version')).json();
   ok(/^[0-9a-f]{12}$/.test(ver.build) && ver.release === '1.5', 'version endpoint wrong: ' + JSON.stringify(ver));
@@ -93,6 +100,6 @@ const bad = [], ok = (c, m) => { if (!c) bad.push(m); };
   let flood = 0; for (let i = 0; i < 40; i++) if ((await fetch(B + '/api/auth/logout')).status === 429) flood++;
   ok(flood > 0, 'sign-in routes not rate-limited');
   if (bad.length) { console.log(bad.join('\n')); process.exit(1); }
-  console.log(`db test: migrations ${first.length ? first.join(', ') : 'already applied'}; restricted app role; versioned saves; branch scope; sign-out everywhere; PKCE; document verification; update notifications; cross-site and flood refused`);
+  console.log(`db test: migrations ${first.length ? first.join(', ') : 'already applied'}; restricted app role; versioned saves; branch scope; sign-out everywhere; PKCE; document verification; users added in Settings gain and lose sign-in; update notifications; cross-site and flood refused`);
   process.exit(0);
 })().catch(e => { console.log('db test failed:', e.message); process.exit(1); });

@@ -114,6 +114,11 @@
     const btn = document.createElement('button'); btn.className = 'hbtn'; btn.id = 'pushBtn'; box.appendChild(btn);
     paintPush(btn, !!(await pushState())); btn.addEventListener('click', () => togglePush(btn, toast));
   }
+  // A user added or removed in Settings also gains or loses sign-in: the server only admits emails on its profiles table
+  async function profile(u, active) {
+    const r = await api('/profiles', { method: 'PUT', body: JSON.stringify({ email: u.email, name: u.name, role: u.role, branch_id: u.br || null, person_id: u.person || null, active }) });
+    if (!r.ok) { let m = 'HTTP ' + r.status; try { m = (await r.json()).error || m; } catch (_) {} throw new Error(m); }
+  }
   async function announce(title, body) { const r = await api('/push/announce', { method: 'POST', body: JSON.stringify({ title, body }) }); const j = await r.json(); if (!r.ok) throw new Error(j.error || ('HTTP ' + r.status)); return j; }
 
   async function preload() {
@@ -205,5 +210,5 @@
     try { await api('/auth/logout', { method: 'POST', headers: { Accept: 'application/json' } }); } catch (_) {}
     location.href = '/';
   }
-  window.BPRO_REMOTE = { preload, afterBoot, signOut, registerDocs, announce, me: () => me, _merge3: merge3 };
+  window.BPRO_REMOTE = { preload, afterBoot, signOut, registerDocs, announce, profile, me: () => me, _merge3: merge3 };
 })();
